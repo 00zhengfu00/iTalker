@@ -28,7 +28,12 @@ dependencies {
     })
     compile "com.android.support:appcompat-v7:$rootProject.ext.supportVersion"
     compile "com.android.support:recyclerview-v7:$rootProject.ext.supportVersion"
+    compile "com.android.support:design:$rootProject.ext.supportVersion" //Android5.0属性UI
+    compile "de.hdodenhof:circleimageview:$rootProject.ext.circleimageviewVersion"//圆形图片
 
+    compile "net.qiujuer.genius:ui:$rootProject.ext.geniusVersion"//一些Material Design低版本的适配
+    compile "net.qiujuer.genius:res:$rootProject.ext.geniusVersion"//一些属性的res文件抽取
+    compile "com.github.bumptech.glide:glide:$rootProject.ext.glideVersion"//glide图片加载框架
     //注解框架
     compile "com.jakewharton:butterknife:$rootProject.ext.butterknifeVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.ext.butterknifeVersion"
