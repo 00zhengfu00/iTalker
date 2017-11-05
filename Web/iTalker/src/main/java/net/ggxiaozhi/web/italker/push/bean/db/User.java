@@ -34,32 +34,41 @@ public class User {
     //用户名必须唯一
     @Column(nullable = false, length = 128, unique = true)
     private String name;
-    //用户名必须唯一
+
+    //电话号必须唯一
     @Column(nullable = false, length = 62, unique = true)
     private String phone;
-    //用户名必须唯一
+
+    //密码
     @Column(nullable = false)
     private String password;
-    //头像可以为
+
+    //头像可以为空
     @Column
     private String portrait;
+
     //描述(相当于个性签名)
     @Column
     private String description;
+
     //性别有初始值 所以不为空
     @Column(nullable = false)
     private int sex;
+
     //token可以拉取用户信息，类似cookie的作用。所有token必须唯一，
     @Column(unique = true)
     private String token;
+
     //定义为创建时间戳 在创建时就写入
     @CreationTimestamp
     @Column(nullable = false)
     private LocalDateTime createAt = LocalDateTime.now();
-    //定义为创建时间戳 在创建时就写入
+
+    //定义为更新时间戳 在创建时就写入
     @UpdateTimestamp
     @Column(nullable = false)
     private LocalDateTime updateAt = LocalDateTime.now();
+
     //最后一次收到消息的时间
     @Column
     private LocalDateTime lastReceviedAt = LocalDateTime.now();
@@ -84,6 +93,17 @@ public class User {
     //一对多，一个用户可以被很多人关注，每一个关注都是一条记录
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<UserFollow> followers = new HashSet<>();
+
+
+    //用户所有创建的群
+    //对应的字段为：Group.ownerId
+    @JoinColumn(name = "ownerId")
+    //懒记载集合的方式：LazyCollectionOption.EXTRA 尽可能不加载具体的数据
+    //当访问groups.size()时仅仅查询数量，不加载具体的Group的信息
+    //只有在遍历集合的时候才记载具体的数据
+    @LazyCollection(LazyCollectionOption.EXTRA)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Group> groups = new HashSet<>();
 
 
     public String getId() {
@@ -188,6 +208,14 @@ public class User {
 
     public void setFollowers(Set<UserFollow> followers) {
         this.followers = followers;
+    }
+
+    public Set<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(Set<Group> groups) {
+        this.groups = groups;
     }
 }
 

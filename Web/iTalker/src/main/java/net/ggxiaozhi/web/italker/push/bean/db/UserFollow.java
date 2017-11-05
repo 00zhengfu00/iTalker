@@ -32,6 +32,7 @@ public class UserFollow {
     //你可以创建很多关注的信息，所以是多对1
     //这里的多对1是：User 对应多个UserFollow
     //optional 不可选，必须存储，一条关注记录一定要有一个"你"
+    //optional属性是定义该关联类是否必须存在，值为false 时，关联类双方都必须存在
     @ManyToOne(optional = false)
     //在多对一中使用@JoinColumn会存储关联表中的某一字段而不是保存整个User表的所有字段
     //@JoinColumn会默认引用User表中的主键作为自己的外键
@@ -64,7 +65,7 @@ public class UserFollow {
     @Column(nullable = false)
     private LocalDateTime createAt = LocalDateTime.now();
 
-    //定义为创建时间戳 在创建时就写入
+    //定义为更新时间戳 在创建时就写入
     @UpdateTimestamp
     @Column(nullable = false)
     private LocalDateTime updateAt = LocalDateTime.now();
