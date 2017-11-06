@@ -1,6 +1,8 @@
 package net.ggxiaozhi.web.italker.push.bean.card;
 
 import com.google.gson.annotations.Expose;
+import net.ggxiaozhi.web.italker.push.bean.db.User;
+
 import java.time.LocalDateTime;
 
 /**
@@ -11,7 +13,7 @@ import java.time.LocalDateTime;
  * 功能   ：用于简化数据库返回给客户端的User对象，去除一些不必要或是敏感的字段
  */
 public class UserCard {
-
+    /*@Expose 是用于将字段转换成Json*/
     @Expose
     private String id;
 
@@ -51,6 +53,19 @@ public class UserCard {
     @Expose
     private LocalDateTime modifyAt;
 
+    public UserCard(User user) {
+        this.id = user.getId();
+        this.name = user.getName();
+        this.phone = user.getPhone();
+        this.portrait = user.getPortrait();
+        this.desc = user.getDescription();
+        this.sex = user.getSex();
+        this.modifyAt = user.getUpdateAt();
+
+        //TODO 得到关注和粉丝的数量
+        //user.getFollowers().size();
+        //懒加载会报错 因为没有Session
+    }
 
     public String getId() {
         return id;

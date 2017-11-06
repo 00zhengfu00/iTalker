@@ -1,4 +1,4 @@
-package net.ggxiaozhi.web.italker.push.bean.api;
+package net.ggxiaozhi.web.italker.push.bean.api.account;
 
 import com.google.gson.annotations.Expose;
 
@@ -11,6 +11,7 @@ import com.google.gson.annotations.Expose;
  */
 public class RegisterModule {
 
+    /*@Expose 是用于将字段转换成Json*/
     @Expose
     private String account;//注册的账户
     @Expose

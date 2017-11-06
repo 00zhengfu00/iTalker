@@ -125,7 +125,7 @@ public class Hib {
      * 有返回值
      *
      * @param query 用于接收session
-     * @param <T>   表示查询的实体
+     * @param <T>   表示的实体
      * @return
      */
     public static <T> T query(Query<T> query) {
