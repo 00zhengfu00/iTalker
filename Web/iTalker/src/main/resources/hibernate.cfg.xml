@@ -56,20 +56,24 @@
         -->
 
 
-        <!--<mapping package="net.qiujuer.web.italker.push.bean.db"-->
-        <!--class="net.qiujuer.web.italker.push.bean.db.Group"/>-->
-        <!--<mapping package="net.qiujuer.web.italker.push.bean.db"-->
-        <!--class="net.qiujuer.web.italker.push.bean.db.GroupMember"/>-->
-        <!--<mapping package="net.qiujuer.web.italker.push.bean.db"-->
-        <!--class="net.qiujuer.web.italker.push.bean.db.User"/>-->
-        <!--<mapping package="net.qiujuer.web.italker.push.bean.db"-->
-        <!--class="net.qiujuer.web.italker.push.bean.db.UserFollow"/>-->
-        <!--<mapping package="net.qiujuer.web.italker.push.bean.db"-->
-        <!--class="net.qiujuer.web.italker.push.bean.db.Message"/>-->
-        <!--<mapping package="net.qiujuer.web.italker.push.bean.db"-->
-        <!--class="net.qiujuer.web.italker.push.bean.db.PushHistory"/>-->
-        <!--<mapping package="net.qiujuer.web.italker.push.bean.db"-->
-        <!--class="net.qiujuer.web.italker.push.bean.db.Apply"/>-->
+        <!--用户相关-->
+        <mapping package="net.ggxiaozhi.web.italker.push.bean.db"
+                 class="net.ggxiaozhi.web.italker.push.bean.db.User"/>
+        <mapping package="net.ggxiaozhi.web.italker.push.bean.db"
+                 class="net.ggxiaozhi.web.italker.push.bean.db.UserFollow"/>
+        <!--群组相关-->
+        <mapping package="net.ggxiaozhi.web.italker.push.bean.db"
+                 class="net.ggxiaozhi.web.italker.push.bean.db.Group"/>
+        <mapping package="net.ggxiaozhi.web.italker.push.bean.db"
+                 class="net.ggxiaozhi.web.italker.push.bean.db.GroupMember"/>
+        <!--消息相关-->
+        <mapping package="net.ggxiaozhi.web.italker.push.bean.db"
+                 class="net.ggxiaozhi.web.italker.push.bean.db.Message"/>
+        <mapping package="net.ggxiaozhi.web.italker.push.bean.db"
+                 class="net.ggxiaozhi.web.italker.push.bean.db.PushHistory"/>
+        <!--添加联系人或群-->
+        <mapping package="net.ggxiaozhi.web.italker.push.bean.db"
+                 class="net.ggxiaozhi.web.italker.push.bean.db.Apply"/>
 
     </session-factory>
 </hibernate-configuration>

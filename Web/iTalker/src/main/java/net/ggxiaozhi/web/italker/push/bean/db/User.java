@@ -53,11 +53,15 @@ public class User {
 
     //性别有初始值 所以不为空
     @Column(nullable = false)
-    private int sex;
+    private int sex=0;
 
     //token可以拉取用户信息，类似cookie的作用。所有token必须唯一，
     @Column(unique = true)
     private String token;
+
+    // 用于推送的设备ID
+    @Column
+    private String pushId;
 
     //定义为创建时间戳 在创建时就写入
     @CreationTimestamp
@@ -216,6 +220,14 @@ public class User {
 
     public void setGroups(Set<Group> groups) {
         this.groups = groups;
+    }
+
+    public String getPushId() {
+        return pushId;
+    }
+
+    public void setPushId(String pushId) {
+        this.pushId = pushId;
     }
 }
 

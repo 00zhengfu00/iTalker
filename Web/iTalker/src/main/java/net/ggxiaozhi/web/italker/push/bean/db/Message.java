@@ -47,7 +47,7 @@ public class Message {
 
     //消息的类型
     @Column(nullable = false)
-    private int Type;
+    private int type;
 
     //定义为创建时间戳 在创建时就写入
     @CreationTimestamp
@@ -114,11 +114,11 @@ public class Message {
     }
 
     public int getType() {
-        return Type;
+        return type;
     }
 
     public void setType(int type) {
-        Type = type;
+        this.type = type;
     }
 
     public LocalDateTime getCreateAt() {
@@ -169,5 +169,19 @@ public class Message {
         this.receiverId = receiverId;
     }
 
+    public Group getGroup() {
+        return group;
+    }
 
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
 }
