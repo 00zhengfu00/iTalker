@@ -43,7 +43,7 @@ public class UserFollow {
 
     //那这个列提取到我们的Module中，不允许为null，不允许更新，插入
     @Column(nullable = false, updatable = false, insertable = false)
-    private User originId;
+    private String originId;
 
 
     //定义被关注的目标，你被某人关注
@@ -55,7 +55,7 @@ public class UserFollow {
 
     //那这个列提取到我们的Module中，不允许为null，不允许更新，插入
     @Column(nullable = false, updatable = false, insertable = false)
-    private User targetId;
+    private String targetId;
 
     //别名 也就是target的备注名
     private String alias;
@@ -86,11 +86,11 @@ public class UserFollow {
         this.origin = origin;
     }
 
-    public User getOriginId() {
+    public String getOriginId() {
         return originId;
     }
 
-    public void setOriginId(User originId) {
+    public void setOriginId(String originId) {
         this.originId = originId;
     }
 
@@ -102,11 +102,11 @@ public class UserFollow {
         this.target = target;
     }
 
-    public User getTargetId() {
+    public String getTargetId() {
         return targetId;
     }
 
-    public void setTargetId(User targetId) {
+    public void setTargetId(String targetId) {
         this.targetId = targetId;
     }
 

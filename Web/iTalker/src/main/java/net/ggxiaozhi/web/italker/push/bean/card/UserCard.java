@@ -45,7 +45,7 @@ public class UserCard {
 
     //我与当前User的关系状态，是否关注了这个人
     @Expose
-    private int isFollow;
+    private boolean isFollow;
 
     //用户信息最后的更新时间
     @Expose
@@ -116,11 +116,11 @@ public class UserCard {
         this.following = following;
     }
 
-    public int getIsFollow() {
+    public boolean getIsFollow() {
         return isFollow;
     }
 
-    public void setIsFollow(int isFollow) {
+    public void setIsFollow(boolean isFollow) {
         this.isFollow = isFollow;
     }
 

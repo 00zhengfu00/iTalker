@@ -12,7 +12,8 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
  * 包名   ： net.ggxiaozhi.web.italker.push.service
  * 作者名 ： 志先生_
  * 日期   ： 2017/11
- * 功能   ：常用Hibernate工具类的封装
+     * 功能   ：常用Hibernate工具类的封装
+ * 主要是初始化全局SessionFactory管理session并用将session提供给外界调用
  */
 public class Hib {
     // 全局SessionFactory
@@ -68,75 +69,91 @@ public class Hib {
     }
 
 
-    // 用户的实际的操作的一个接口
-    public interface QueryOnly {
+    /**
+     * 用户实际操作的一个接口
+     * 无返回值
+     */
+    public interface QueryOnOnly {
         void query(Session session);
     }
 
-    // 简化Session事物操的一个工具方法
-    public static void queryOnly(QueryOnly query) {
-        // 重开一个Session
-        Session session = sessionFactory.openSession();
-        // 开启事物
-        final Transaction transaction = session.beginTransaction();
 
+    /**
+     * 简化事务操作的一个工具方法
+     *
+     * @param query
+     */
+    public static void queryOnOnly(QueryOnOnly query) {
+
+        //重新开启一个Session 避免提示重复使用相同的Session
+        Session session = sessionFactory().openSession();
+        //开启一个事务
+        final Transaction transaction = session.beginTransaction();
         try {
-            // 调用传递进来的接口，
-            // 并调用接口的方法把Session传递进去
+            //调用传进了来的接口，并调用接口中的方法 把Session传进方法中
+            //以便提供给调用者利用Session去进行数据库的操作
             query.query(session);
-            // 提交
+            //提交事务
             transaction.commit();
         } catch (Exception e) {
             e.printStackTrace();
-            // 回滚
             try {
+                //保存失败的情况下进行事务回滚
                 transaction.rollback();
             } catch (RuntimeException e1) {
                 e1.printStackTrace();
             }
         } finally {
-            // 无论成功失败，都需要关闭Session
+            //关闭session
             session.close();
         }
     }
 
 
-    // 用户的实际的操作的一个接口
-    // 具有返回值T
+    /**
+     * 用户实际操作的一个接口
+     * 具有返回值T
+     *
+     * @param <T> 表示查询的实体
+     */
     public interface Query<T> {
         T query(Session session);
     }
 
-    // 简化Session操作的工具方法，
-    // 具有一个返回值
+    /**
+     * 简化事务操作的一个工具方法
+     * 有返回值
+     *
+     * @param query 用于接收session
+     * @param <T>   表示查询的实体
+     * @return
+     */
     public static <T> T query(Query<T> query) {
-        // 重开一个Session
-        Session session = sessionFactory.openSession();
-        // 开启事物
-        final Transaction transaction = session.beginTransaction();
 
+        //重新开启一个Session 避免提示重复使用相同的Session
+        Session session = sessionFactory().openSession();
+        //开启一个事务
+        final Transaction transaction = session.beginTransaction();
         T t = null;
         try {
-            // 调用传递进来的接口，
-            // 并调用接口的方法把Session传递进去
+            //调用传进了来的接口，并调用接口中的方法 把Session传进方法中
+            //以便提供给调用者利用Session去进行数据库的操作
             t = query.query(session);
-            // 提交
+            //提交事务
             transaction.commit();
         } catch (Exception e) {
             e.printStackTrace();
-            // 回滚
             try {
+                //保存失败的情况下进行事务回滚
                 transaction.rollback();
             } catch (RuntimeException e1) {
                 e1.printStackTrace();
             }
+
         } finally {
-            // 无论成功失败，都需要关闭Session
+            //关闭session
             session.close();
         }
-
         return t;
     }
-
-
 }

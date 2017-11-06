@@ -7,7 +7,7 @@ import com.google.gson.annotations.Expose;
  * 包名   ： net.ggxiaozhi.web.italker.push.bean.api
  * 作者名 ： 志先生_
  * 日期   ： 2017/11
- * 功能   ：注册请求的实体
+ * 功能   ：客户端注册请求的实体
  */
 public class RegisterModule {
 
