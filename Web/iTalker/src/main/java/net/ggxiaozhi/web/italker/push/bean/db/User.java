@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,7 +20,7 @@ import java.util.Set;
  */
 @Entity//表明为实体类
 @Table(name = "TB_USER")//对应数据库中的表
-public class User {
+public class User implements Principal {
 
 
     @Id//标明字段含义
@@ -53,7 +54,7 @@ public class User {
 
     //性别有初始值 所以不为空
     @Column(nullable = false)
-    private int sex=0;
+    private int sex = 0;
 
     //token可以拉取用户信息，类似cookie的作用。所有token必须唯一，
     @Column(unique = true)

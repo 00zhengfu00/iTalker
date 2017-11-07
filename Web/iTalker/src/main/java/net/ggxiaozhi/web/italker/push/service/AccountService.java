@@ -5,7 +5,6 @@ import net.ggxiaozhi.web.italker.push.bean.api.account.AccountRspModule;
 import net.ggxiaozhi.web.italker.push.bean.api.account.LoginModule;
 import net.ggxiaozhi.web.italker.push.bean.api.account.RegisterModule;
 import net.ggxiaozhi.web.italker.push.bean.api.base.ResponseModel;
-import net.ggxiaozhi.web.italker.push.bean.card.UserCard;
 import net.ggxiaozhi.web.italker.push.bean.db.User;
 import net.ggxiaozhi.web.italker.push.bean.factory.UserFactory;
 
@@ -17,11 +16,11 @@ import javax.ws.rs.core.MediaType;
  * 包名   ： net.ggxiaozhi.web.italker.push.service
  * 作者名 ： 志先生_
  * 日期   ： 2017/11
- * 功能   ：所有请求的入口
+ * 功能   ：所有账号相关请求的入口
  */
 //127.0.0.1/api/account/...
 @Path("/account")
-public class AccountService {
+public class AccountService extends BaseService {
     //127.0.0.1/api/account/register
     //用户注册的接口
     @POST
@@ -112,22 +111,20 @@ public class AccountService {
     //从请求头中获取token字段
     //pushId从url地址中获取
     public ResponseModel<AccountRspModule> bind(
-            @HeaderParam("token") String token,
+            //不需要token 拦截器已经帮我们做了处理
+            // @HeaderParam("token") String token,
             @PathParam("pushId") String pushId) {
 
         //表示当前登录缺少必要参数
-        if (Strings.isNullOrEmpty(token) || Strings.isNullOrEmpty(pushId)) {
+        if (/*Strings.isNullOrEmpty(token) ||*/
+                Strings.isNullOrEmpty(pushId)) {
             //参数异常
             return ResponseModel.buildParameterError();
         }
         //拿到自己的个人信息
-        User user = UserFactory.findByToken(token);
-        if (user != null) {//表示当前这个用户是在线的
-            return bindPushId(user, pushId);
-        } else {
-            //Token 失效 所以无法进行绑定
-            return ResponseModel.buildAccountError();
-        }
+        User self = getSelf();
+        return bindPushId(self, pushId);
+
     }
 
     /**

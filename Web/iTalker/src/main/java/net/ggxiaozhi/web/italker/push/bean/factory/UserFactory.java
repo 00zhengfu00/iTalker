@@ -19,7 +19,6 @@ import java.util.UUID;
  */
 public class UserFactory {
 
-
     /**
      * 通过token查询用户信息
      * 只能当前登录用户自己使用 查询信息时个人信息，非他人信息
@@ -75,6 +74,19 @@ public class UserFactory {
                         .setParameter("name", name).uniqueResult();
                 return user;
             }
+        });
+    }
+
+    /**
+     * 更新(保存)用户信息到数据库
+     *
+     * @param user 修改信息的user
+     * @return 保存数据库中后的user
+     */
+    public static User update(User user) {
+        return Hib.query(session -> {
+            session.saveOrUpdate(user);
+            return user;
         });
     }
 
@@ -164,10 +176,7 @@ public class UserFactory {
         user.setToken(newToken);
 
         //将新增加token的user存入到数据库或更新
-        return Hib.query(session -> {
-            session.saveOrUpdate(user);
-            return user;
-        });
+        return update(user);
     }
 
 
@@ -243,10 +252,7 @@ public class UserFactory {
             //第四步：更新设备Id
             //更新新的设备Id
             user.setPushId(pushId);
-            return Hib.query(session -> {
-                session.saveOrUpdate(user);
-                return user;
-            });
+            return update(user);
         }
 
 
