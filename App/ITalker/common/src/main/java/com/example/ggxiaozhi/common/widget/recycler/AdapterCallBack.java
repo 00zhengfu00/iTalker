@@ -1,4 +1,4 @@
-package com.example.ggxiaozhi.common.widget;
+package com.example.ggxiaozhi.common.widget.recycler;
 
 import android.view.View;
 

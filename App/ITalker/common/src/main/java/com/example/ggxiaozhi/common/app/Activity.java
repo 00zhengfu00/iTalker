@@ -79,21 +79,28 @@ public abstract class Activity extends AppCompatActivity {
     }
 
 
+    /**
+     * 点击返回键的逻辑
+     */
     @Override
     public void onBackPressed() {
         Toast.makeText(this, "点击了 onBackPressed", Toast.LENGTH_SHORT).show();
         //得到当前Activity下的所有Fragment
         List<android.support.v4.app.Fragment> fragments = getSupportFragmentManager().getFragments();
-        //判断是否为我们能够处理的Fragment
-        for (android.support.v4.app.Fragment fragment : fragments) {
-            if (fragment instanceof Fragment) {
-                //判断Fragment是否拦截了返回按钮
-                if (((Fragment) fragment).onBackPressed()) {
-                    //如果有就直接return
-                    return;
+        // 判断是否为空
+        if (fragments != null & fragments.size() > 0) {
+            //判断是否为我们能够处理的Fragment
+            for (android.support.v4.app.Fragment fragment : fragments) {
+                if (fragment instanceof Fragment) {
+                    //判断Fragment是否拦截了返回按钮
+                    if (((Fragment) fragment).onBackPressed()) {
+                        //如果有就直接return
+                        return;
+                    }
                 }
             }
         }
+
         super.onBackPressed();
         finish();
     }

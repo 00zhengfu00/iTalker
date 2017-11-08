@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.example.ggxiaozhi.common.R;
-import com.example.ggxiaozhi.common.widget.AdapterCallBack;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -163,7 +162,6 @@ public abstract class RecyclerAdapter<Data> extends
     public void add(Collection<Data> dataList) {
         if (dataList != null && dataList.size() > 0) {
             int startPos = mDataList.size();
-            //Collections 此类不能实例化，就像一个工具类，服务于Java的Collection框架
             mDataList.addAll(dataList);
             notifyItemRangeInserted(startPos, dataList.size());
         }
