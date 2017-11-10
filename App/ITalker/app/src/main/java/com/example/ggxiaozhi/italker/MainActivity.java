@@ -15,6 +15,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.ViewTarget;
 import com.example.ggxiaozhi.common.app.Activity;
 import com.example.ggxiaozhi.common.widget.PortraitView;
+import com.example.ggxiaozhi.italker.activity.AccountActivity;
 import com.example.ggxiaozhi.italker.fragment.main.ActiveFragment;
 import com.example.ggxiaozhi.italker.fragment.main.ContactFragment;
 import com.example.ggxiaozhi.italker.fragment.main.GroupFragment;
@@ -94,7 +95,7 @@ public class MainActivity extends Activity implements
 
     @OnClick(R.id.btn_action)
     void onActionClick() {
-
+        AccountActivity.show(this);
     }
 
     /**

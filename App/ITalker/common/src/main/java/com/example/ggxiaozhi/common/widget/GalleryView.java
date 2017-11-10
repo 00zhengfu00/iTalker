@@ -168,7 +168,6 @@ public class GalleryView extends RecyclerView {
 
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-            Log.d("TAG", "onCreateLoader: ");
             //创建一个Laoder
             if (id == LOADER_ID) {
                 return new CursorLoader(getContext(),
@@ -183,7 +182,6 @@ public class GalleryView extends RecyclerView {
 
         @Override//当loader加载完成时 用于更新获取数据更新UI
         public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-            Log.d("TAG", "onLoadFinished: ");
             List<Image> images = new ArrayList<>();
             //判断是否有数据
             if (data != null) {
@@ -222,7 +220,6 @@ public class GalleryView extends RecyclerView {
 
         @Override
         public void onLoaderReset(Loader<Cursor> loader) {
-            Log.d("TAG", "onLoaderReset: ");
             //当loader销毁或重置 进行界面清空
             updateSource(null);
         }

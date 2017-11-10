@@ -24,16 +24,17 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
+    //Android Studio 2.3新增的布局依赖
     compile "com.android.support:appcompat-v7:$rootProject.ext.butterknifeVersion"
     compile "com.android.support:recyclerview-v7:$rootProject.ext.supportVersion"
-    //Android Studio 2.3新增的布局依赖
-    compile "com.android.support:design:$rootProject.ext.supportVersion" //Android5.0属性UI
-    compile "de.hdodenhof:circleimageview:$rootProject.ext.circleimageviewVersion"//圆形图片
+    //Android5.0属性UI
+    compile "com.android.support:design:$rootProject.ext.supportVersion"
 
+    compile "de.hdodenhof:circleimageview:$rootProject.ext.circleimageviewVersion"//圆形图片
     compile "net.qiujuer.genius:ui:$rootProject.ext.geniusVersion"//一些Material Design低版本的适配
     compile "net.qiujuer.genius:res:$rootProject.ext.geniusVersion"//一些属性的res文件抽取
     compile "com.github.bumptech.glide:glide:$rootProject.ext.glideVersion"//glide图片加载框架
+    compile "com.yalantis:ucrop:$rootProject.ext.ucropVersion"//图片裁剪框架
 
     //注解框架
     compile "com.jakewharton:butterknife:$rootProject.ext.butterknifeVersion"
