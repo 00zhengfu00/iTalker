@@ -189,8 +189,28 @@ public abstract class RecyclerAdapter<Data> extends
 
     }
 
+    /**
+     * 更新一条数据 (这个方法是实现AdapterCallBack接口中的方法)
+     *
+     * @param data
+     * @param holder
+     */
+    @Override
+    public void updata(Data data, ViewHolder<Data> holder) {
+        //等到当前ViewHolder的坐标
+        int position = holder.getAdapterPosition();
+        if (position >= 0) {//判断这个坐标是否有效
+            //更新
+            mDataList.remove(position);
+            mDataList.add(position, data);
+            //刷新
+            notifyItemChanged(position);
+        }
+    }
+
     @Override
     public void onClick(View v) {
+        @SuppressWarnings("unchecked")
         ViewHolder<Data> holder = (ViewHolder<Data>) v.getTag(R.id.tag_recycler_holder);
         if (mDataList != null) {
             int position = holder.getAdapterPosition();
@@ -200,6 +220,7 @@ public abstract class RecyclerAdapter<Data> extends
 
     @Override
     public boolean onLongClick(View v) {
+        @SuppressWarnings("unchecked")
         ViewHolder<Data> holder = (ViewHolder<Data>) v.getTag(R.id.tag_recycler_holder);
         if (mDataList != null) {
             int position = holder.getAdapterPosition();
@@ -226,10 +247,23 @@ public abstract class RecyclerAdapter<Data> extends
      */
     public interface AdapterListener<Data> {
         //单击事件的回调
-        void onItemClick(RecyclerView.ViewHolder holder, Data data);
+        void onItemClick(ViewHolder holder, Data data);
 
         //长按事件的回调
-        void onItemLongClick(RecyclerView.ViewHolder holder, Data data);
+        void onItemLongClick(ViewHolder holder, Data data);
+    }
+
+    public static class AdapterListenerImpl<Data> implements AdapterListener<Data> {
+
+        @Override
+        public void onItemClick(ViewHolder holder, Data data) {
+
+        }
+
+        @Override
+        public void onItemLongClick(ViewHolder holder, Data data) {
+
+        }
     }
 
     /**

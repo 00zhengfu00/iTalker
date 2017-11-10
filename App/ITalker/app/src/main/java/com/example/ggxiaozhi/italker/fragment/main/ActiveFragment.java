@@ -1,24 +1,24 @@
 package com.example.ggxiaozhi.italker.fragment.main;
 
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.support.v4.app.LoaderManager;
 
 import com.example.ggxiaozhi.common.app.Fragment;
+import com.example.ggxiaozhi.common.widget.GalleryView;
 import com.example.ggxiaozhi.italker.R;
+
+import butterknife.BindView;
 
 /**
  * 主界面Fragment
  */
 public class ActiveFragment extends Fragment {
 
+    @BindView(R.id.galleryView)
+    GalleryView mGalleryView;
 
     public ActiveFragment() {
-        // Required empty public constructor
     }
-
 
 
     @Override
@@ -26,4 +26,15 @@ public class ActiveFragment extends Fragment {
         return R.layout.fragment_active;
     }
 
+    @Override
+    protected void initData() {
+        super.initData();
+        LoaderManager loaderManager = getLoaderManager();
+        mGalleryView.setup(loaderManager, new GalleryView.SelectedChangeListener() {
+            @Override
+            public void onSelectedCountChanged(int count) {
+
+            }
+        });
+    }
 }
