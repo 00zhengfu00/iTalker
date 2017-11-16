@@ -194,7 +194,7 @@ public class GalleryView extends RecyclerView {
                     int indexPath = data.getColumnIndexOrThrow(IMAGE_PROJECTION[1]);
                     int indexTime = data.getColumnIndexOrThrow(IMAGE_PROJECTION[2]);
                     do {
-                        //循环读取数据 知道没有下一条数据
+                        //循环读取数据 直到没有下一条数据
                         int id = data.getInt(indexId);
                         String path = data.getString(indexPath);
                         long dateTime = data.getLong(indexTime);

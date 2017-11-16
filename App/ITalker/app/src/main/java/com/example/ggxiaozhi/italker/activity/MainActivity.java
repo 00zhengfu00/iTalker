@@ -1,5 +1,7 @@
-package com.example.ggxiaozhi.italker;
+package com.example.ggxiaozhi.italker.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.view.Menu;
@@ -15,7 +17,9 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.ViewTarget;
 import com.example.ggxiaozhi.common.app.Activity;
 import com.example.ggxiaozhi.common.widget.PortraitView;
+import com.example.ggxiaozhi.italker.R;
 import com.example.ggxiaozhi.italker.activity.AccountActivity;
+import com.example.ggxiaozhi.italker.fragment.assist.PermissionsFragment;
 import com.example.ggxiaozhi.italker.fragment.main.ActiveFragment;
 import com.example.ggxiaozhi.italker.fragment.main.ContactFragment;
 import com.example.ggxiaozhi.italker.fragment.main.GroupFragment;
@@ -52,6 +56,15 @@ public class MainActivity extends Activity implements
 
     private NavHelper<Integer> mHelper;//Fragment切换工具类
 
+    /**
+     * MainActivity的入口
+     *
+     * @param context
+     */
+    public static void show(Context context) {
+        context.startActivity(new Intent(context, MainActivity.class));
+    }
+
     @Override
     protected int getContentLayoutId() {
         return R.layout.activity_main;
@@ -77,6 +90,7 @@ public class MainActivity extends Activity implements
                         this.view.setBackground(resource.getCurrent());
                     }
                 });
+        PermissionsFragment.haveAllPerms(this, getSupportFragmentManager());
     }
 
     @Override
@@ -125,7 +139,6 @@ public class MainActivity extends Activity implements
         float transY = 0;
         float rotation = 0;
         if (Objects.equals(newTab.extra, R.string.title_home)) {
-
             //主界面隐藏
             transY = Ui.dipToPx(getResources(), 76);
         } else {

@@ -4,14 +4,17 @@ package com.example.ggxiaozhi.italker.fragment.account;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.ggxiaozhi.common.app.Application;
 import com.example.ggxiaozhi.common.app.Fragment;
 import com.example.ggxiaozhi.common.widget.PortraitView;
+import com.example.ggxiaozhi.factory.Factory;
+import com.example.ggxiaozhi.factory.net.UploadHelper;
 import com.example.ggxiaozhi.italker.R;
-import com.example.ggxiaozhi.italker.media.GalleryFragment;
+import com.example.ggxiaozhi.italker.fragment.media.GalleryFragment;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
@@ -81,5 +84,15 @@ public class UpdateInfoFragment extends Fragment {
                 .asBitmap()
                 .centerCrop()
                 .into(mPortrait);
+
+        final String localPath = resultUri.getPath();
+        Log.e("TAG", "localPath: " + localPath);
+        Factory.runOnAsync(new Runnable() {
+            @Override
+            public void run() {
+                String url = UploadHelper.uploadPortrait(localPath);
+                Log.e("TAG", "url: " + url);
+            }
+        });
     }
 }

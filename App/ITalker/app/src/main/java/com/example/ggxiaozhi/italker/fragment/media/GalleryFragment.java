@@ -1,4 +1,4 @@
-package com.example.ggxiaozhi.italker.media;
+package com.example.ggxiaozhi.italker.fragment.media;
 
 
 import android.app.Dialog;
@@ -19,8 +19,6 @@ import android.view.Window;
 import com.example.ggxiaozhi.common.tools.UiTool;
 import com.example.ggxiaozhi.common.widget.GalleryView;
 import com.example.ggxiaozhi.italker.R;
-
-import net.qiujuer.genius.ui.Ui;
 
 /**
  * 图片选择器Fragment
@@ -63,7 +61,7 @@ public class GalleryFragment extends BottomSheetDialogFragment implements Galler
     public void onSelectedCountChanged(int count) {
         //选中一张图片后就dismiss
         if (count > 0) {
-            //获取错有选中图片的路径
+            //获取所有选中图片的路径
             String[] paths = mGallery.getSelectedPath();
             //隐藏当前Fragment
             dismiss();
@@ -91,7 +89,10 @@ public class GalleryFragment extends BottomSheetDialogFragment implements Galler
         void onSelectedImage(String path);
     }
 
-    private static class TransStatusBottomSheetDialog extends BottomSheetDialog {
+    /**
+     * 为了解决BottomSheetDialog导致屏幕顶部变黑
+     */
+    public static class TransStatusBottomSheetDialog extends BottomSheetDialog {
 
         public TransStatusBottomSheetDialog(@NonNull Context context) {
             super(context);

@@ -38,4 +38,9 @@ ext {//依赖库的版本
 
     circleimageviewVersion = '2.1.0'
     ucropVersion = '2.2.0-native'
+
+    //动态权限辅助工具
+    easyPMVersion = "0.3.0"
+    //操作云数据库
+    ossVersion = '2.3.0'
 }
