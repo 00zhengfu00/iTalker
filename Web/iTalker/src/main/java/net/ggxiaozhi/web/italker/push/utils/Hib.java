@@ -12,7 +12,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
  * 包名   ： net.ggxiaozhi.web.italker.push.service
  * 作者名 ： 志先生_
  * 日期   ： 2017/11
-     * 功能   ：常用Hibernate工具类的封装
+ * 功能   ：常用Hibernate工具类的封装
  * 主要是初始化全局SessionFactory管理session并用将session提供给外界调用
  */
 public class Hib {

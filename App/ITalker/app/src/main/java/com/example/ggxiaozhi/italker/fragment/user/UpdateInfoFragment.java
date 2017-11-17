@@ -1,4 +1,4 @@
-package com.example.ggxiaozhi.italker.fragment.account;
+package com.example.ggxiaozhi.italker.fragment.user;
 
 
 import android.content.Intent;

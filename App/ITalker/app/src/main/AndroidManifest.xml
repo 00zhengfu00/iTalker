@@ -42,7 +42,8 @@
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"/>
-
+        <activity android:name=".activity.UserActivity">
+        </activity>
     </application>
 
 </manifest>

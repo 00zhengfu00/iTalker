@@ -2,7 +2,7 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context="com.example.ggxiaozhi.italker.fragment.account.UpdateInfoFragment">
+             tools:context="com.example.ggxiaozhi.italker.fragment.user.UpdateInfoFragment">
 
     <com.example.ggxiaozhi.common.widget.PortraitView
         android:id="@+id/im_portrait"
