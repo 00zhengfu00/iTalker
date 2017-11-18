@@ -1,7 +1,7 @@
 package com.example.ggxiaozhi.factory.presenter.account;
 
 
-import com.example.ggxiaozhi.factory.BaseContract;
+import com.example.ggxiaozhi.factory.presenter.BaseContract;
 
 /**
  * 工程名 ： ITalker

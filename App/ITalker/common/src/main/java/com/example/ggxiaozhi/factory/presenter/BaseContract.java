@@ -1,4 +1,4 @@
-package com.example.ggxiaozhi.factory;
+package com.example.ggxiaozhi.factory.presenter;
 
 import android.support.annotation.StringRes;
 

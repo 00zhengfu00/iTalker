@@ -3,7 +3,7 @@ package com.example.ggxiaozhi.common.app;
 import android.content.Context;
 import android.support.annotation.StringRes;
 
-import com.example.ggxiaozhi.factory.BaseContract;
+import com.example.ggxiaozhi.factory.presenter.BaseContract;
 
 /**
  * 工程名 ： ITalker

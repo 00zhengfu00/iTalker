@@ -5,7 +5,6 @@ import android.support.annotation.StringRes;
 import android.widget.EditText;
 
 import com.example.ggxiaozhi.common.app.PresenterFragment;
-import com.example.ggxiaozhi.factory.BaseContract;
 import com.example.ggxiaozhi.factory.presenter.account.RegisterContract;
 import com.example.ggxiaozhi.factory.presenter.account.RegisterPresenter;
 import com.example.ggxiaozhi.italker.R;

@@ -43,4 +43,9 @@ ext {//依赖库的版本
     easyPMVersion = "0.3.0"
     //操作云数据库
     ossVersion = '2.3.0'
+
+    //Gson转换工具
+    gsonVersion = '2.8.0'
+    //retrofit2
+    retrofitVersion = '2.1.0'
 }

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_src_morning"
+    tools:background="@drawable/bg_src_tianjin"
     android:orientation="vertical"
     tools:context="com.example.ggxiaozhi.italker.fragment.account.RegisterFragment">
 
@@ -144,7 +144,7 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:hint="@string/label_name"
-                android:inputType="textPassword"
+                android:inputType="text"
                 android:paddingBottom="@dimen/len_8"
                 android:paddingTop="@dimen/len_8"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -211,6 +211,7 @@
             app:gTouchCornerRadius="@dimen/len_224"
             app:gTouchEffect="ripple"-->
         <net.qiujuer.genius.ui.widget.Loading
+            app:gAutoRun="false"
             android:id="@+id/loading"
             android:layout_width="@dimen/len_36"
             android:layout_height="@dimen/len_36"

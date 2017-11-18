@@ -1,8 +1,6 @@
 package com.example.ggxiaozhi.factory.presenter.account;
 
-import android.support.annotation.StringRes;
-
-import com.example.ggxiaozhi.factory.BaseContract;
+import com.example.ggxiaozhi.factory.presenter.BaseContract;
 
 /**
  * 工程名 ： ITalker

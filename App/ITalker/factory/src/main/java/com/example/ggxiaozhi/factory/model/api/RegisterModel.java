@@ -1,4 +1,4 @@
-package com.example.ggxiaozhi.factory.model;
+package com.example.ggxiaozhi.factory.model.api;
 
 /**
  * 工程名 ： ITalker
@@ -56,5 +56,15 @@ public class RegisterModel {
 
     public void setPushId(String pushId) {
         this.pushId = pushId;
+    }
+
+    @Override
+    public String toString() {
+        return "RegisterModel{" +
+                "phone='" + phone + '\'' +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", pushId='" + pushId + '\'' +
+                '}';
     }
 }
