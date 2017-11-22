@@ -152,7 +152,11 @@ public class UserFactory {
         user.setPassword(password);
         user.setName(name);
 
-        return Hib.query(session -> (User) session.save(user));
+        // 数据库存储
+        return Hib.query(session -> {
+            session.save(user);
+            return user;
+        });
 
     }
 

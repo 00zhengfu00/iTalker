@@ -10,7 +10,7 @@ import com.example.ggxiaozhi.factory.model.db.User;
  * 功能   ：登录和注册成功后返回的所有账户相关的信息的model
  */
 
-public class AccountModel {
+public class AccountRspModel {
 
 
     //用户进本信息

@@ -17,6 +17,7 @@ allprojects {
     repositories {
         jcenter()
         maven { url "https://jitpack.io" }
+
     }
 }
 
@@ -48,4 +49,8 @@ ext {//依赖库的版本
     gsonVersion = '2.8.0'
     //retrofit2
     retrofitVersion = '2.1.0'
+    //个推的SDK
+    getuiVersion = '2.9.3.0'
+    //dbflow数据库辅助工具
+    dbflowVersion = "4.0.0-beta7"
 }

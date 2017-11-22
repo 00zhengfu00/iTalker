@@ -6,10 +6,11 @@ import android.text.TextUtils;
 import com.example.ggxiaozhi.common.Common;
 import com.example.ggxiaozhi.factory.R;
 import com.example.ggxiaozhi.factory.data.DataSource;
+import com.example.ggxiaozhi.factory.data.helper.AccountHelper;
 import com.example.ggxiaozhi.factory.model.db.User;
 import com.example.ggxiaozhi.factory.presenter.BasePresenter;
-import com.example.ggxiaozhi.factory.data.AccountHelper;
 import com.example.ggxiaozhi.factory.model.api.RegisterModel;
+import com.example.ggxiaozhi.factory.presistance.Account;
 
 import net.qiujuer.genius.kit.handler.Run;
 import net.qiujuer.genius.kit.handler.runable.Action;
@@ -50,8 +51,8 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.View>
         } else {
             /*网络请求*/
             //构建Model 进行请求调用
-            RegisterModel model = new RegisterModel(phone, name, password);
-            AccountHelper.Register(model, this);
+            RegisterModel model = new RegisterModel(phone, name, password, Account.getPushId());
+            AccountHelper.register(model, this);
         }
     }
 
@@ -86,7 +87,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.View>
     }
 
     @Override
-    public void onDataAvailable(@StringRes final int str) {
+    public void onDataNotAvailable(@StringRes final int str) {
         //告知界面 注册失败
         final RegisterContract.View view = getView();
         if (view == null)

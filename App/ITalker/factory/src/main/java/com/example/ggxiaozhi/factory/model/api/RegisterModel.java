@@ -10,28 +10,28 @@ package com.example.ggxiaozhi.factory.model.api;
 
 public class RegisterModel {
 
-    private String phone;
+    private String account;
     private String name;
     private String password;
     private String pushId;
 
-    public RegisterModel(String phone, String name, String password) {
-        this(phone, name, password, null);
+    public RegisterModel(String account, String name, String password) {
+        this(account, name, password, null);
     }
 
-    public RegisterModel(String phone, String name, String password, String pushId) {
-        this.phone = phone;
+    public RegisterModel(String account, String name, String password, String pushId) {
+        this.account = account;
         this.name = name;
         this.password = password;
         this.pushId = pushId;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getaccount() {
+        return account;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setaccount(String account) {
+        this.account = account;
     }
 
     public String getName() {
@@ -61,7 +61,7 @@ public class RegisterModel {
     @Override
     public String toString() {
         return "RegisterModel{" +
-                "phone='" + phone + '\'' +
+                "account='" + account + '\'' +
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
                 ", pushId='" + pushId + '\'' +

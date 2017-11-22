@@ -1,6 +1,8 @@
 package com.example.ggxiaozhi.italker;
 
 import com.example.ggxiaozhi.common.app.Application;
+import com.example.ggxiaozhi.factory.Factory;
+import com.igexin.sdk.PushManager;
 
 /**
  * 工程名 ： ITalker
@@ -11,4 +13,12 @@ import com.example.ggxiaozhi.common.app.Application;
  */
 
 public class App extends Application {
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        //调用Factory初始化
+        Factory.setup();
+        //个推进行初始化
+        PushManager.getInstance().initialize(this);
+    }
 }

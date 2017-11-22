@@ -1,5 +1,10 @@
 package com.example.ggxiaozhi.factory.model.db;
 
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.structure.BaseModel;
+
 import java.util.Date;
 
 /**
@@ -9,38 +14,51 @@ import java.util.Date;
  * 日期   ： 2017/11
  * 功能   ：服务器返回的用户基本信息Model
  */
-
-public class User {
+@Table(database = AppDatabase.class)
+public class User extends BaseModel {
+    public static final int SEX_MAN = 1;//男人
+    public static final int SEX_WOMAN = 2;//女人
+    @PrimaryKey
     private String id;
 
     //用户名
+    @Column
     private String name;
 
     //电话号
+    @Column
     private String phone;
 
     //头像
+    @Column
     private String portrait;
 
     //描述(相当于个性签名)
+    @Column
     private String desc;
 
     //性别
+    @Column
     private int sex = 0;
 
     //用户关注人的数量
+    @Column
     private int follows;
 
     //用户粉丝的数量
+    @Column
     private int following;
 
     //我对某人的备注信息 也应该存储到数据库
+    @Column
     private String alias;
 
     //我与当前User的关系状态，是否关注了这个人
+    @Column
     private boolean isFollow;
 
     //用户信息最后的更新时间
+    @Column
     private Date modifyAt;
 
     public String getId() {

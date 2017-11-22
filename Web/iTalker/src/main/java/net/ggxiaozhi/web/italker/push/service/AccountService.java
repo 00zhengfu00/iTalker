@@ -30,7 +30,7 @@ public class AccountService extends BaseService {
     @Produces(MediaType.APPLICATION_JSON)//指定返回的格式
     public ResponseModel<AccountRspModule> register(RegisterModule module) {
 
-        //表示当前登录缺少必要参数
+        //表示当前注册缺少必要参数
         if (!RegisterModule.check(module)) {
             //参数异常
             return ResponseModel.buildParameterError();

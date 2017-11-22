@@ -73,8 +73,8 @@ public class UpdateInfoFragment extends Fragment {
             if (resultUri != null)
                 showPortrait(resultUri);
         } else if (resultCode == UCrop.RESULT_ERROR) {
-            Toast.makeText(getContext(), "不支持此图片格式", Toast.LENGTH_SHORT).show();
             final Throwable cropError = UCrop.getError(data);
+            Toast.makeText(getContext(), cropError.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 

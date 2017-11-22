@@ -27,7 +27,7 @@ public interface DataSource {
      */
     interface FailedCallback {
         //网络数据加载失败 请求失败
-        void onDataAvailable(@StringRes int str);
+        void onDataNotAvailable(@StringRes int str);
     }
 
     /**

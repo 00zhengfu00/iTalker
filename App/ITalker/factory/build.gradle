@@ -35,6 +35,10 @@ dependencies {
     compile "com.squareup.retrofit2:converter-gson:$rootProject.ext.retrofitVersion"
     //Gson
     compile "com.google.code.gson:gson:$rootProject.ext.gsonVersion"
+    //DBFlow
+    annotationProcessor "com.github.Raizlabs.DBFlow:dbflow-processor:${rootProject.ext.dbflowVersion}"
+    compile "com.github.Raizlabs.DBFlow:dbflow-core:${rootProject.ext.dbflowVersion}"
+    compile "com.github.Raizlabs.DBFlow:dbflow:${rootProject.ext.dbflowVersion}"
 
     testCompile 'junit:junit:4.12'
 }
