@@ -46,7 +46,7 @@ public class UserFollow {
     private String originId;
 
 
-    //定义被关注的目标，你被某人关注
+    //定义被关注的目标，你关注的人
     //也是多对1，你可以被很多人关注，每次关注都是一条记录
     //所以就是，多个UserFollow对应 一个User的情况
     @ManyToOne(optional = false)

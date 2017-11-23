@@ -2,12 +2,15 @@ package net.ggxiaozhi.web.italker.push.bean.factory;
 
 import com.google.common.base.Strings;
 import net.ggxiaozhi.web.italker.push.bean.db.User;
+import net.ggxiaozhi.web.italker.push.bean.db.UserFollow;
 import net.ggxiaozhi.web.italker.push.utils.Hib;
 import net.ggxiaozhi.web.italker.push.utils.TextUtil;
 import org.hibernate.Session;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * factory包下为全部业务逻辑的处理
@@ -75,6 +78,17 @@ public class UserFactory {
                 return user;
             }
         });
+    }
+
+    /**
+     * 通过Id查询是否存在用户
+     *
+     * @param id 传入查询的Id
+     * @return 返回查询的user
+     */
+    public static User findById(String id) {
+        //通过Id(主键)查询更方便
+        return Hib.query(session -> session.get(User.class, id));
     }
 
     /**
@@ -277,5 +291,104 @@ public class UserFactory {
 
         //再进行一次对称的Base64加密 当然可以采取加盐的方案
         return TextUtil.encodeBase64(password);
+    }
+
+    /**
+     * 获取我的联系人列表
+     *
+     * @param self 当前用户自己
+     * @return 联系人列表集合
+     */
+    public static List<User> contacts(User self) {
+        return Hib.query(session -> {
+            //重新加载一次用户信息到self中 和当前sessio绑定 不可直接获取 因为是懒加载 所以之前数据没有加载
+            //同时session在上次查询完成后会随着查询一起释放掉 所以需要重新load与sess绑定
+            session.load(self, self.getId());
+            //获取我关注的人
+            Set<UserFollow> follows = self.getFollowing();
+            //使用Java8 简写方式
+            return follows.stream()
+                    .map(UserFollow::getTarget)
+                    .collect(Collectors.toList());
+        });
+    }
+
+    /**
+     * 关注人的方法
+     *
+     * @param origin 发起者
+     * @param target 被关注的人
+     * @param alias  被关注人的别名
+     * @return 被关注人的信息
+     */
+    public static User follow(final User origin, final User target, final String alias) {
+        //查询两个人的关注状态
+        UserFollow follow = getUserFollow(origin, target);
+        if (follow != null) {//说明已经关注了
+            return follow.getTarget();//直接返回
+        }
+        return Hib.query((Session session) -> {
+            //想要操作懒加载的数据 需要重新load一次
+            session.load(origin, origin.getId());
+            session.load(target, target.getId());
+
+            //  我关注人的时候 同时他也要关注我
+            //  所以需要添加两条UserFollow数据
+            UserFollow originFollow = new UserFollow();
+            originFollow.setOrigin(origin);
+            originFollow.setTarget(target);
+            //备注是我对他的备注 默认他对我们是没有备注的
+            originFollow.setAlias(alias);
+
+            UserFollow targetFollow = new UserFollow();
+            targetFollow.setOrigin(target);
+            targetFollow.setTarget(origin);
+
+            //保存数据到数据库
+            session.save(originFollow);
+            session.save(targetFollow);
+
+            return target;
+
+        });
+    }
+
+    /**
+     * 查询两个人是否已经关注
+     *
+     * @param origin 发起者
+     * @param target 被关注的人
+     * @return 返回中间类的UserFollow
+     */
+    public static UserFollow getUserFollow(final User origin, final User target) {
+        return Hib.query(session ->
+                (UserFollow) session.createQuery("from UserFollow where originId=:originId and targetId=:targetId")
+                        .setParameter("originId", origin.getId())
+                        .setParameter("targetId", target.getId())
+                        .setMaxResults(1)//最多返回一条数据
+                        //唯一结果返回查询
+                        .uniqueResult());
+    }
+
+    /**
+     * 搜索联系人的实现
+     *
+     * @param name 查询的name 允许为空
+     * @return 查询到的用户的集合 如果name为空 则返回最近的用户
+     */
+    @SuppressWarnings("unchecked")
+    public static List<User> search(String name) {
+        if (Strings.isNullOrEmpty(name))
+            name = "";//保证不能为空的情况 减少后面的判断和额外一些错误
+        final String searchName = "%" + name + "%";//模糊匹配
+
+        return Hib.query(session -> {
+            //查询条件：name忽略大小写 并且使用like(模糊)查询
+            //头像和描述必须已经完善了才能返回
+            return (List<User>) session.createQuery("from User where lower(name) like :name and portrait is not null and description is not null ")
+                    .setParameter("name", searchName)
+                    .setMaxResults(20)//返回的数据最多20条
+                    .list();
+        });
     }
 }
