@@ -6,7 +6,7 @@ import com.example.ggxiaozhi.factory.Factory;
 import com.example.ggxiaozhi.factory.R;
 import com.example.ggxiaozhi.factory.data.DataSource;
 import com.example.ggxiaozhi.factory.model.RspModel;
-import com.example.ggxiaozhi.factory.model.api.RegisterModel;
+import com.example.ggxiaozhi.factory.model.api.account.RegisterModel;
 import com.example.ggxiaozhi.factory.model.api.account.AccountRspModel;
 import com.example.ggxiaozhi.factory.model.api.account.LoginModel;
 import com.example.ggxiaozhi.factory.model.db.User;

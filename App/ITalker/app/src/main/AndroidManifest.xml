@@ -49,7 +49,7 @@
         <activity
             android:name=".activity.UserActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme.Account">
         </activity>
         <!--个推的广播注册-->
         <receiver

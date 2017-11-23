@@ -9,7 +9,7 @@ import com.example.ggxiaozhi.factory.data.DataSource;
 import com.example.ggxiaozhi.factory.data.helper.AccountHelper;
 import com.example.ggxiaozhi.factory.model.db.User;
 import com.example.ggxiaozhi.factory.presenter.BasePresenter;
-import com.example.ggxiaozhi.factory.model.api.RegisterModel;
+import com.example.ggxiaozhi.factory.model.api.account.RegisterModel;
 import com.example.ggxiaozhi.factory.presistance.Account;
 
 import net.qiujuer.genius.kit.handler.Run;

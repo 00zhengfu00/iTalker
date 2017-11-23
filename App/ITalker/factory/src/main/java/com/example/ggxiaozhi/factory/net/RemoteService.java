@@ -1,13 +1,16 @@
 package com.example.ggxiaozhi.factory.net;
 
 import com.example.ggxiaozhi.factory.model.RspModel;
-import com.example.ggxiaozhi.factory.model.api.RegisterModel;
+import com.example.ggxiaozhi.factory.model.api.account.RegisterModel;
 import com.example.ggxiaozhi.factory.model.api.account.AccountRspModel;
 import com.example.ggxiaozhi.factory.model.api.account.LoginModel;
+import com.example.ggxiaozhi.factory.model.api.user.UserUpdateModel;
+import com.example.ggxiaozhi.factory.model.card.UserCard;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 /**
@@ -46,4 +49,13 @@ public interface RemoteService {
      */
     @POST("account/bind/{pushId}")
     Call<RspModel<AccountRspModel>> accountBindId(@Path(encoded = true, value = "pushId") String pushId);
+
+    /**
+     * 用户更新用户信息的接口
+     *
+     * @param model 用户更新的参数Model
+     * @return UserCard (都是根据数据库的返回类型所决定)
+     */
+    @PUT("user")
+    Call<RspModel<UserCard>> userUpdate(@Body UserUpdateModel model);
 }

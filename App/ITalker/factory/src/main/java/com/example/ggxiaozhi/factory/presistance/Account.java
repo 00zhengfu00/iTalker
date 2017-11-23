@@ -106,8 +106,14 @@ public class Account {
      * @return True 是完成了
      */
     public static boolean isComplete() {
-        //TODO
-        return isLogin();
+        if (isLogin()) {
+            User self = getUser();
+            return !TextUtils.isEmpty(self.getDesc()) &&
+                    !TextUtils.isEmpty(self.getPortrait())
+                    && self.getSex() != 0;
+        }
+        //未登录 返回信息不完全
+        return false;
     }
 
     /**
@@ -140,6 +146,11 @@ public class Account {
         save(Factory.app());
     }
 
+    /**
+     * 得到当前登录成功的用户信息
+     *
+     * @return 当前的user
+     */
     public static User getUser() {
         return TextUtils.isEmpty(userId) ? new User() :
                 SQLite.select()

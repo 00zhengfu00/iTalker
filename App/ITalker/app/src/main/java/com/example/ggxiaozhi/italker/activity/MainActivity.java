@@ -2,6 +2,7 @@ package com.example.ggxiaozhi.italker.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.view.Menu;
@@ -17,6 +18,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.ViewTarget;
 import com.example.ggxiaozhi.common.app.Activity;
 import com.example.ggxiaozhi.common.widget.PortraitView;
+import com.example.ggxiaozhi.factory.presistance.Account;
 import com.example.ggxiaozhi.italker.R;
 import com.example.ggxiaozhi.italker.activity.AccountActivity;
 import com.example.ggxiaozhi.italker.fragment.assist.PermissionsFragment;
@@ -64,6 +66,19 @@ public class MainActivity extends Activity implements
     public static void show(Context context) {
         context.startActivity(new Intent(context, MainActivity.class));
     }
+
+    @Override
+    protected boolean initArgs(Bundle bundle) {
+        //判断用户信息是否填写完全
+        if (Account.isComplete()) {//完全
+            //走正正常的逻辑
+            return super.initArgs(bundle);
+        } else {
+            UserActivity.show(this);
+        }
+        return false;
+    }
+
 
     @Override
     protected int getContentLayoutId() {

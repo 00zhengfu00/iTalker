@@ -1,4 +1,4 @@
-package com.example.ggxiaozhi.factory.model.api;
+package com.example.ggxiaozhi.factory.model.api.account;
 
 /**
  * 工程名 ： ITalker

@@ -19,7 +19,7 @@ import net.qiujuer.genius.kit.handler.runable.Action;
  * 包名   ： com.example.ggxiaozhi.factory.presenter.account
  * 作者名 ： 志先生_
  * 日期   ： 2017/11
- * 功能   ：
+ * 功能   ：登录相关逻辑Presenter
  */
 
 public class LoginPresenter extends BasePresenter<LoginContract.View>
@@ -56,6 +56,7 @@ public class LoginPresenter extends BasePresenter<LoginContract.View>
                 view.loginSuccess();
             }
         });
+    }
 
     @Override
     public void onDataNotAvailable(@StringRes final int str) {
