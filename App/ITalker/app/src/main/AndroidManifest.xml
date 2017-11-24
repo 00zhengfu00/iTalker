@@ -21,7 +21,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".LaunchActivity"
             android:screenOrientation="portrait"
@@ -51,7 +50,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Account">
         </activity>
-        <!--个推的广播注册-->
+        <!-- 个推的广播注册 -->
         <receiver
             android:name=".MessageReceiver"
             android:enabled="true"
@@ -62,6 +61,12 @@
             </intent-filter>
         </receiver>
 
+        <activity
+            android:label="@string/title_search"
+            android:name=".activity.SearchActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.TransStatusBar">
+        </activity>
     </application>
 
 </manifest>

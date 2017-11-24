@@ -119,12 +119,24 @@ public class MainActivity extends Activity implements
 
     @OnClick(R.id.im_search)
     void onSearchMenuClick() {
-
+        //如果是群 则打开创建群界面
+        //其他都打开用户添加界面
+        int type = Objects.equals(mHelper.getCurrentTab().extra, R.string.title_group) ? SearchActivity.TYPE_GROUP : SearchActivity.TYPE_USER;
+        SearchActivity.show(this, type);
     }
 
     @OnClick(R.id.btn_action)
     void onActionClick() {
-        AccountActivity.show(this);
+        //浮动按钮点击时 判断当前页面是群界面还是联系人界面
+        //如果是群 则打开创建群界面
+
+        if (Objects.equals(mHelper.getCurrentTab().extra, R.string.title_group)) {
+            //TODO 打开添加群界面
+            SearchActivity.show(this, SearchActivity.TYPE_GROUP);
+        } else {
+            //如果是其他都打开用户添加界面
+            SearchActivity.show(this, SearchActivity.TYPE_USER);
+        }
     }
 
     /**

@@ -11,6 +11,8 @@ import com.example.ggxiaozhi.factory.model.db.User;
 import com.example.ggxiaozhi.factory.net.Network;
 import com.example.ggxiaozhi.factory.net.RemoteService;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -25,7 +27,12 @@ import retrofit2.Response;
 
 public class UserHelper {
 
-    //更新用户的操作  异步的
+    /**
+     * 更新用户的操作  异步的
+     *
+     * @param model    包含用户修改信息的请求model
+     * @param callback 回调监听
+     */
     public static void update(UserUpdateModel model, final DataSource.Callback<UserCard> callback) {
         //调用Retrofit2对我们的网络请求接口做代理
         RemoteService service = Network.remote();
@@ -57,5 +64,41 @@ public class UserHelper {
                     callback.onDataNotAvailable(R.string.data_network_error);
             }
         });
+    }
+
+    /**
+     * 搜索用户的操作
+     *
+     * @param name     传入的搜索条件
+     * @param callback
+     */
+    public static Call search(String name, final DataSource.Callback<List<UserCard>> callback) {
+        //调用Retrofit2对我们的网络请求接口做代理
+        RemoteService service = Network.remote();
+        //等到一个返回结果的Call
+        Call<RspModel<List<UserCard>>> rspModelCall = service.userSearch(name);
+        //异步请求
+        rspModelCall.enqueue(new Callback<RspModel<List<UserCard>>>() {
+            @Override
+            public void onResponse(Call<RspModel<List<UserCard>>> call, Response<RspModel<List<UserCard>>> response) {
+                RspModel<List<UserCard>> rspModel = response.body();
+                if (rspModel.success()) {
+                    //不用存入数据库 直接返回请求成功数据
+                    callback.onDataLoaded(rspModel.getResult());
+                } else {
+                    // 对返回的RspModel中的失败Code进行解析 ，解析到我们对应string资源中
+                    Factory.decodeRspCode(rspModel, callback);
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<RspModel<List<UserCard>>> call, Throwable t) {
+                //请求失败
+                if (callback != null)
+                    callback.onDataNotAvailable(R.string.data_network_error);
+            }
+        });
+        return rspModelCall;
     }
 }

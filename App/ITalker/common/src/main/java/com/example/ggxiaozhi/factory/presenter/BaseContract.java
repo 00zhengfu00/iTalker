@@ -11,9 +11,9 @@ import android.support.annotation.StringRes;
  */
 
 public interface BaseContract {
-     interface View<T extends Presenter> {
+    interface View<T extends Presenter> {
 
-        //注册失败
+        //请求失败
         void showError(@StringRes int str);
 
         //显示进度条
@@ -23,13 +23,13 @@ public interface BaseContract {
         void setPresenter(T presenter);
     }
 
-     interface Presenter {
+    interface Presenter {
 
         //公用的开始触发
         void start();
 
         //公用的销毁触发
-        void destory();
+        void detach();
     }
 
 }

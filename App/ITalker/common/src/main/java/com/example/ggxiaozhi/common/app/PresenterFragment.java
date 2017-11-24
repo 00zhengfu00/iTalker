@@ -15,6 +15,7 @@ import com.example.ggxiaozhi.factory.presenter.BaseContract;
 
 public abstract class PresenterFragment<Presenter extends BaseContract.Presenter> extends Fragment implements BaseContract.View<Presenter> {
 
+
     protected Presenter mPresenter;
 
     @Override
@@ -28,12 +29,18 @@ public abstract class PresenterFragment<Presenter extends BaseContract.Presenter
 
     @Override
     public void showError(@StringRes int str) {
-        Application.showToast(str);
+        if (mPlaceHolderView != null) {
+            mPlaceHolderView.triggerError(str);
+        } else {
+            Application.showToast(str);
+        }
     }
 
     @Override
     public void showLoading() {
-        // TODO 显示一个loading
+        if (mPlaceHolderView != null) {
+            mPlaceHolderView.triggerLoading();
+        }
     }
 
     @Override
