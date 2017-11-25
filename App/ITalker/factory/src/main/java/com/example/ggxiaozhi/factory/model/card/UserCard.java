@@ -1,5 +1,6 @@
 package com.example.ggxiaozhi.factory.model.card;
 
+import com.example.ggxiaozhi.factory.model.Author;
 import com.example.ggxiaozhi.factory.model.db.User;
 
 import java.util.Date;
@@ -12,7 +13,7 @@ import java.util.Date;
  * 功能   ：账户想修改完成后服务器返回的User信息的Model
  */
 
-public class UserCard {
+public class UserCard implements Author{
     private String id;
 
     //用户名

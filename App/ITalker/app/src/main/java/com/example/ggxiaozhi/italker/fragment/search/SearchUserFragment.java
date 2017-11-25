@@ -1,6 +1,7 @@
 package com.example.ggxiaozhi.italker.fragment.search;
 
 
+import android.support.annotation.StringRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -13,14 +14,22 @@ import com.example.ggxiaozhi.common.widget.EmptyView;
 import com.example.ggxiaozhi.common.widget.PortraitView;
 import com.example.ggxiaozhi.common.widget.recycler.RecyclerAdapter;
 import com.example.ggxiaozhi.factory.model.card.UserCard;
+import com.example.ggxiaozhi.factory.presenter.contact.FollowContract;
+import com.example.ggxiaozhi.factory.presenter.contact.FollowPresenter;
 import com.example.ggxiaozhi.factory.presenter.search.SearchContract;
 import com.example.ggxiaozhi.factory.presenter.search.SearchUserPresenter;
 import com.example.ggxiaozhi.italker.R;
 import com.example.ggxiaozhi.italker.activity.SearchActivity;
 
+import net.qiujuer.genius.ui.Ui;
+import net.qiujuer.genius.ui.compat.UiCompat;
+import net.qiujuer.genius.ui.drawable.LoadingCircleDrawable;
+import net.qiujuer.genius.ui.drawable.LoadingDrawable;
+
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * 搜索人的Fragment
@@ -92,28 +101,76 @@ public class SearchUserFragment extends PresenterFragment<SearchContract.SearchP
 
     }
 
-    class ViewHolder extends RecyclerAdapter.ViewHolder<UserCard> {
+    class ViewHolder extends RecyclerAdapter.ViewHolder<UserCard> implements FollowContract.View {
         @BindView(R.id.im_portrait)
         PortraitView mPortraitView;
         @BindView(R.id.txt_name)
-        TextView mTextView;
+        TextView mName;
         @BindView(R.id.im_follow)
-        ImageView mImageView;
+        ImageView mFollow;
+
+        private FollowContract.Presenter mPresenter;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            new FollowPresenter(this);
         }
 
         @Override
         public void onBind(UserCard userCard) {
+            mPortraitView.setup(Glide.with(SearchUserFragment.this), userCard.getPortrait());
+            mName.setText(userCard.getName());
+            mFollow.setEnabled(!userCard.isFollow());
 
-            Glide.with(SearchUserFragment.this)
-                    .load(userCard.getPortrait())
-                    .centerCrop()
-                    .into(mPortraitView);
-            mTextView.setText(userCard.getName());
-            mImageView.setEnabled(!userCard.isFollow());
+        }
 
+        @OnClick(R.id.im_follow)
+        void onFollowClick() {
+            mPresenter.follow(mData.getId());
+        }
+
+        @Override
+        public void showError(@StringRes int str) {
+            if (mFollow.getDrawable() instanceof LoadingCircleDrawable) {
+                //失败停止动画 并且显示一个圆圈
+                LoadingCircleDrawable loading = (LoadingCircleDrawable) mFollow.getDrawable();
+                loading.setProgress(1);
+                loading.stop();
+            }
+        }
+
+        @Override
+        public void showLoading() {
+            int minSize = (int) Ui.dipToPx(getResources(), 22);
+            int maxSize = (int) Ui.dipToPx(getResources(), 20);
+
+            //圆形Loading 带动画的加载框
+            LoadingDrawable drawable = new LoadingCircleDrawable(minSize, maxSize);
+            //设置背景透明
+            drawable.setBackgroundColor(0);
+            int[] color = new int[]{UiCompat.getColor(getResources(), com.example.ggxiaozhi.factory.R.color.white_alpha_208)};
+            //设置前置背景
+            drawable.setForegroundColor(color);
+            mFollow.setImageDrawable(drawable);
+            //启动动画
+            drawable.start();
+        }
+
+        @Override
+        public void setPresenter(FollowContract.Presenter presenter) {
+            mPresenter = presenter;
+        }
+
+        @Override
+        public void followUserSuccessed(UserCard userCard) {
+            if (mFollow.getDrawable() instanceof LoadingCircleDrawable) {
+                //加载成功停止动画
+                ((LoadingCircleDrawable) mFollow.getDrawable()).stop();
+                //设置回默认状态
+                mFollow.setImageResource(R.drawable.sel_opt_done_add);
+            }
+            //发起更新数据
+            updataData(userCard);
         }
     }
 }

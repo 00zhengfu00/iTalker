@@ -159,6 +159,10 @@ public class Account {
                         .querySingle();
     }
 
+    public static String getUserId() {
+        return getUser().getId();
+    }
+
     /**
      * 得到当期登录的Token
      *

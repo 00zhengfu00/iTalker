@@ -62,10 +62,12 @@
         </receiver>
 
         <activity
-            android:label="@string/title_search"
             android:name=".activity.SearchActivity"
+            android:label="@string/title_search"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.TransStatusBar">
+        </activity>
+        <activity android:name=".activity.MessageActivity">
         </activity>
     </application>
 

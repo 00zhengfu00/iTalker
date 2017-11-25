@@ -1,11 +1,14 @@
 package com.example.ggxiaozhi.factory.model.db;
 
+import com.example.ggxiaozhi.factory.model.Author;
+import com.example.ggxiaozhi.factory.utils.DiffUiDataCallback;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * 工程名 ： ITalker
@@ -15,7 +18,7 @@ import java.util.Date;
  * 功能   ：服务器返回的用户基本信息Model
  */
 @Table(database = AppDatabase.class)
-public class User extends BaseModel {
+public class User extends BaseModel implements Author, DiffUiDataCallback.UiDataDiff<User> {
     public static final int SEX_MAN = 1;//男人
     public static final int SEX_WOMAN = 2;//女人
     @PrimaryKey
@@ -164,5 +167,39 @@ public class User extends BaseModel {
                 ", isFollow=" + isFollow +
                 ", modifyAt=" + modifyAt +
                 '}';
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (phone != null ? phone.hashCode() : 0);
+        result = 31 * result + (portrait != null ? portrait.hashCode() : 0);
+        result = 31 * result + (desc != null ? desc.hashCode() : 0);
+        result = 31 * result + sex;
+        result = 31 * result + follows;
+        result = 31 * result + following;
+        result = 31 * result + (alias != null ? alias.hashCode() : 0);
+        result = 31 * result + (isFollow ? 1 : 0);
+        result = 31 * result + (modifyAt != null ? modifyAt.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public boolean isSame(User old) {
+        //主要关注Id是否相等
+        return this == old || Objects.equals(id, old.id);
+    }
+
+    @Override
+    public boolean isUiContentsSame(User old) {
+
+        //显示内容是否一样的条件  主要判断 名字 头像 xiingbie 是否已经关注
+        return this == old || (
+                Objects.equals(this.name, old.name)
+                        && Objects.equals(this.portrait, old.portrait)
+                        && Objects.equals(this.sex, old.sex)
+                        && Objects.equals(this.isFollow, old.isFollow)
+        );
     }
 }

@@ -27,6 +27,8 @@ public abstract class Fragment extends android.support.v4.app.Fragment {
 
     protected PlaceHolderView mPlaceHolderView;
 
+    protected boolean mIsFirstDataInit = true;//由于我的Fragment切换 会重复加载Fragment与View 所以我写一个标志位 标志第一次进入
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -56,6 +58,11 @@ public abstract class Fragment extends android.support.v4.app.Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (mIsFirstDataInit) {
+            mIsFirstDataInit = false;
+            //第一次进入时调用
+            initFirstData();
+        }
         //View创建完成后初始化数据
         initData();
     }
@@ -80,6 +87,13 @@ public abstract class Fragment extends android.support.v4.app.Fragment {
     }
 
     /**
+     * 第一次进入Fragment初始化数据 只被调用一次
+     */
+    protected void initFirstData() {
+
+    }
+
+    /**
      * 初始化参数
      */
     protected void initArgs(Bundle bundle) {
@@ -97,6 +111,7 @@ public abstract class Fragment extends android.support.v4.app.Fragment {
 
     /**
      * 设置占位布局
+     *
      * @param placeHolderView 继承占位布局规范的View
      */
     public void setPlaceHolderView(PlaceHolderView placeHolderView) {

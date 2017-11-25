@@ -9,11 +9,13 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.ggxiaozhi.common.app.Application;
+import com.example.ggxiaozhi.italker.LaunchActivity;
 import com.example.ggxiaozhi.italker.R;
 import com.example.ggxiaozhi.italker.fragment.media.GalleryFragment;
 
@@ -30,6 +32,7 @@ public class PermissionsFragment extends BottomSheetDialogFragment
         implements EasyPermissions.PermissionCallbacks {
 
     public static final int RC = 0x100;
+
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -137,6 +140,7 @@ public class PermissionsFragment extends BottomSheetDialogFragment
     //私有的show方法
     private static void show(FragmentManager manager) {
         new PermissionsFragment().show(manager, PermissionsFragment.class.getName());
+
     }
 
     /**
@@ -171,6 +175,7 @@ public class PermissionsFragment extends BottomSheetDialogFragment
             Application.showToast(R.string.label_permission_ok);
             //Fragment 中调用getView得到根布局，前提是在onCreateView()方法之后
             refreshState(getView());
+            ((LaunchActivity) getActivity()).realSkip();
         } else {
             EasyPermissions.requestPermissions(this, getString(R.string.title_assist_permissions), RC, perms);
         }
@@ -179,7 +184,10 @@ public class PermissionsFragment extends BottomSheetDialogFragment
 
     @Override//申请成功的回调
     public void onPermissionsGranted(int requestCode, List<String> perms) {
-
+        if (perms.size() != 6) {
+            Application.showToast(R.string.label_permission_error);
+            Log.d("TAG", "onPermissionsGranted: " + perms.toString());
+        }
     }
 
     @Override//申请失败的回调

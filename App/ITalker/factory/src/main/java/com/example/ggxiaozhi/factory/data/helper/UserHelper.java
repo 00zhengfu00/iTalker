@@ -101,4 +101,72 @@ public class UserHelper {
         });
         return rspModelCall;
     }
+
+    /**
+     * 关注某人的操作
+     *
+     * @param id       关注人的Id
+     * @param callback
+     */
+    public static void follow(String id, final DataSource.Callback<UserCard> callback) {
+        //调用Retrofit2对我们的网络请求接口做代理
+        RemoteService service = Network.remote();
+        //等到一个返回结果的Call
+        Call<RspModel<UserCard>> rspModelCall = service.userFollow(id);
+        //异步请求
+        rspModelCall.enqueue(new Callback<RspModel<UserCard>>() {
+            @Override
+            public void onResponse(Call<RspModel<UserCard>> call, Response<RspModel<UserCard>> response) {
+                RspModel<UserCard> rspModel = response.body();
+                if (rspModel.success()) {
+                    //将添加的联系人存入数据库
+                    UserCard userCard = rspModel.getResult();
+                    User user = userCard.build();
+                    user.save();
+                    // TODO: 同时联系人列表刷新界面
+                    callback.onDataLoaded(rspModel.getResult());
+                } else {
+                    // 对返回的RspModel中的失败Code进行解析 ，解析到我们对应string资源中
+                    Factory.decodeRspCode(rspModel, callback);
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<RspModel<UserCard>> call, Throwable t) {
+                //请求失败
+                if (callback != null)
+                    callback.onDataNotAvailable(R.string.data_network_error);
+            }
+        });
+    }
+
+    public static void refreshContacts(final DataSource.Callback<List<UserCard>> callback) {
+        //调用Retrofit2对我们的网络请求接口做代理
+        RemoteService service = Network.remote();
+        //等到一个返回结果的Call
+        Call<RspModel<List<UserCard>>> rspModelCall = service.userContacts();
+        //异步请求
+        rspModelCall.enqueue(new Callback<RspModel<List<UserCard>>>() {
+            @Override
+            public void onResponse(Call<RspModel<List<UserCard>>> call, Response<RspModel<List<UserCard>>> response) {
+                RspModel<List<UserCard>> rspModel = response.body();
+                if (rspModel.success()) {
+                    //返回成功
+                    callback.onDataLoaded(rspModel.getResult());
+                } else {
+                    // 对返回的RspModel中的失败Code进行解析 ，解析到我们对应string资源中
+                    Factory.decodeRspCode(rspModel, callback);
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<RspModel<List<UserCard>>> call, Throwable t) {
+                //请求失败
+                if (callback != null)
+                    callback.onDataNotAvailable(R.string.data_network_error);
+            }
+        });
+    }
 }

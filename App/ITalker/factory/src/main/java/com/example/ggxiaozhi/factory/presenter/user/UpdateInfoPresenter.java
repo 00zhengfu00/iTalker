@@ -43,13 +43,13 @@ public class UpdateInfoPresenter extends BasePresenter<UpdateInfoContract.View>
             Factory.runOnAsync(new Runnable() {
                 @Override
                 public void run() {
-                    //获取本地的图片路径
+                    //获取上传的图片路径
                     String url = UploadHelper.uploadPortrait(photoFilePath);
                     if (TextUtils.isEmpty(url)) {
                         view.showError(R.string.data_upload_error);
                     } else {
                         //构建Model
-                        UserUpdateModel model = new UserUpdateModel("", photoFilePath, desc, isMan ? User.SEX_MAN : User.SEX_WOMAN);
+                        UserUpdateModel model = new UserUpdateModel("", url, desc, isMan ? User.SEX_MAN : User.SEX_WOMAN);
                         //进行网络请求 上传
                         UserHelper.update(model, UpdateInfoPresenter.this);
 

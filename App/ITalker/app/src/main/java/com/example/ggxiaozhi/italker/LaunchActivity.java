@@ -43,7 +43,9 @@ public class LaunchActivity extends Activity {
         //设置给背景
         root.setBackground(colorDrawable);
         mBgDrawable = colorDrawable;
+
     }
+
 
     @Override
     protected void initData() {
@@ -57,6 +59,7 @@ public class LaunchActivity extends Activity {
             }
         });
     }
+
 
     /**
      * 等待个推框架给我们的PushId设置好值
@@ -100,15 +103,14 @@ public class LaunchActivity extends Activity {
                 realSkip();
             }
         });
-
     }
 
     /**
      * 真正的跳转页面
      */
-    private void realSkip() {
+    public void realSkip() {
         //检测权限
-        if (PermissionsFragment.haveAllPerms(this, getSupportFragmentManager())) {
+        if (PermissionsFragment.haveAllPerms(this,  getSupportFragmentManager())) {
             if (Account.isLogin()) {
                 MainActivity.show(this);
             } else {
@@ -151,4 +153,6 @@ public class LaunchActivity extends Activity {
             object.mBgDrawable.setColor((Integer) value);
         }
     };
+
+
 }
