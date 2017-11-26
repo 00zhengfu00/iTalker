@@ -49,6 +49,7 @@ public class ContactPresenter extends BasePresenter<ContactContract.View> implem
                 .limit(100)
                 .async()
                 .queryListResultCallback(new QueryTransaction.QueryResultListCallback<User>() {
+                    @SuppressWarnings("ConstantConditions")
                     @Override
                     public void onListQueryResult(QueryTransaction transaction,
                                                   @NonNull List<User> tResult) {
@@ -85,6 +86,12 @@ public class ContactPresenter extends BasePresenter<ContactContract.View> implem
                     }
                 }).build().execute();
 
+                List<User> oldList = getView().getAdapter().getItems();
+                /* //在此调用 会导致数据顺序全部为新的数据
+                getView().getAdapter().replace(users);*/
+                diff(users, oldList);
+
+
                 //TODO 存在的问题：
                 //1.在关注操作时我们同事存储到了本地数据库 但是没有刷新联系人
                 //2.如果数据库刷新 或者网络刷新 最终都是全局刷新(我们的理想是逐条刷新最新新的数据)
@@ -96,8 +103,13 @@ public class ContactPresenter extends BasePresenter<ContactContract.View> implem
     }
 
     public void diff(List<User> newList, List<User> oldList) {
-        DiffUiDataCallback callback=new DiffUiDataCallback<User>();
-        DiffUtil.DiffResult result=DiffUtil.calculateDiff(callback);
+        //进行数据对比
+        DiffUiDataCallback callback = new DiffUiDataCallback<>(oldList, newList);
+        DiffUtil.DiffResult result = DiffUtil.calculateDiff(callback);
+        //在数据对比完成后进行数据的赋值
+        getView().getAdapter().replace(newList);
+        //尝试刷新
         result.dispatchUpdatesTo(getView().getAdapter());
+        getView().onAdapterDataChanged();
     }
 }

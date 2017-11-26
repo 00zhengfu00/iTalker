@@ -76,9 +76,17 @@ public interface RemoteService {
 
     /**
      * 查询联系人的接口
-     * @return
+     *
+     * @return 查询到的用户信息集合
      */
     @GET("user/contact")
     Call<RspModel<List<UserCard>>> userContacts();
 
+    /**
+     * 查询某人信息的接口
+     *
+     * @return 查询到的用户信息
+     */
+    @GET("user/{userId}")
+    Call<RspModel<UserCard>> userFind(@Path("userId") String userId);
 }

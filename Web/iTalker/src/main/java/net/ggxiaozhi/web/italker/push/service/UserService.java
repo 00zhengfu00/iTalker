@@ -94,7 +94,7 @@ public class UserService extends BaseService {
         //找到我要关注的人
         User userFollow = UserFactory.findById(followId);
         if (userFollow == null) {
-            //为找到人
+            //未找到人
             return ResponseModel.buildNotFoundUserError(null);
         }
 

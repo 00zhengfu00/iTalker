@@ -1,7 +1,7 @@
 package com.example.ggxiaozhi.factory.presenter.search;
 
+import com.example.ggxiaozhi.factory.model.card.GroupCard;
 import com.example.ggxiaozhi.factory.model.card.UserCard;
-import com.example.ggxiaozhi.factory.model.card.UserGroupCard;
 import com.example.ggxiaozhi.factory.presenter.BaseContract;
 
 import java.util.List;
@@ -40,6 +40,6 @@ public interface SearchContract {
          *
          * @param userGroupCards 群的信息
          */
-        void searchGroupDone(List<UserGroupCard> userGroupCards);
+        void searchGroupDone(List<GroupCard> userGroupCards);
     }
 }

@@ -67,8 +67,17 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.TransStatusBar">
         </activity>
-        <activity android:name=".activity.MessageActivity">
-        </activity>
-    </application>
+        <activity
+            android:name=".activity.MessageActivity"
+            android:label="@string/title_activity_message"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.TransStatusBar">
+    </activity>
+    <activity
+        android:name=".activity.PersonalActivity"
+        android:label="@string/title_activity_personal"
+        android:screenOrientation="portrait"
+        android:theme="@style/AppTheme.TransStatusBar"/>
+</application>
 
-</manifest>
+    </manifest>

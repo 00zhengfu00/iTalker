@@ -16,8 +16,10 @@ import com.example.ggxiaozhi.factory.presenter.contact.ContactContract;
 import com.example.ggxiaozhi.factory.presenter.contact.ContactPresenter;
 import com.example.ggxiaozhi.italker.R;
 import com.example.ggxiaozhi.italker.activity.MessageActivity;
+import com.example.ggxiaozhi.italker.activity.PersonalActivity;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * 联系人Fragment
@@ -116,6 +118,11 @@ public class ContactFragment extends PresenterFragment<ContactContract.Presenter
             mPortraitView.setup(Glide.with(ContactFragment.this), user.getPortrait());
             mName.setText(user.getName());
             mDesc.setText(user.getDesc());
+        }
+
+        @OnClick(R.id.im_portrait)
+        void onPortraitClick() {
+            PersonalActivity.show(getContext(), mData.getId());
         }
     }
 }

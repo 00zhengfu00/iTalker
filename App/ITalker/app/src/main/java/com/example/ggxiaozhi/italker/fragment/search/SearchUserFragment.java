@@ -19,6 +19,7 @@ import com.example.ggxiaozhi.factory.presenter.contact.FollowPresenter;
 import com.example.ggxiaozhi.factory.presenter.search.SearchContract;
 import com.example.ggxiaozhi.factory.presenter.search.SearchUserPresenter;
 import com.example.ggxiaozhi.italker.R;
+import com.example.ggxiaozhi.italker.activity.PersonalActivity;
 import com.example.ggxiaozhi.italker.activity.SearchActivity;
 
 import net.qiujuer.genius.ui.Ui;
@@ -127,6 +128,11 @@ public class SearchUserFragment extends PresenterFragment<SearchContract.SearchP
         @OnClick(R.id.im_follow)
         void onFollowClick() {
             mPresenter.follow(mData.getId());
+        }
+
+        @OnClick(R.id.im_portrait)
+        void onPortraitClick() {
+            PersonalActivity.show(getContext(), mData.getId());
         }
 
         @Override

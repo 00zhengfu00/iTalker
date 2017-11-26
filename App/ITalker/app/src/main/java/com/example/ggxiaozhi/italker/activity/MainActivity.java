@@ -105,7 +105,6 @@ public class MainActivity extends Activity implements
                         this.view.setBackground(resource.getCurrent());
                     }
                 });
-        PermissionsFragment.haveAllPerms(this, getSupportFragmentManager());
     }
 
     @Override
@@ -115,10 +114,16 @@ public class MainActivity extends Activity implements
         Menu menu = mNavigation.getMenu();
         //触发首次选中Home 调用这个方法后会走到-->onNavigationItemSelected()方法中
         menu.performIdentifierAction(R.id.action_home, 0);
+        mPortrait.setup(Glide.with(this), Account.getUser());
+    }
+
+    @OnClick(R.id.im_portrait)
+    void onSearchMenuClick() {
+        PersonalActivity.show(this, Account.getUser().getId());
     }
 
     @OnClick(R.id.im_search)
-    void onSearchMenuClick() {
+    void onPortraitClick() {
         //如果是群 则打开创建群界面
         //其他都打开用户添加界面
         int type = Objects.equals(mHelper.getCurrentTab().extra, R.string.title_group) ? SearchActivity.TYPE_GROUP : SearchActivity.TYPE_USER;

@@ -25,17 +25,12 @@ import com.example.ggxiaozhi.italker.R;
  */
 public class GalleryFragment extends BottomSheetDialogFragment implements GalleryView.SelectedChangeListener {
 
-    private BottomSheetBehavior mBehavior;//设置BottomSheetDialog展开状态
     private GalleryView mGallery;
     private onSelectedListener mListener;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         TransStatusBottomSheetDialog dialog = new TransStatusBottomSheetDialog(getContext());
-//        View view = View.inflate(getContext(), R.layout.fragment_gallery, null);
-//        mGallery = (GalleryView) view.findViewById(R.id.galleryView);
-//        dialog.setContentView(view);
-//        mBehavior = BottomSheetBehavior.from((View) view.getParent());
         return dialog;
     }
 

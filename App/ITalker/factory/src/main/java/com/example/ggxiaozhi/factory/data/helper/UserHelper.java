@@ -8,9 +8,12 @@ import com.example.ggxiaozhi.factory.model.api.account.AccountRspModel;
 import com.example.ggxiaozhi.factory.model.api.user.UserUpdateModel;
 import com.example.ggxiaozhi.factory.model.card.UserCard;
 import com.example.ggxiaozhi.factory.model.db.User;
+import com.example.ggxiaozhi.factory.model.db.User_Table;
 import com.example.ggxiaozhi.factory.net.Network;
 import com.example.ggxiaozhi.factory.net.RemoteService;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 
+import java.io.IOException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -168,5 +171,71 @@ public class UserHelper {
                     callback.onDataNotAvailable(R.string.data_network_error);
             }
         });
+    }
+
+
+    /**
+     * 从本地数据库查询用户信息
+     *
+     * @param id
+     * @return
+     */
+    public static User findFromLocal(String id) {
+
+        return SQLite.select()
+                .from(User.class)
+                .where(User_Table.id.eq(id))
+                .querySingle();
+    }
+
+    /**
+     * 从网络同步查询用户信息
+     *
+     * @param id
+     * @return
+     */
+
+    public static User findFromNet(String id) {
+        RemoteService service = Network.remote();
+        try {
+            //同步执行
+            Response<RspModel<UserCard>> response = service.userFind(id).execute();
+            UserCard userCard = response.body().getResult();
+            if (userCard != null) {
+                //TODO 数据库刷新 但是还没有通知
+                User user = userCard.build();
+                user.save();
+                return user;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 优先从本地查询用户
+     * @param id
+     * @return
+     */
+    public static User searchUser(String id) {
+        User user = findFromLocal(id);
+        if (user == null) {
+            return findFromNet(id);
+        }
+        return user;
+    }
+    /**
+     * 优先从网络查询用户
+     * @param id
+     * @return
+     */
+    public static User searchUserFirstOfNet(String id) {
+        User user = findFromNet(id);
+        if (user == null) {
+            return findFromLocal(id);
+        }
+        return user;
     }
 }

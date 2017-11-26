@@ -15,6 +15,11 @@ import java.util.List;
 public class DiffUiDataCallback<T extends DiffUiDataCallback.UiDataDiff<T>> extends Callback {
     private List<T> oldList, newList;
 
+    public DiffUiDataCallback(List<T> oldList, List<T> newList) {
+        this.oldList = oldList;
+        this.newList = newList;
+    }
+
     @Override
     public int getOldListSize() {
         //旧的数据大小

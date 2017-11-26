@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.example.ggxiaozhi.common.widget.convention.PlaceHolderView;
+
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -18,6 +20,10 @@ import butterknife.ButterKnife;
  */
 
 public abstract class Activity extends AppCompatActivity {
+
+    protected PlaceHolderView mPlaceHolderView;
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,11 +33,19 @@ public abstract class Activity extends AppCompatActivity {
             //等到界面Id并设置到Activity中
             int layoutId = getContentLayoutId();
             setContentView(layoutId);
+            initBefore();
             initWidget();
             initData();
         } else {
             finish();
         }
+    }
+
+    /**
+     * 在初始化布局之前
+     */
+    protected void initBefore() {
+
     }
 
     /**
@@ -70,11 +84,16 @@ public abstract class Activity extends AppCompatActivity {
 
     }
 
+    /**
+     * 当点击界面导航返回和底部导航返回时
+     *
+     * @return true 不向下传递 已经消费了此次点击事件
+     */
     @Override
     public boolean onSupportNavigateUp() {
-        //当点击界面导航返回时，Finish当前页面
+        //，Finish当前页面
         finish();
-        Toast.makeText(this, "点击了 onSupportNavigateUp", Toast.LENGTH_SHORT).show();
+
         return super.onSupportNavigateUp();
     }
 
@@ -84,7 +103,6 @@ public abstract class Activity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        Toast.makeText(this, "点击了 onBackPressed", Toast.LENGTH_SHORT).show();
         //得到当前Activity下的所有Fragment
         List<android.support.v4.app.Fragment> fragments = getSupportFragmentManager().getFragments();
         // 判断是否为空
@@ -102,5 +120,14 @@ public abstract class Activity extends AppCompatActivity {
         }
         super.onBackPressed();
         finish();
+    }
+
+    /**
+     * 设置占位布局
+     *
+     * @param placeHolderView 继承占位布局规范的View
+     */
+    public void setPlaceHolderView(PlaceHolderView placeHolderView) {
+        this.mPlaceHolderView = placeHolderView;
     }
 }

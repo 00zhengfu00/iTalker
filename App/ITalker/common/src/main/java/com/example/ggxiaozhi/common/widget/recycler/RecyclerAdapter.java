@@ -128,7 +128,12 @@ public abstract class RecyclerAdapter<Data> extends
     public int getItemCount() {
         return mDataList.size();
     }
-
+    /**
+     * 得到当前集合
+     */
+    public List<Data> getItems() {
+        return mDataList;
+    }
     /**
      * 插入一条数据并通知插入
      *
