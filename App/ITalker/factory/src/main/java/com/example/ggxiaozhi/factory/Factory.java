@@ -4,6 +4,12 @@ import android.support.annotation.StringRes;
 
 import com.example.ggxiaozhi.common.app.Application;
 import com.example.ggxiaozhi.factory.data.DataSource;
+import com.example.ggxiaozhi.factory.data.group.GroupCenter;
+import com.example.ggxiaozhi.factory.data.group.GroupDispatcher;
+import com.example.ggxiaozhi.factory.data.message.MessageCenter;
+import com.example.ggxiaozhi.factory.data.message.MessageDispatcher;
+import com.example.ggxiaozhi.factory.data.user.UserCenter;
+import com.example.ggxiaozhi.factory.data.user.UserDispatcher;
 import com.example.ggxiaozhi.factory.model.RspModel;
 import com.example.ggxiaozhi.factory.presistance.Account;
 import com.example.ggxiaozhi.factory.utils.DBFlowExclusionStrategies;
@@ -167,5 +173,32 @@ public class Factory {
      */
     public static void dispatchMessage(String message) {
         //TODO
+    }
+
+    /**
+     * 用户信息管理中心的入口
+     *
+     * @return 实例
+     */
+    public static UserCenter getUserCenter() {
+        return UserDispatcher.instance();
+    }
+
+    /**
+     * 消息信息管理中心的入口
+     *
+     * @return 实例
+     */
+    public static MessageCenter getMessageCenter() {
+        return MessageDispatcher.instance();
+    }
+
+    /**
+     * 群信息管理中心的入口
+     *
+     * @return 实例
+     */
+    public static GroupCenter getGroupCenter() {
+        return GroupDispatcher.instance();
     }
 }

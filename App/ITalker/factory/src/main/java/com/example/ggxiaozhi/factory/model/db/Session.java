@@ -186,6 +186,13 @@ public class Session extends BaseModel implements DiffUiDataCallback.UiDataDiff<
         return identify;
     }
 
+    /**
+     * 刷新当前Seesion 为最新的Message
+     */
+    public void refreshToNow() {
+        //TODO 刷新当前Seesion 为最新的Message
+    }
+
 
     /**
      * 对于会话信息，最重要的部分进行提取
