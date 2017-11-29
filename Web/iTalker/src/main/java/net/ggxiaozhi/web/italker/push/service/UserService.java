@@ -1,12 +1,14 @@
 package net.ggxiaozhi.web.italker.push.service;
 
 import com.google.common.base.Strings;
+import net.ggxiaozhi.web.italker.push.bean.api.base.PushModel;
 import net.ggxiaozhi.web.italker.push.bean.api.base.ResponseModel;
 import net.ggxiaozhi.web.italker.push.bean.api.user.UpdateInfoModle;
 import net.ggxiaozhi.web.italker.push.bean.card.UserCard;
 import net.ggxiaozhi.web.italker.push.bean.db.User;
 import net.ggxiaozhi.web.italker.push.bean.db.UserFollow;
 import net.ggxiaozhi.web.italker.push.bean.factory.UserFactory;
+import net.ggxiaozhi.web.italker.push.utils.PushDispatcher;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -64,6 +66,7 @@ public class UserService extends BaseService {
     public ResponseModel<List<UserCard>> contact() {
 
         User self = getSelf();
+        
         //拿到我的联系人
         List<User> users = UserFactory.contacts(self);
         //转换UserCard

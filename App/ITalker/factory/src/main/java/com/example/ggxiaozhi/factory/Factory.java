@@ -1,6 +1,7 @@
 package com.example.ggxiaozhi.factory;
 
 import android.support.annotation.StringRes;
+import android.util.Log;
 
 import com.example.ggxiaozhi.common.app.Application;
 import com.example.ggxiaozhi.factory.data.DataSource;
@@ -38,6 +39,7 @@ import java.util.concurrent.Executors;
  */
 
 public class Factory {
+    private static final String TAG = "Factory";
     //单例模式
     private static final Factory instance;
     //全局的线程池
@@ -188,6 +190,8 @@ public class Factory {
             return;
         // 对推送集合进行遍历
         for (PushModel.Entity entity : pushModel.getEntities()) {
+            Log.d(TAG, "dispatchMessage-Entity: "+pushModel.getEntities().toString());
+
             switch (entity.type) {
                 case PushModel.ENTITY_TYPE_LOGOUT:
                     instance.logout();
