@@ -48,7 +48,7 @@ public class GroupDispatcher implements GroupCenter {
     }
 
     @Override
-    public void GroupDispatch(GroupCard... cards) {
+    public void groupDispatch(GroupCard... cards) {
         if (cards == null || cards.length == 0)
             return;
         //丢到单线程中
@@ -56,7 +56,7 @@ public class GroupDispatcher implements GroupCenter {
     }
 
     @Override
-    public void GroupMemberDispatch(GroupMemberCard... cards) {
+    public void groupMemberDispatch(GroupMemberCard... cards) {
         if (cards == null || cards.length == 0)
             return;
         //丢到单线程中

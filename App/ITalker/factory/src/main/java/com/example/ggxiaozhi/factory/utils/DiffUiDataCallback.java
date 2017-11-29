@@ -12,7 +12,7 @@ import java.util.List;
  * 功能   ：比较2个数据源是否相同
  */
 
-public class DiffUiDataCallback<T extends DiffUiDataCallback.UiDataDiff<T>> extends Callback {
+public class  DiffUiDataCallback<T extends DiffUiDataCallback.UiDataDiff<T>> extends Callback {
     private List<T> oldList, newList;
 
     public DiffUiDataCallback(List<T> oldList, List<T> newList) {
@@ -36,7 +36,7 @@ public class DiffUiDataCallback<T extends DiffUiDataCallback.UiDataDiff<T>> exte
     @Override
     public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
         T beanOld = oldList.get(oldItemPosition);
-        T beanNew = oldList.get(newItemPosition);
+        T beanNew = newList.get(newItemPosition);
         //里面是判断逻辑让调用者去实现
         return beanNew.isSame(beanOld);
     }
@@ -46,7 +46,7 @@ public class DiffUiDataCallback<T extends DiffUiDataCallback.UiDataDiff<T>> exte
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
         T beanOld = oldList.get(oldItemPosition);
-        T beanNew = oldList.get(newItemPosition);
+        T beanNew = newList.get(newItemPosition);
         //里面是判断逻辑让调用者去实现
         return beanNew.isUiContentsSame(beanOld);
     }

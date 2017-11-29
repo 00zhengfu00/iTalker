@@ -1,5 +1,6 @@
 package com.example.ggxiaozhi.factory.model.db;
 
+import com.example.ggxiaozhi.factory.model.db.base.BaseDbModel;
 import com.example.ggxiaozhi.factory.utils.DiffUiDataCallback;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
@@ -20,7 +21,7 @@ import java.util.Objects;
  * 功能   ：群信息Model
  */
 @Table(database = AppDatabase.class)
-public class Group extends BaseModel implements Serializable, DiffUiDataCallback.UiDataDiff<Group> {
+public class Group extends BaseDbModel<Group> implements Serializable {
     @PrimaryKey
     private String id; // 群Id
     @Column

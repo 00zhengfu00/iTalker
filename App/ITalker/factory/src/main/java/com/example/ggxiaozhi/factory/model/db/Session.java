@@ -1,5 +1,6 @@
 package com.example.ggxiaozhi.factory.model.db;
 
+import com.example.ggxiaozhi.factory.model.db.base.BaseDbModel;
 import com.example.ggxiaozhi.factory.utils.DiffUiDataCallback;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
@@ -20,7 +21,7 @@ import java.util.Objects;
  * 功能   ：本地的会话表 显示"最近的"  '一条'数据
  */
 @Table(database = AppDatabase.class)
-public class Session extends BaseModel implements DiffUiDataCallback.UiDataDiff<Session> {
+public class Session extends BaseDbModel<Session> {
     @PrimaryKey
     private String id; // Id, 是Message中的接收者User的Id或者群的Id
     @Column

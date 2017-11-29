@@ -13,6 +13,6 @@ import com.example.ggxiaozhi.factory.model.card.GroupMemberCard;
 
 public interface GroupCenter {
 
-    void GroupDispatch(GroupCard... cards);
-    void GroupMemberDispatch(GroupMemberCard... cards);
+    void groupDispatch(GroupCard... cards);
+    void groupMemberDispatch(GroupMemberCard... cards);
 }

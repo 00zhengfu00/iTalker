@@ -38,4 +38,9 @@ public interface DataSource {
     interface Callback<T> extends SucceedCallback<T>, FailedCallback {
 
     }
+
+    /**
+     * 销毁仓库操作
+     */
+    void dispose();
 }

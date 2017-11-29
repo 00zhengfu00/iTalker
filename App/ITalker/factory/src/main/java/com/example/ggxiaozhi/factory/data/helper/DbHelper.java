@@ -155,7 +155,7 @@ public class DbHelper {
         Set<ChangedListener> listenerSet = getChangedListener(tClass);
         if (listenerSet != null && listenerSet.size() > 0) {
             for (ChangedListener<Model> listener : listenerSet) {
-                listener.notifyChangedSave(models);
+                listener.onDataSave(models);
             }
 
             //例外情况
@@ -252,9 +252,9 @@ public class DbHelper {
     @SuppressWarnings("unchecked")
     public interface ChangedListener<Data extends BaseModel> {
         //数据存储完成后通知外界
-        void notifyChangedSave(Data... datas);
+        void onDataSave(Data... datas);
 
         //数据删除完成后通知外界
-        void notifyChangedDelete(Data... datas);
+        void onDataDelete(Data... datas);
     }
 }

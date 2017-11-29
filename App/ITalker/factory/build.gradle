@@ -27,6 +27,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile project(':common')
+    //一些工具类
+    compile "net.qiujuer.genius:kit-reflect:$rootProject.ext.geniusVersion"
     //阿里云上传
     compile "com.aliyun.dpa:oss-android-sdk:$rootProject.ext.ossVersion"
 
