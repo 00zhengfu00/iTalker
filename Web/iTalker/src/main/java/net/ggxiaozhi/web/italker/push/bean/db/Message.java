@@ -1,5 +1,6 @@
 package net.ggxiaozhi.web.italker.push.bean.db;
 
+import net.ggxiaozhi.web.italker.push.bean.api.message.MessageCreateModel;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -18,6 +19,10 @@ import java.time.LocalDateTime;
 @Table(name = "TB_MESSAGE")//对应数据库中的表
 public class Message {
 
+    //发送给人
+    public static final int RECEIVER_TYPR_NONE = 1;
+    //发送给群
+    public static final int RECEIVER_TYPR_GROUP = 2;
     /**
      * 发送消息的类型
      */
@@ -88,6 +93,30 @@ public class Message {
     @Column(updatable = false, insertable = false)
     private String groupId;
 
+    public Message() {
+    }
+
+    //发送给人的消息
+    public Message(User sender, User receiver, MessageCreateModel model) {
+        this.id = model.getId();
+        this.content = model.getContent();
+        this.type = model.getType();
+        this.attach = model.getAttach();
+
+        this.sender = sender;
+        this.receiver = receiver;
+    }
+
+    //发送给群的消息
+    public Message(User sender, Group group, MessageCreateModel model) {
+        this.id = model.getId();
+        this.content = model.getContent();
+        this.type = model.getType();
+        this.attach = model.getAttach();
+
+        this.sender = sender;
+        this.group = group;
+    }
 
     public String getId() {
         return id;

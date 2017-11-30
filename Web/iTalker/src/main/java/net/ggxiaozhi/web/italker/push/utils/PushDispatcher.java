@@ -62,7 +62,8 @@ public class PushDispatcher {
 
     /**
      * 对要发送的数据进行格式化封装
-     * @param pushId 接受者的设备ID
+     *
+     * @param pushId     接受者的设备ID
      * @param pushString 要接收的内容
      * @return BatchBean
      */
@@ -81,7 +82,7 @@ public class PushDispatcher {
         target.setAppId(appId);
         target.setClientId(pushId);
         //返回一个封装
-        return new BatchBean(message,target);
+        return new BatchBean(message, target);
     }
 
     /**
@@ -93,6 +94,7 @@ public class PushDispatcher {
         //构建打包工具类
         IBatch batch = pusher.getBatch();
 
+        //标记是否有数据
         boolean haveData = false;
         for (BatchBean bean : beans) {
             try {
@@ -100,7 +102,9 @@ public class PushDispatcher {
                 haveData = true;
             } catch (Exception e) {
                 e.printStackTrace();
+                //错误情况下为false
                 haveData = false;
+
             }
         }
         if (!haveData)
@@ -136,8 +140,8 @@ public class PushDispatcher {
 
     //给每个人发送消息的Bean封装
     private static class BatchBean {
-        SingleMessage message;
-        Target target;
+        SingleMessage message;//推送消息内容
+        Target target;//推送的目标
 
         public BatchBean(SingleMessage message, Target target) {
             this.message = message;

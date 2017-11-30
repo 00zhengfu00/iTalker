@@ -66,7 +66,7 @@ public class UserService extends BaseService {
     public ResponseModel<List<UserCard>> contact() {
 
         User self = getSelf();
-        
+
         //拿到我的联系人
         List<User> users = UserFactory.contacts(self);
         //转换UserCard
@@ -166,7 +166,7 @@ public class UserService extends BaseService {
         final List<User> contacts = UserFactory.contacts(self);
         List<UserCard> userCards = searchUsers.stream()
                 .map(user -> {
-                    //判断这个是否在我的联系人中
+                    //判断这个user是否在我的联系人中
                     boolean isFollow = user.getId().equalsIgnoreCase(self.getId())//搜索中的人中是否有自己 因为自己对自己肯定是已经关注了
                             //进行联系人的任意匹配 匹配其中的Id字段
                             || contacts.stream().anyMatch(contactUser -> contactUser.getId().equalsIgnoreCase(user.getId()));

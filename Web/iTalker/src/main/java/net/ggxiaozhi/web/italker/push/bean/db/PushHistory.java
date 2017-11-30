@@ -29,14 +29,14 @@ public class PushHistory {
     private String id;
 
     //推送的具体实体储存都是JSON字符串
-    //BLOB 是比TEXT更多的一个打字段类型
+    //BLOB 是比TEXT更多的一个大字段类型
     @Lob//@Lob注解表示属性将被持久化为Blob或者Clob类型
     @Column(nullable = false, columnDefinition = "BLOB")
     private String entity;
 
     //推送的实体类型(区分推送的目标是群还是用户)
     @Column(nullable = false)
-    private String entityType;
+    private int entityType;
 
 
     //接收者
@@ -59,7 +59,7 @@ public class PushHistory {
     private String senderId;
 
     //接收者当前状态下的设备ID
-    //对应User.ushId 可以为null
+    //对应User.pushId 可以为null
     @Column
     private String receiverPushId;
 
@@ -94,11 +94,11 @@ public class PushHistory {
         this.entity = entity;
     }
 
-    public String getEntityType() {
+    public int getEntityType() {
         return entityType;
     }
 
-    public void setEntityType(String entityType) {
+    public void setEntityType(int entityType) {
         this.entityType = entityType;
     }
 
