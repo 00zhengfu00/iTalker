@@ -34,6 +34,7 @@
         <item name="toolbarTitleColor">@color/white_alpha_224</item>
         <item name="toolbarMenuIconColor">@color/white_alpha_224</item>
 
+
     </style>
     <!--供外界使用-->
     <style name="AppTheme.Base" parent="Theme.private"/>
