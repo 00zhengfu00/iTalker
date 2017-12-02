@@ -1,17 +1,15 @@
 package com.example.ggxiaozhi.italker.fragment.message;
 
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
+import com.example.ggxiaozhi.factory.model.db.Group;
+import com.example.ggxiaozhi.factory.presenter.message.ChatContract;
 import com.example.ggxiaozhi.italker.R;
 
 /**
  * 群聊天窗口
  */
-public class ChatGroupFragment extends ChatFragment {
+public class ChatGroupFragment extends ChatFragment<Group> implements ChatContract.GroupView {
 
 
     public ChatGroupFragment() {
@@ -23,4 +21,13 @@ public class ChatGroupFragment extends ChatFragment {
         return R.layout.fragment_chat_group;
     }
 
+    @Override
+    protected ChatContract.Presenter initPresenter() {
+        return null;
+    }
+
+    @Override
+    public void onInit(Group group) {
+
+    }
 }

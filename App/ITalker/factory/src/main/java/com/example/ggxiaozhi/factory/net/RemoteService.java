@@ -4,7 +4,9 @@ import com.example.ggxiaozhi.factory.model.RspModel;
 import com.example.ggxiaozhi.factory.model.api.account.RegisterModel;
 import com.example.ggxiaozhi.factory.model.api.account.AccountRspModel;
 import com.example.ggxiaozhi.factory.model.api.account.LoginModel;
+import com.example.ggxiaozhi.factory.model.api.message.MsgCreateModel;
 import com.example.ggxiaozhi.factory.model.api.user.UserUpdateModel;
+import com.example.ggxiaozhi.factory.model.card.MessageCard;
 import com.example.ggxiaozhi.factory.model.card.UserCard;
 
 import java.util.List;
@@ -89,4 +91,12 @@ public interface RemoteService {
      */
     @GET("user/{userId}")
     Call<RspModel<UserCard>> userFind(@Path("userId") String userId);
+
+    /**
+     * 查询某人信息的接口
+     *
+     * @return 查询到的用户信息
+     */
+    @POST("msg")
+    Call<RspModel<MessageCard>> msgPush(@Body MsgCreateModel model);
 }

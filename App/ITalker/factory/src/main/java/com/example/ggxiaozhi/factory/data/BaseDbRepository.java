@@ -52,7 +52,6 @@ public abstract class BaseDbRepository<Data extends BaseDbModel<Data>> implement
     }
 
     //数据库统一通知的地方：更新/保存
-
     /**
      * 数据库数据更改与保存的通知
      *

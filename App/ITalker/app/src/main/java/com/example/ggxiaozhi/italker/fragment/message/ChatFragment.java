@@ -16,11 +16,14 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.ggxiaozhi.common.app.Fragment;
+import com.example.ggxiaozhi.common.app.PresenterFragment;
 import com.example.ggxiaozhi.common.widget.PortraitView;
 import com.example.ggxiaozhi.common.widget.adapter.TextWatcherAdapter;
 import com.example.ggxiaozhi.common.widget.recycler.RecyclerAdapter;
 import com.example.ggxiaozhi.factory.model.db.Message;
 import com.example.ggxiaozhi.factory.model.db.User;
+import com.example.ggxiaozhi.factory.presenter.BaseContract;
+import com.example.ggxiaozhi.factory.presenter.message.ChatContract;
 import com.example.ggxiaozhi.factory.presistance.Account;
 import com.example.ggxiaozhi.italker.R;
 import com.example.ggxiaozhi.italker.activity.MessageActivity;
@@ -36,7 +39,10 @@ import butterknife.OnClick;
 /**
  * 聊天窗口的基类
  */
-public abstract class ChatFragment extends Fragment implements AppBarLayout.OnOffsetChangedListener {
+public abstract class ChatFragment<InitModel>
+        extends PresenterFragment<ChatContract.Presenter>
+        implements AppBarLayout.OnOffsetChangedListener
+        , ChatContract.View<InitModel> {
 
     /**
      * UI
@@ -77,6 +83,13 @@ public abstract class ChatFragment extends Fragment implements AppBarLayout.OnOf
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new Adapter();
         mRecyclerView.setAdapter(mAdapter);
+    }
+
+    @Override
+    protected void initData() {
+        super.initData();
+        //开始进行初始化操作
+        mPresenter.start();
     }
 
     /**
@@ -134,6 +147,10 @@ public abstract class ChatFragment extends Fragment implements AppBarLayout.OnOf
 
         if (mViewSubmit.isActivated()) {
             //发送
+
+            String content = mEditContent.getText().toString();
+            mEditContent.setText("");
+            mPresenter.pushText(content);
         } else {
             //点击更多
             onMoreClick();
@@ -141,8 +158,17 @@ public abstract class ChatFragment extends Fragment implements AppBarLayout.OnOf
     }
 
     protected void onMoreClick() {
-
         //TODO
+    }
+
+    @Override
+    public RecyclerAdapter<Message> getAdapter() {
+        return mAdapter;
+    }
+
+    @Override
+    public void onAdapterDataChanged() {
+        //这里什么也不做 这个方法主要是用来更新占位布局的状态 因为没有占位布局 Recycler是一直显示的 所以什么已不做
     }
 
     /**
@@ -231,8 +257,8 @@ public abstract class ChatFragment extends Fragment implements AppBarLayout.OnOf
                     mLoading.stop();
                     mLoading.setVisibility(View.GONE);
                 } else if (status == Message.STATUS_CREATED) {//正在发送中的状态
-                    mLoading.setProgress(1);
                     mLoading.setVisibility(View.VISIBLE);
+                    mLoading.setProgress(0);
                     //设置mLoading颜色
                     mLoading.setForegroundColor(UiCompat.getColor(getResources(), R.color.colorAccent));
                     mLoading.start();
@@ -252,10 +278,10 @@ public abstract class ChatFragment extends Fragment implements AppBarLayout.OnOf
         @OnClick(R.id.im_portrait)
         void onRePushClick() {
 
-            if (mLoading != null) {
+            if (mLoading != null && mPresenter.rePush(mData)) {
                 //只有在右侧的情况下 才允许重新发送
-
-                //TODO 重新发送
+                // 状态改变需要重新刷新界面
+                updataData(mData);
             }
         }
     }

@@ -48,7 +48,7 @@ public class DbHelper {
     private final Map<Class<?>, Set<ChangedListener>> mClassSetMap = new HashMap<>();
 
     /**
-     * 得到当点表的所有监听
+     * 得到当前表的所有监听
      *
      * @param tClass 表对应的Class信息
      * @return 返回这个标下的所有监听集合
@@ -157,15 +157,15 @@ public class DbHelper {
             for (ChangedListener<Model> listener : listenerSet) {
                 listener.onDataSave(models);
             }
+        }
 
-            //例外情况
-            if (GroupMember.class.equals(tClass)) {
-                // 群成员变更，需要通知对应群信息更新
-                updateGroup((GroupMember[]) models);
-            } else if (Message.class.equals(tClass)) {
-                // 消息变化，应该通知会话列表更新
-                updateSession((Message[]) models);
-            }
+        //例外情况
+        if (GroupMember.class.equals(tClass)) {
+            // 群成员变更，需要通知对应群信息更新
+            updateGroup((GroupMember[]) models);
+        } else if (Message.class.equals(tClass)) {
+            // 消息变化，应该通知会话列表更新
+            updateSession((Message[]) models);
         }
     }
 
@@ -225,8 +225,9 @@ public class DbHelper {
                     }
                     // 把会话，刷新到当前Message的最新状态
                     session.refreshToNow();
-                    //保存当但Session信息
-                    session.save();
+                    // 数据存储
+                    adapter.save(session);
+                    // 添加到集合
                     sessions[index++] = session;
                 }
                 // 调用直接进行一次通知分发
@@ -244,9 +245,24 @@ public class DbHelper {
      * @param <Model> 数据库储存的model 类 限定条件是继承BaseModel
      */
     private final <Model extends BaseModel> void notifyDelete(final Class<Model> tClass, final Model... models) {
-        //TODO 数据库保存后通知用户
 
+        // 找监听器
+        final Set<ChangedListener> listeners = getChangedListener(tClass);
+        if (listeners != null && listeners.size() > 0) {
+            // 通用的通知
+            for (ChangedListener<Model> listener : listeners) {
+                listener.onDataDelete(models);
+            }
+        }
 
+        // 列外情况
+        if (GroupMember.class.equals(tClass)) {
+            // 群成员变更，需要通知对应群信息更新
+            updateGroup((GroupMember[]) models);
+        } else if (Message.class.equals(tClass)) {
+            // 消息变化，应该通知会话列表更新
+            updateSession((Message[]) models);
+        }
     }
 
     @SuppressWarnings("unchecked")

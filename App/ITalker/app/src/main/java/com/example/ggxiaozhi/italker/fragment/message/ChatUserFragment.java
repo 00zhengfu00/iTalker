@@ -8,6 +8,9 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.ggxiaozhi.common.widget.PortraitView;
+import com.example.ggxiaozhi.factory.model.db.User;
+import com.example.ggxiaozhi.factory.presenter.message.ChatContract;
+import com.example.ggxiaozhi.factory.presenter.message.ChatUserPresenter;
 import com.example.ggxiaozhi.italker.R;
 import com.example.ggxiaozhi.italker.activity.PersonalActivity;
 
@@ -17,7 +20,7 @@ import butterknife.OnClick;
 /**
  * 用户聊天窗口
  */
-public class ChatUserFragment extends ChatFragment {
+public class ChatUserFragment extends ChatFragment<User> implements ChatContract.UserView {
     private static final String TAG = "ChatUserFragment";
     /**
      * UI
@@ -106,5 +109,15 @@ public class ChatUserFragment extends ChatFragment {
     @OnClick(R.id.im_portrait)
     void onPortraitClick() {
         PersonalActivity.show(getContext(), receiverId);
+    }
+
+    @Override
+    protected ChatContract.Presenter initPresenter() {
+        return new ChatUserPresenter(this, receiverId);
+    }
+
+    @Override
+    public void onInit(User user) {
+        //对和你聊天的朋友的信息进行初始化操作
     }
 }

@@ -14,12 +14,12 @@ import java.util.List;
  */
 
 /**
+ * @param <Data>      是具体的数据-->数据库或是网络返回的数据
  * @param <ViewModel> 是RecyclerView 的Adapter中的数据模型
- * @param <Data> 是具体的数据
- * @param <Source> 数据源加载接口
- * @param <View> 具体的界面View
+ * @param <Source>    数据源加载接口
+ * @param <View>      具体的界面View
  */
-public abstract class BaseSourcePresenter<ViewModel, Data,
+public abstract class BaseSourcePresenter<Data, ViewModel,
         Source extends DbDataSource<Data>,
         View extends BaseContract.RecyclerView>
         extends BaseRecyclerPresenter<ViewModel, View>

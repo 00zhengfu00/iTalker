@@ -1,20 +1,13 @@
 package com.example.ggxiaozhi.factory.data.user;
 
-import android.support.annotation.NonNull;
 
 import com.example.ggxiaozhi.factory.data.BaseDbRepository;
 import com.example.ggxiaozhi.factory.data.DataSource;
-import com.example.ggxiaozhi.factory.data.helper.DbHelper;
 import com.example.ggxiaozhi.factory.model.db.User;
 import com.example.ggxiaozhi.factory.model.db.User_Table;
 import com.example.ggxiaozhi.factory.presistance.Account;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
-import com.raizlabs.android.dbflow.structure.database.transaction.QueryTransaction;
-
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * 工程名 ： ITalker

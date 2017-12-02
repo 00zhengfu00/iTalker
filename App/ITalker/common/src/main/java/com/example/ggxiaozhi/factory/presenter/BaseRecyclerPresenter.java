@@ -26,9 +26,9 @@ public class BaseRecyclerPresenter<ViewModel, View extends BaseContract.Recycler
     /**
      * 刷新单一集合到界面
      *
-     * @param modelList 最新的数据集合
+     * @param newlList 最新的数据集合
      */
-    protected void refreshData(final List<ViewModel> modelList) {
+    protected void refreshData(final List<ViewModel> newlList) {
 
         Run.onUiAsync(new Action() {
             @Override
@@ -39,7 +39,7 @@ public class BaseRecyclerPresenter<ViewModel, View extends BaseContract.Recycler
                     return;
                 //显示数据到界面
                 RecyclerAdapter adapter = view.getAdapter();
-                adapter.replace(modelList);
+                adapter.replace(newlList);
                 view.onAdapterDataChanged();
             }
         });
@@ -48,20 +48,26 @@ public class BaseRecyclerPresenter<ViewModel, View extends BaseContract.Recycler
     /**
      * 刷新界面操作，该操作可以保证执行方法在主线程进行
      *
-     * @param result 一个差异的结果集
-     * @param modelList   具体的新数据
+     * @param result   一个差异的结果集
+     * @param newlList 具体的新数据
      */
-    protected void refreshData(final DiffUtil.DiffResult result, final List<ViewModel> modelList) {
+    protected void refreshData(final DiffUtil.DiffResult result, final List<ViewModel> newlList) {
         Run.onUiAsync(new Action() {
             @Override
             public void call() {
                 // 这里是主线程运行时
-                refreshDataOnUiThread(result, modelList);
+                refreshDataOnUiThread(result, newlList);
             }
         });
     }
 
-    protected void refreshDataOnUiThread(DiffUtil.DiffResult result, List<ViewModel> modelList) {
+    /**
+     * 刷新界面
+     *
+     * @param result
+     * @param newlList
+     */
+    protected void refreshDataOnUiThread(DiffUtil.DiffResult result, List<ViewModel> newlList) {
         //得到当前View
         View view = getView();
         if (view == null)
@@ -70,7 +76,7 @@ public class BaseRecyclerPresenter<ViewModel, View extends BaseContract.Recycler
         RecyclerAdapter adapter = view.getAdapter();
         //替换新的数据集合 但是不更新界面
         adapter.getItems().clear();
-        adapter.getItems().addAll(modelList);
+        adapter.getItems().addAll(newlList);
 
         // 通知界面刷新占位布局
         view.onAdapterDataChanged();
