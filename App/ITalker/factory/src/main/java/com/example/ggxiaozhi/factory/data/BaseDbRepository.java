@@ -24,7 +24,7 @@ import java.util.List;
 public abstract class BaseDbRepository<Data extends BaseDbModel<Data>> implements DbDataSource<Data>
         , DbHelper.ChangedListener<Data>, QueryTransaction.QueryResultListCallback<Data> {
     private SucceedCallback<List<Data>> callback;
-    private final List<Data> mDataList = new LinkedList<>();//缓存数据的集合
+    protected final LinkedList<Data> mDataList = new LinkedList<>();//缓存数据的集合
     private Class<Data> mClass;//数据对应的真实的Class信息
 
     @SuppressWarnings("unchecked")
@@ -52,6 +52,7 @@ public abstract class BaseDbRepository<Data extends BaseDbModel<Data>> implement
     }
 
     //数据库统一通知的地方：更新/保存
+
     /**
      * 数据库数据更改与保存的通知
      *

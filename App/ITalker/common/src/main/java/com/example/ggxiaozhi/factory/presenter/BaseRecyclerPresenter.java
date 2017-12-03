@@ -64,8 +64,8 @@ public class BaseRecyclerPresenter<ViewModel, View extends BaseContract.Recycler
     /**
      * 刷新界面
      *
-     * @param result
-     * @param newlList
+     * @param result   数据差异对比返回的数据
+     * @param newlList 新的数据
      */
     protected void refreshDataOnUiThread(DiffUtil.DiffResult result, List<ViewModel> newlList) {
         //得到当前View

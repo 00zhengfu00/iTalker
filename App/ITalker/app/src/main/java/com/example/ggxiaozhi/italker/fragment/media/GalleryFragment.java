@@ -45,8 +45,6 @@ public class GalleryFragment extends BottomSheetDialogFragment implements Galler
     @Override
     public void onStart() {
         super.onStart();
-//        //默认全屏展开
-//        mBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         //获取资源图片
         mGallery.setup(getLoaderManager(), this);
 

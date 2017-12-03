@@ -295,7 +295,7 @@ public class GalleryView extends RecyclerView {
         }
 
         @Override
-        public void onBind(Image image) {
+        public void onBind(Image image,int position) {
             Glide.with(getContext())
                     .load(image.path)
                     .centerCrop()

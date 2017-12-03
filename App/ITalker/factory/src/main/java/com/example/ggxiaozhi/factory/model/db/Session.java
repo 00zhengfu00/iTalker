@@ -1,5 +1,10 @@
 package com.example.ggxiaozhi.factory.model.db;
 
+import android.text.TextUtils;
+
+import com.example.ggxiaozhi.factory.data.helper.GroupHelper;
+import com.example.ggxiaozhi.factory.data.helper.MessageHelper;
+import com.example.ggxiaozhi.factory.data.helper.UserHelper;
 import com.example.ggxiaozhi.factory.model.db.base.BaseDbModel;
 import com.example.ggxiaozhi.factory.utils.DiffUiDataCallback;
 import com.raizlabs.android.dbflow.annotation.Column;
@@ -191,38 +196,102 @@ public class Session extends BaseDbModel<Session> {
      * 刷新当前Seesion 为最新的Message
      */
     public void refreshToNow() {
-        //TODO 刷新当前Seesion 为最新的Message
-    }
+        Message message;
 
+        if (receiverType == Message.RECEIVER_TYPE_GROUP) {//如果是群
+            //1.刷新当前对应群的相关信息
+            message = MessageHelper.findLastWithGroup(id);
+            if (message == null) {
+                //2.如果当前没有该群的基本信息
+                if (TextUtils.isEmpty(this.picture) || TextUtils.isEmpty(this.title)) {
+                    //那么我们就查找当前Session的该群是不是存在
+                    Group group = GroupHelper.findFromLocal(id);
+                    if (group != null) {
+                        //3.如果找到了群的信息 那么我们就加载群的基本信息赋值给当前的session
+                        this.picture = group.getPicture();
+                        this.title = group.getName();
+                    }
+                }
+                //4.如果没有找到 就赋值基本默认信息
+                this.message = null;
+                this.content = "";
+                this.modifyAt = new Date(System.currentTimeMillis());//赋值当前时间
+            } else {//如果当前message找到了 以为着本地有有最后一条记录
+                if (TextUtils.isEmpty(this.picture) || TextUtils.isEmpty(this.title)) {
+                    //如果没有基本信息 我们就用Message去load群的信息
+                    Group group = message.getGroup();
+                    group.load();//懒加载的原因
+                    this.picture = group.getPicture();
+                    this.title = group.getName();
+                }
+                //4.如果没有找到 就赋值基本默认信息
+                this.message = message;
+                this.content = message.getSampleContent();
+                this.modifyAt = message.getCreateAt();
 
-    /**
-     * 对于会话信息，最重要的部分进行提取
-     * 其中我们主要关注两个点：
-     * 一个会话最重要的是标示是和人聊天还是在群聊天；
-     * 所以对于这点：Id存储的是人或者群的Id
-     * 紧跟着Type：存储的是具体的类型（人、群）
-     * equals 和 hashCode 也是对两个字段进行判断
-     */
-    public static class Identify {
-        public String id;
-        public int type;
-
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            Identify identify = (Identify) o;
-            return type == identify.type
-                    && (id != null ? id.equals(identify.id) : identify.id == null);
+            }
+        } else {//如果是人 和人聊天
+            message = MessageHelper.findLastWithUser(id);
+            if (message == null) {
+                //如果当前没有该用户的基本信息
+                if (TextUtils.isEmpty(this.picture) || TextUtils.isEmpty(this.title)) {
+                    //查询人
+                    User user = UserHelper.findFromLocal(id);
+                    if (user != null) {
+                        //如果找到了人的信息 那么我们就加载人的基本信息赋值给当前的session
+                        this.picture = user.getPortrait();
+                        this.title = user.getName();
+                    }
+                }
+                //如果没有找到 就赋值基本默认信息
+                this.message = null;
+                this.content = "";
+                this.modifyAt = new Date(System.currentTimeMillis());//赋值当前时间
+            }else {//我和他之间有消息来往
+                if (TextUtils.isEmpty(this.picture) || TextUtils.isEmpty(this.title)) {
+                    //如果没有基本信息 我们就用Message去load群的信息
+                    User other = message.getOther();
+                    other.load();//懒加载的原因
+                    this.picture = other.getPortrait();
+                    this.title = other.getName();
+                }
+                //4.如果没有找到 就赋值基本默认信息
+                this.message = message;
+                this.content = message.getSampleContent();
+                this.modifyAt = message.getCreateAt();
+            }
+        }
         }
 
-        @Override
-        public int hashCode() {
-            int result = id != null ? id.hashCode() : 0;
-            result = 31 * result + type;
-            return result;
+
+        /**
+         * 对于会话信息，最重要的部分进行提取
+         * 其中我们主要关注两个点：
+         * 一个会话最重要的是标示是和人聊天还是在群聊天；
+         * 所以对于这点：Id存储的是人或者群的Id
+         * 紧跟着Type：存储的是具体的类型（人、群）
+         * equals 和 hashCode 也是对两个字段进行判断
+         */
+        public static class Identify {
+            public String id;
+            public int type;
+
+
+            @Override
+            public boolean equals(Object o) {
+                if (this == o) return true;
+                if (o == null || getClass() != o.getClass()) return false;
+
+                Identify identify = (Identify) o;
+                return type == identify.type
+                        && (id != null ? id.equals(identify.id) : identify.id == null);
+            }
+
+            @Override
+            public int hashCode() {
+                int result = id != null ? id.hashCode() : 0;
+                result = 31 * result + type;
+                return result;
+            }
         }
     }
-}

@@ -118,7 +118,7 @@ public class SearchUserFragment extends PresenterFragment<SearchContract.SearchP
         }
 
         @Override
-        public void onBind(UserCard userCard) {
+        public void onBind(UserCard userCard, int position) {
             mPortraitView.setup(Glide.with(SearchUserFragment.this), userCard.getPortrait());
             mName.setText(userCard.getName());
             mFollow.setEnabled(!userCard.isFollow());

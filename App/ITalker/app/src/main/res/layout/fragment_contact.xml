@@ -20,6 +20,6 @@
     <com.example.ggxiaozhi.common.widget.EmptyView
         android:id="@+id/empty"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></com.example.ggxiaozhi.common.widget.EmptyView>
+        android:layout_height="match_parent"/>
 
 </FrameLayout>

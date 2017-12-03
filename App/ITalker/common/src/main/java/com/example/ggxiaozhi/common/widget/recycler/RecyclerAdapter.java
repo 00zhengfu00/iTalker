@@ -118,7 +118,7 @@ public abstract class RecyclerAdapter<Data> extends
         //得到绑定的数据
         Data data = mDataList.get(position);
         //触发Holder的绑定方法
-        holder.bind(data);
+        holder.bind(data,position);
     }
 
     /**
@@ -291,9 +291,9 @@ public abstract class RecyclerAdapter<Data> extends
          *
          * @param data 绑定的数据
          */
-        void bind(Data data) {
+        void bind(Data data,int position) {
             this.mData = data;
-            onBind(mData);
+            onBind(mData,position);
         }
 
         /**
@@ -301,7 +301,7 @@ public abstract class RecyclerAdapter<Data> extends
          *
          * @param data
          */
-        public abstract void onBind(Data data);
+        public abstract void onBind(Data data,int position);
 
         /**
          * holder自己对自己对应的Data进行更新操作

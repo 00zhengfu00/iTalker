@@ -11,6 +11,8 @@ import com.example.ggxiaozhi.common.app.Activity;
 import com.example.ggxiaozhi.common.app.Fragment;
 import com.example.ggxiaozhi.factory.model.Author;
 import com.example.ggxiaozhi.factory.model.db.Group;
+import com.example.ggxiaozhi.factory.model.db.Message;
+import com.example.ggxiaozhi.factory.model.db.Session;
 import com.example.ggxiaozhi.italker.R;
 import com.example.ggxiaozhi.italker.fragment.message.ChatGroupFragment;
 import com.example.ggxiaozhi.italker.fragment.message.ChatUserFragment;
@@ -56,6 +58,21 @@ public class MessageActivity extends Activity {
         Intent intent = new Intent(context, MessageActivity.class);
         intent.putExtra(KEY_RECEIVER_ID, group.getId());
         intent.putExtra(KEY_RECEVIER_IS_GROUP, true);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 最近联系人聊天的入口
+     *
+     * @param context 上下文
+     * @param session 最近一条聊天信息的session
+     */
+    public static void show(Context context, Session session) {
+        if (session == null || context == null || TextUtils.isEmpty(session.getId()))
+            return;
+        Intent intent = new Intent(context, MessageActivity.class);
+        intent.putExtra(KEY_RECEIVER_ID, session.getId());
+        intent.putExtra(KEY_RECEVIER_IS_GROUP, session.getReceiverType() == Message.RECEIVER_TYPE_GROUP);
         context.startActivity(intent);
     }
 

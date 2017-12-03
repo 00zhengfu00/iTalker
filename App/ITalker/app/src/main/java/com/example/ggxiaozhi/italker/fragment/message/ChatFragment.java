@@ -4,6 +4,7 @@ package com.example.ggxiaozhi.italker.fragment.message;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -53,6 +54,8 @@ public abstract class ChatFragment<InitModel>
     RecyclerView mRecyclerView;
     @BindView(R.id.appbar)
     AppBarLayout mAppBarLayout;
+    @BindView(R.id.collapsingToolbarLayout)
+    CollapsingToolbarLayout mToolbarLayout;
     @BindView(R.id.edit_content)
     EditText mEditContent;
     @BindView(R.id.btn_face)
@@ -243,7 +246,7 @@ public abstract class ChatFragment<InitModel>
         }
 
         @Override
-        public void onBind(Message message) {
+        public void onBind(Message message, int position) {
 
             User sender = message.getSender();
             //由于sender是懒加载 所以我们需要重新load一次
@@ -299,8 +302,8 @@ public abstract class ChatFragment<InitModel>
         }
 
         @Override
-        public void onBind(Message message) {
-            super.onBind(message);
+        public void onBind(Message message, int postion) {
+            super.onBind(message, postion);
             //把内容设置到文字上去
             mContent.setText(message.getContent());
         }
@@ -316,8 +319,8 @@ public abstract class ChatFragment<InitModel>
         }
 
         @Override
-        public void onBind(Message message) {
-            super.onBind(message);
+        public void onBind(Message message, int postion) {
+            super.onBind(message, postion);
             //TODO
         }
     }
@@ -333,8 +336,8 @@ public abstract class ChatFragment<InitModel>
         }
 
         @Override
-        public void onBind(Message message) {
-            super.onBind(message);
+        public void onBind(Message message, int postion) {
+            super.onBind(message, postion);
             //TODO
         }
     }
@@ -349,8 +352,8 @@ public abstract class ChatFragment<InitModel>
         }
 
         @Override
-        public void onBind(Message message) {
-            super.onBind(message);
+        public void onBind(Message message, int postion) {
+            super.onBind(message, postion);
             //TODO
         }
     }

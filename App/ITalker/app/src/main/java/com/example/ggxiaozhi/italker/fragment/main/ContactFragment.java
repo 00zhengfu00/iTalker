@@ -114,7 +114,7 @@ public class ContactFragment extends PresenterFragment<ContactContract.Presenter
         }
 
         @Override
-        public void onBind(User user) {
+        public void onBind(User user,int position) {
             mPortraitView.setup(Glide.with(ContactFragment.this), user.getPortrait());
             mName.setText(user.getName());
             mDesc.setText(user.getDesc());
