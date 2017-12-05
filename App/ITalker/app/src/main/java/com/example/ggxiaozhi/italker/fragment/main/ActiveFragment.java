@@ -20,8 +20,8 @@ import com.example.ggxiaozhi.italker.R;
 import com.example.ggxiaozhi.italker.activity.MessageActivity;
 import com.example.ggxiaozhi.utils.DateTimeUtils;
 
+import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import butterknife.BindView;
 
@@ -40,6 +40,8 @@ public class ActiveFragment extends PresenterFragment<SessionContract.Presenter>
     @BindView(R.id.empty)
     EmptyView mEmptyView;
     private RecyclerAdapter<Session> mAdapter;
+
+    private boolean isFrist = false;
 
     @Override
     protected int getContentLayoutId() {
@@ -83,6 +85,7 @@ public class ActiveFragment extends PresenterFragment<SessionContract.Presenter>
         super.initFirstData();
         //查询数据
         mPresenter.start();
+        isFrist = true;
     }
 
     @Override
@@ -93,9 +96,9 @@ public class ActiveFragment extends PresenterFragment<SessionContract.Presenter>
     @Override
     public void onResume() {
         super.onResume();
-//        mAdapter.notifyDataSetChanged();
-//        mAdapter.clear();
-        mPresenter.start();
+        if (!isFrist)
+            mPresenter.start();
+        isFrist = false;
     }
 
     @Override
@@ -127,6 +130,8 @@ public class ActiveFragment extends PresenterFragment<SessionContract.Presenter>
             mPortraitView.setup(Glide.with(ActiveFragment.this), session.getPicture());
             mName.setText(session.getTitle());
             mContent.setText(TextUtils.isEmpty(session.getContent()) ? "" : session.getContent());
+            Calendar oldCalendar = Calendar.getInstance();
+            Calendar newCalendar = Calendar.getInstance();
             Date currentDate = new Date(System.currentTimeMillis());
             Date modifyAt = session.getModifyAt();
             if (((currentDate.getTime() - modifyAt.getTime()) / (60 * 1000)) < 1) {
@@ -134,9 +139,14 @@ public class ActiveFragment extends PresenterFragment<SessionContract.Presenter>
             } else {
                 mTime.setText(DateTimeUtils.getSimpleDateHour(modifyAt));
             }
-            if (((currentDate.getTime() - modifyAt.getTime()) / (24 * 60 * 60 * 1000)) >= 1) {
+//            if (((currentDate.getTime() - modifyAt.getTime()) / (24 * 60 * 60 * 1000)) >= 1) {
+//                mTime.setText("昨天");
+//            }
+            newCalendar.setTime(currentDate);
+            oldCalendar.setTime(modifyAt);
+            if (newCalendar.get(Calendar.DAY_OF_YEAR) - oldCalendar.get(Calendar.DAY_OF_YEAR) == 0)
+                Log.d("TAG", "onBind: newCalendar.get(Calendar.DAY_OF_YEAR):"+newCalendar.get(Calendar.DAY_OF_YEAR)+"       oldCalendar.get(Calendar.DAY_OF_YEAR):"+oldCalendar.get(Calendar.DAY_OF_YEAR));
                 mTime.setText("昨天");
-            }
             if (((currentDate.getTime() - modifyAt.getTime()) / (3 * 24 * 60 * 60 * 1000)) >= 3
                     && ((currentDate.getTime() - modifyAt.getTime()) / (3 * 24 * 60 * 60 * 1000)) < 4) {
                 mTime.setText("3天前");
@@ -144,7 +154,7 @@ public class ActiveFragment extends PresenterFragment<SessionContract.Presenter>
             if ((currentDate.getTime() - modifyAt.getTime()) / (3 * 24 * 60 * 60 * 1000) >= 4) {
                 mTime.setText(DateTimeUtils.getSimpleDate(modifyAt));
             }
-
         }
     }
+
 }

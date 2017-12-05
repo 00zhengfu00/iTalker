@@ -68,6 +68,7 @@
             android:theme="@style/AppTheme.TransStatusBar">
         </activity>
         <activity
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
             android:name=".activity.MessageActivity"
             android:label="@string/title_activity_message"
             android:screenOrientation="portrait"

@@ -2,6 +2,8 @@ package net.ggxiaozhi.web.italker.push.bean.card;
 
 import com.google.gson.annotations.Expose;
 import net.ggxiaozhi.web.italker.push.bean.db.User;
+import net.ggxiaozhi.web.italker.push.utils.Hib;
+import org.hibernate.Hibernate;
 
 import java.time.LocalDateTime;
 
@@ -68,10 +70,19 @@ public class UserCard {
         this.desc = user.getDescription();
         this.sex = user.getSex();
         this.modifyAt = user.getUpdateAt();
-
-        //TODO 得到关注和粉丝的数量
+        //得到关注和粉丝的数量
         //user.getFollowers().size();
         //懒加载会报错 因为没有Session
+        Hib.queryOnOnly(session -> {
+            //重新加载一次用户信息
+            session.load(user, user.getId());
+            //这个时候仅仅只是进行了数量查询 并没有查询整个集合
+            //要查询集合必须在session存在的情况下 进行遍历
+            //或者使用Hibernate.initialize(user.getFollowers());
+            //这里只是想获取size 不是遍历 所以不需要
+            follows = user.getFollowers().size();
+            following = user.getFollowing().size();
+        });
     }
 
     public String getId() {

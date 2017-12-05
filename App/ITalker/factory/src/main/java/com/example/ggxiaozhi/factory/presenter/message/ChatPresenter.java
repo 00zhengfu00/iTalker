@@ -62,17 +62,18 @@ public class ChatPresenter<View extends ChatContract.View>
 
     @Override
     public boolean rePush(Message message) {
-        //确认消息是可以重新发送的
-        if (Account.getUserId().equalsIgnoreCase(message.getSender().getId()) &&
-                message.getStatus() == Message.STATUS_FAILED) {
-            //更新状态
+        // 确定消息是可重复发送的
+        if (Account.getUserId().equalsIgnoreCase(message.getSender().getId())
+                && message.getStatus() == Message.STATUS_FAILED) {
+            // 更改状态
             message.setStatus(Message.STATUS_CREATED);
-            //构建重新发送的model
+            // 构建发送Model
             MsgCreateModel model = MsgCreateModel.buildWithMessage(message);
             MessageHelper.push(model);
             return true;
+        }else {
+            return false;
         }
-        return false;
     }
 
     @Override

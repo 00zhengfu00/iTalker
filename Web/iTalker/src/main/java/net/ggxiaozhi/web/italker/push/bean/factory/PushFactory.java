@@ -2,7 +2,10 @@ package net.ggxiaozhi.web.italker.push.bean.factory;
 
 import com.google.common.base.Strings;
 import net.ggxiaozhi.web.italker.push.bean.api.base.PushModel;
+import net.ggxiaozhi.web.italker.push.bean.card.ApplyCard;
+import net.ggxiaozhi.web.italker.push.bean.card.GroupMemberCard;
 import net.ggxiaozhi.web.italker.push.bean.card.MessageCard;
+import net.ggxiaozhi.web.italker.push.bean.card.UserCard;
 import net.ggxiaozhi.web.italker.push.bean.db.*;
 import net.ggxiaozhi.web.italker.push.utils.Hib;
 import net.ggxiaozhi.web.italker.push.utils.PushDispatcher;
@@ -32,7 +35,7 @@ public class PushFactory {
         MessageCard messageCard = new MessageCard(message);
         //转化成字符串
         String entity = TextUtil.toJson(messageCard);
-        //个推推送工具类
+        //个推推送工具类-->发送者
         PushDispatcher dispatcher = new PushDispatcher();
 
         if (message.getGroup() == null && Strings.isNullOrEmpty(message.getGroupId())) {
@@ -70,6 +73,7 @@ public class PushFactory {
             if (members == null || members.size() == 0)
                 return;
 
+            //历史记录集合
             List<PushHistory> histories = new ArrayList<>();
             members = members.stream()
                     //过滤我自己
@@ -99,7 +103,7 @@ public class PushFactory {
      *
      * @param dispatcher        推送的发送者
      * @param histories         数据库要存储的列表Model
-     * @param members           所肉的群成员
+     * @param members           要推送的人或群
      * @param entity            要发送的数据
      * @param entityTypeMessage 发送的类型
      */
@@ -117,7 +121,7 @@ public class PushFactory {
 
             //构建推送历史消息Model
             PushHistory pushHistory = new PushHistory();
-            pushHistory.setEntityType(PushModel.ENTITY_TYPE_MESSAGE);
+            pushHistory.setEntityType(entityTypeMessage);
             pushHistory.setEntity(entity);
             pushHistory.setReceiverPushId(receiver.getPushId());
             pushHistory.setReceiver(receiver);
@@ -130,5 +134,160 @@ public class PushFactory {
             //添加到发送者的数据集合中
             dispatcher.add(receiver, pushModel);
         }
+    }
+
+    /**
+     * 给群成员推送一条添加进群的推送
+     *
+     * @param members 要通知的群成员集合
+     */
+    public static void pushJoinGroup(Set<GroupMember> members) {
+        //个推推送工具类
+        PushDispatcher dispatcher = new PushDispatcher();
+        //历史记录集合
+        List<PushHistory> histories = new ArrayList<>();
+
+        for (GroupMember member : members) {
+            //这里是加载 群存在 那么群成员一定存在 所以不需要利用ID去查询用户信息
+            User receiver = member.getUser();
+            if (receiver == null)
+                return;
+
+            GroupMemberCard memberCard = new GroupMemberCard(member);
+            String entity = TextUtil.toJson(memberCard);
+            //构建推送历史消息Model
+            PushHistory pushHistory = new PushHistory();
+            pushHistory.setEntityType(PushModel.ENTITY_TYPE_ADD_GROUP);
+            pushHistory.setEntity(entity);
+            pushHistory.setReceiverPushId(receiver.getPushId());
+            pushHistory.setReceiver(receiver);
+            //添加进集合
+            histories.add(pushHistory);
+            //构建一个推送的model
+            PushModel pushModel = new PushModel();
+            pushModel.add(pushHistory.getEntityType(), pushHistory.getEntity());
+
+            //添加到发送者的数据集合中
+            dispatcher.add(receiver, pushModel);
+        }
+        //循环保存
+        Hib.queryOnOnly(session -> {
+            //经过addGroupMembersPushModel()方法后histories已经有数据了
+            for (PushHistory history : histories) {
+                session.saveOrUpdate(history);
+            }
+        });
+        //提交发送
+        dispatcher.submit();
+
+    }
+
+    /**
+     * 通知老的成员 有一组新成员加入该群
+     *
+     * @param oldMembers    老的群成员
+     * @param insertMembers 新的群成员
+     */
+    public static void pushGroupMembersAdd(Set<GroupMember> oldMembers, Set<GroupMember> insertMembers) {
+        //个推推送工具类
+        PushDispatcher dispatcher = new PushDispatcher();
+        //历史记录集合
+        List<PushHistory> histories = new ArrayList<>();
+
+        //将新增成员的信息列表转换成Json
+        String entity = TextUtil.toJson(insertMembers);
+        //循环添加 给每一个老的oldMembers用户发送一条消息 消息的内容为 新增的用户的集合
+        addGroupMembersPushModel(dispatcher, histories, oldMembers, entity, PushModel.ENTITY_TYPE_ADD_GROUP_MEMBERS);
+        //循环保存
+        Hib.queryOnOnly(session -> {
+            //经过addGroupMembersPushModel()方法后histories已经有数据了
+            for (PushHistory history : histories) {
+                session.saveOrUpdate(history);
+            }
+        });
+        //提交发送
+        dispatcher.submit();
+
+    }
+
+    /**
+     * 给群主发送一个某人神奇加群的推送通知
+     *
+     * @param applyCard 推送的消息
+     * @param ownerId   群主Id
+     */
+    public static void pushGroupOwner(ApplyCard applyCard, String ownerId) {
+        User receiver = UserFactory.findById(ownerId);
+
+        String entity = TextUtil.toJson(applyCard);
+        //个推推送工具类
+        PushDispatcher dispatcher = new PushDispatcher();
+        //构建推送历史消息Model
+        PushHistory pushHistory = new PushHistory();
+        pushHistory.setEntityType(PushModel.ENTITY_TYPE_ADD_GROUP_MEMBERS);
+        pushHistory.setEntity(entity);
+        pushHistory.setReceiverPushId(receiver.getPushId());
+        pushHistory.setReceiver(receiver);
+        //保存推送历史
+        Hib.queryOnOnly(session -> session.save(pushHistory));
+
+        //构建一个推送的model
+        PushModel pushModel = new PushModel();
+        pushModel.add(pushHistory.getEntityType(), pushHistory.getEntity());
+
+        //添加到发送者的数据集合中
+        dispatcher.add(receiver, pushModel);
+        //提交发送
+        dispatcher.submit();
+    }
+
+    public static void pushLogout(User receiver, String pushId) {
+        //个推推送工具类
+        PushDispatcher dispatcher = new PushDispatcher();
+        //构建推送历史消息Model
+        PushHistory pushHistory = new PushHistory();
+        pushHistory.setEntityType(PushModel.ENTITY_TYPE_LOGOUT);
+        pushHistory.setEntity("Account logout!!!");
+        pushHistory.setReceiverPushId(receiver.getPushId());
+        pushHistory.setReceiver(receiver);
+        //保存推送历史
+        Hib.queryOnOnly(session -> session.save(pushHistory));
+
+        //构建一个推送的model
+        PushModel pushModel = new PushModel();
+        pushModel.add(pushHistory.getEntityType(), pushHistory.getEntity());
+
+        //添加到发送者的数据集合中
+        dispatcher.add(receiver, pushModel);
+        //提交发送
+        dispatcher.submit();
+    }
+
+    /**
+     * 给一个我要关注的人发一条我关注了你的推送消息
+     *
+     * @param receiver 我关注的人 目标
+     * @param userCard 我的信息
+     */
+    public static void pushFollow(User receiver, UserCard userCard) {
+        //一定是已经关注了
+        userCard.setIsFollow(true);
+        String entity = TextUtil.toJson(userCard);
+
+        //构建推送历史消息Model
+        PushHistory pushHistory = new PushHistory();
+        pushHistory.setEntityType(PushModel.ENTITY_TYPE_ADD_FRIEND);
+        pushHistory.setEntity(entity);
+        pushHistory.setReceiverPushId(receiver.getPushId());
+        pushHistory.setReceiver(receiver);
+
+        //构建一个推送的model
+        PushModel pushModel = new PushModel();
+        pushModel.add(pushHistory.getEntityType(), pushHistory.getEntity());
+        //个推推送工具类
+        PushDispatcher dispatcher = new PushDispatcher();
+        //添加到发送者的数据集合中
+        dispatcher.add(receiver, pushModel);
+        dispatcher.submit();
     }
 }

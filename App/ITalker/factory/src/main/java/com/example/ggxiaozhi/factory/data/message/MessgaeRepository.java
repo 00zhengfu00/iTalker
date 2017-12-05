@@ -68,6 +68,7 @@ public class MessgaeRepository extends BaseDbRepository<Message> implements Mess
     public void onListQueryResult(QueryTransaction transaction, @NonNull List<Message> tResult) {
         //反转炒操作
         Collections.reverse(tResult);//最近的数据在下面
+
         super.onListQueryResult(transaction, tResult);
     }
 }

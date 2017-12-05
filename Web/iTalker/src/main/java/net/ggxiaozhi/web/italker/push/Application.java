@@ -1,7 +1,6 @@
 package net.ggxiaozhi.web.italker.push;
 
 
-import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import net.ggxiaozhi.web.italker.push.provider.AuthRequestFilter;
 import net.ggxiaozhi.web.italker.push.provider.GsonProvider;
 import net.ggxiaozhi.web.italker.push.service.AccountService;

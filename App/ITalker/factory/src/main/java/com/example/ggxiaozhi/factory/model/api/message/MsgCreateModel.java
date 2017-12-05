@@ -77,7 +77,7 @@ public class MsgCreateModel {
             card.setId(id);
             card.setAttach(attach);
             card.setContent(content);
-            card.setCreateAt(new Date());
+            card.setType(type);
             card.setSenderId(Account.getUserId());
             // 如果是群
             if (receiverType == Message.RECEIVER_TYPE_GROUP) {
@@ -87,6 +87,7 @@ public class MsgCreateModel {
             }
             //通过当前Model创建的card 就是初步创建状态
             card.setStatus(Message.STATUS_CREATED);
+            card.setCreateAt(new Date());
             this.mCard = card;
         }
         return mCard;

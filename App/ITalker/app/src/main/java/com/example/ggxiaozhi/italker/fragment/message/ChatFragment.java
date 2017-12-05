@@ -1,6 +1,7 @@
 package com.example.ggxiaozhi.italker.fragment.message;
 
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.ggxiaozhi.common.app.Fragment;
@@ -70,6 +72,7 @@ public abstract class ChatFragment<InitModel>
      */
     protected Adapter mAdapter;
     protected String receiverId;
+    private int isFirst = 0;//解决弹出软键盘问题
 
     @Override
     protected void initArgs(Bundle bundle) {
@@ -83,9 +86,11 @@ public abstract class ChatFragment<InitModel>
         initToolbar();
         initAppbar();
         initEditContent();
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(manager);
         mAdapter = new Adapter();
         mRecyclerView.setAdapter(mAdapter);
+        refreshRecyclerView();
     }
 
     @Override
@@ -94,6 +99,7 @@ public abstract class ChatFragment<InitModel>
         //开始进行初始化操作
         mPresenter.start();
     }
+
 
     /**
      * 初始化 Appbar
@@ -135,14 +141,15 @@ public abstract class ChatFragment<InitModel>
         });
     }
 
+
     @OnClick(R.id.btn_face)
     void onFaceClick() {
-
+// TODO
     }
 
     @OnClick(R.id.btn_record)
     void onRecordClick() {
-
+// TODO
     }
 
     @OnClick(R.id.btn_submit)
@@ -150,10 +157,10 @@ public abstract class ChatFragment<InitModel>
 
         if (mViewSubmit.isActivated()) {
             //发送
-
             String content = mEditContent.getText().toString();
             mEditContent.setText("");
             mPresenter.pushText(content);
+            refreshRecyclerView();
         } else {
             //点击更多
             onMoreClick();
@@ -172,6 +179,49 @@ public abstract class ChatFragment<InitModel>
     @Override
     public void onAdapterDataChanged() {
         //这里什么也不做 这个方法主要是用来更新占位布局的状态 因为没有占位布局 Recycler是一直显示的 所以什么已不做
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //获取当前屏幕内容的高度
+        getActivity().getWindow().getDecorView().addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                //获取View可见区域的bottom
+                Rect rect = new Rect();
+                getActivity().getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
+                if (bottom != 0 && oldBottom != 0 && bottom - rect.bottom <= 0) {
+                    if (isFirst > 3) {//隐藏=2时是第一次进入 等于3是第一次点击
+                    }
+                } else {
+//                    if (isFirst > 1)//显示
+//                        onBottomPanelOpened();
+                }
+//                isFirst++;
+            }
+        });
+
+    }
+
+    private void onBottomPanelOpened() {
+        if (mAppBarLayout != null) {
+            mAppBarLayout.setExpanded(false, true);
+        }
+        refreshRecyclerView();
+    }
+
+    /**
+     * 刷新RecyclerView() 并移动到最新一条数据
+     */
+    private void refreshRecyclerView() {
+        mRecyclerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mRecyclerView.scrollToPosition(mAdapter.getItemCount() - 1);
+            }
+        }, 200);
     }
 
     /**
@@ -280,7 +330,6 @@ public abstract class ChatFragment<InitModel>
          */
         @OnClick(R.id.im_portrait)
         void onRePushClick() {
-
             if (mLoading != null && mPresenter.rePush(mData)) {
                 //只有在右侧的情况下 才允许重新发送
                 // 状态改变需要重新刷新界面

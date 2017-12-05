@@ -74,6 +74,15 @@ public class GroupMember {
     private String groupId;
 
 
+    public GroupMember() {
+
+    }
+
+    public GroupMember(User user, Group group) {
+        this.user = user;
+        this.group = group;
+    }
+
     public String getId() {
         return id;
     }

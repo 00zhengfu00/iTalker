@@ -1,12 +1,16 @@
 package com.example.ggxiaozhi.italker.fragment.message;
 
 
+import android.graphics.Rect;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -25,7 +29,7 @@ import butterknife.OnClick;
 /**
  * 用户聊天窗口
  */
-public class ChatUserFragment extends ChatFragment<User> implements ChatContract.UserView {
+public class ChatUserFragment extends ChatFragment<User> implements ChatContract.UserView{
     private static final String TAG = "ChatUserFragment";
     /**
      * UI
@@ -37,6 +41,8 @@ public class ChatUserFragment extends ChatFragment<User> implements ChatContract
     public ChatUserFragment() {
         // Required empty public constructor
     }
+
+
 
     @Override
     protected int getContentLayoutId() {
@@ -72,6 +78,7 @@ public class ChatUserFragment extends ChatFragment<User> implements ChatContract
                     }
                 });
     }
+
 
     /**
      * 监听AppBarLayout的缩放 展开的监听
@@ -143,7 +150,6 @@ public class ChatUserFragment extends ChatFragment<User> implements ChatContract
     @Override
     public void onInit(User user) {
         //对和你聊天的朋友的信息进行初始化操作
-
         mPortrait.setup(Glide.with(ChatUserFragment.this), user);
         mToolbarLayout.setTitle(user.getName());
     }

@@ -7,6 +7,7 @@ import net.ggxiaozhi.web.italker.push.bean.api.user.UpdateInfoModle;
 import net.ggxiaozhi.web.italker.push.bean.card.UserCard;
 import net.ggxiaozhi.web.italker.push.bean.db.User;
 import net.ggxiaozhi.web.italker.push.bean.db.UserFollow;
+import net.ggxiaozhi.web.italker.push.bean.factory.PushFactory;
 import net.ggxiaozhi.web.italker.push.bean.factory.UserFactory;
 import net.ggxiaozhi.web.italker.push.utils.PushDispatcher;
 
@@ -108,7 +109,9 @@ public class UserService extends BaseService {
             return ResponseModel.buildServiceError();
         }
 
-        //TODO 通知我关注的人  我关注了他的消息
+        //通知我关注的人  我关注了他的消息
+        //给他发送一个我的信息过去
+        PushFactory.pushFollow(userFollow,new UserCard(self));
         //返回关注人的信息
         return ResponseModel.buildOk(new UserCard(userFollow, true));
     }

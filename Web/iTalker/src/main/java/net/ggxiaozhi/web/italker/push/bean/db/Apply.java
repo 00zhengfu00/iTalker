@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 
 @Entity//表明为实体类
 @Table(name = "TB_APPLY")//对应数据库中的表
-public class Apply {
+public class  Apply {
 
     public static final int TYPE_ADD_USER = 1; // 添加好友
     public static final int TYPE_ADD_GROUP = 2; // 加入群

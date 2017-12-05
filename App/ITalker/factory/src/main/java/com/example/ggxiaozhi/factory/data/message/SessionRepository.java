@@ -3,7 +3,6 @@ package com.example.ggxiaozhi.factory.data.message;
 import android.support.annotation.NonNull;
 
 import com.example.ggxiaozhi.factory.data.BaseDbRepository;
-import com.example.ggxiaozhi.factory.data.DataSource;
 import com.example.ggxiaozhi.factory.model.db.Session;
 import com.example.ggxiaozhi.factory.model.db.Session_Table;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
@@ -17,7 +16,7 @@ import java.util.List;
  * 包名   ： com.example.ggxiaozhi.factory.data.message
  * 作者名 ： 志先生_
  * 日期   ： 2017/12
- * 功能   ：
+ * 功能   ：最近消息仓库
  */
 
 public class SessionRepository extends BaseDbRepository<Session> implements SessionDataSource {
@@ -61,6 +60,15 @@ public class SessionRepository extends BaseDbRepository<Session> implements Sess
     public void onListQueryResult(QueryTransaction transaction, @NonNull List<Session> tResult) {
         //将数据进行反转
         Collections.reverse(tResult);
+
         super.onListQueryResult(transaction, tResult);
+    }
+
+    @Override
+    protected void replace(int index, Session session) {
+        //但是现在我们的需求是 当我们与人聊天的时候 或是接收到消息的时候 我们希望最新的消息在上面
+        //但是replace会按照具体的position更新对应的数据 所以我们重写此方法
+        mDataList.remove(index);
+        mDataList.addFirst(session);
     }
 }

@@ -265,7 +265,8 @@ public class UserFactory {
             //那么需要单点登录，让之前的设备退出账户。
             //给之前的设备推送一条退出的消息
             if (Strings.isNullOrEmpty(user.getPushId())) {
-                //TODO 推送一个退出消息
+                //推送一个退出消息 这里不用传入的User回去pushId是防止当推送回去时用户已经更细了新的PushID
+                PushFactory.pushLogout(user,user.getPushId());
             }
             //第四步：更新设备Id
             //更新新的设备Id
