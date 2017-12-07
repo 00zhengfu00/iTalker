@@ -3,7 +3,10 @@ package com.example.ggxiaozhi.factory.presenter.message;
 import com.example.ggxiaozhi.factory.model.db.Group;
 import com.example.ggxiaozhi.factory.model.db.Message;
 import com.example.ggxiaozhi.factory.model.db.User;
+import com.example.ggxiaozhi.factory.model.db.view.MemberUserModel;
 import com.example.ggxiaozhi.factory.presenter.BaseContract;
+
+import java.util.List;
 
 /**
  * 工程名 ： ITalker
@@ -50,5 +53,10 @@ public interface ChatContract {
     //与群聊天的界面
     interface GroupView extends View<Group> {
 
+        //是否是管理员 来决定是先显示添加成员图标
+        void showAdminOption(boolean isAdmin);
+
+        //初始化群成员信息
+        void onInitGroupMembers(List<MemberUserModel> memberUserModels, int memberCount);
     }
 }

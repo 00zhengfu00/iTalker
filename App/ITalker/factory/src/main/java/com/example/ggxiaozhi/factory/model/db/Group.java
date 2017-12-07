@@ -1,16 +1,17 @@
 package com.example.ggxiaozhi.factory.model.db;
 
+import com.example.ggxiaozhi.factory.data.helper.GroupHelper;
 import com.example.ggxiaozhi.factory.model.db.base.BaseDbModel;
-import com.example.ggxiaozhi.factory.utils.DiffUiDataCallback;
+import com.example.ggxiaozhi.factory.model.db.view.MemberUserModel;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
-import com.raizlabs.android.dbflow.structure.BaseModel;
 
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -43,6 +44,7 @@ public class Group extends BaseDbModel<Group> implements Serializable {
 
 
     public Object holder; // 预留字段，用于界面显示
+
 
     public String getId() {
         return id;
@@ -145,5 +147,30 @@ public class Group extends BaseDbModel<Group> implements Serializable {
                 && Objects.equals(this.desc, oldT.desc)
                 && Objects.equals(this.picture, oldT.picture)
                 && Objects.equals(this.holder, oldT.holder);
+    }
+
+    //成员的数量
+    private long mGroupMembersCount = -1;
+
+    public long getGroupMembersCount() {
+        if (mGroupMembersCount == -1) {
+            //没有初始化 那么进行第一次初始化
+            mGroupMembersCount = GroupHelper.GroupMembersCount(id);
+        }
+        return mGroupMembersCount;
+    }
+
+    private List<MemberUserModel> groupLatelyGroupMembers;
+
+    /**
+     * 获取当前群的简单成员信息 最多4条
+     * @return 简单成员信息集合
+     */
+    public List<MemberUserModel> getGroupLatelyGroupMembers() {
+        if (groupLatelyGroupMembers == null || groupLatelyGroupMembers.isEmpty()) {
+            //  加载简单的用户信息 最多4条
+            groupLatelyGroupMembers = GroupHelper.getMemberUsers(id, 4);
+        }
+        return groupLatelyGroupMembers;
     }
 }

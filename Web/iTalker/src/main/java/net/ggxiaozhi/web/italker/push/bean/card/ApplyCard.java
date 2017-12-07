@@ -40,7 +40,7 @@ public class ApplyCard {
         this.desc = apply.getDesciption();
         this.type = apply.getType();
         this.targetId = apply.getTargetId();
-        this.applicantId = apply.getApplicantId();
+        this.applicantId = apply.getApplicant().getId();
         this.createAt = apply.getCreateAt();
     }
 

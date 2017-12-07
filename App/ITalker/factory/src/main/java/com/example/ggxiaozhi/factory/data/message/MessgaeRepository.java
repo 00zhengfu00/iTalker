@@ -4,14 +4,11 @@ package com.example.ggxiaozhi.factory.data.message;
 import android.support.annotation.NonNull;
 
 import com.example.ggxiaozhi.factory.data.BaseDbRepository;
-import com.example.ggxiaozhi.factory.data.DataSource;
 import com.example.ggxiaozhi.factory.model.db.Message;
 import com.example.ggxiaozhi.factory.model.db.Message_Table;
-import com.example.ggxiaozhi.utils.CollectionUtil;
 import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.structure.database.transaction.QueryTransaction;
-import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
 import java.util.Collections;
 import java.util.List;

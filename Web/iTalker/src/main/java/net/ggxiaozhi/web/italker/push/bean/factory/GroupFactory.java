@@ -102,7 +102,7 @@ public class GroupFactory {
      */
     public static Group create(User createUser, GroupCreateModel model, List<User> users) {
         return Hib.query(session -> {
-            Group group = new Group(createUser,model);
+            Group group = new Group(createUser, model);
             //在事务中 调用session.save()并没有真正的保存到数据库 而是在缓存中
             //只有在所有操作完成后才会提交
             session.save(group);
@@ -163,7 +163,7 @@ public class GroupFactory {
 
         return Hib.query(session -> {
             //查询条件：name忽略大小写 并且使用like(模糊)查询
-            return (List<Group>) session.createQuery("from User where lower(name) like :name")
+            return (List<Group>) session.createQuery("from Group where lower(name) like :name")
                     .setParameter("name", searchName)
                     .setMaxResults(20)//返回的数据最多20条
                     .list();
@@ -185,38 +185,46 @@ public class GroupFactory {
                 session.save(member);
                 memberSet.add(member);
             }
+            //此时会出现一个问题：在返回的GroupMember中userId和groupId是空的 因为我们是引用关联 外键
+            //在没有 查询的情况下 默认外键是空的 所以我们要查询或刷新一次 如下
+            //进行数据刷新
+           /* for (GroupMember member : memberSet) {
+                //进行刷新 进行关联查询  但此方法消耗较高 不建议使用
+                session.refresh(member);
+            }*/
+            //我们可以在初始化群卡片的时候直接获取Id
             return memberSet;
         });
     }
 
     /**
      * 修改群成员的信息
+     * <p>
+     * group    要修改信息的群成员所在的group
      *
-     * @param group    要修改信息的群成员所在的group
      * @param memberId 被修改群成员id
      * @param model    修改的参数
      * @param isAdmin  修改人是否有对应的权限   True 表示有
      * @return 修改后的成员信息
      */
-    public static GroupMember updateMember(Group group, String memberId, GroupMembeUpdateModel model, boolean isAdmin) {
+    public static GroupMember updateMember(String memberId, GroupMembeUpdateModel model, boolean isAdmin) {
         GroupMember member = getMember(memberId);
         return Hib.query(session -> {
             member.setAlias(model.getAlias());
-            //1.在参数中修改了权限 同时你是普通选线 同时申请接口的用户有对应的权限 满足三者才能修改选线
+            //1.在参数中修改了权限 同时你是普通权限 同时申请接口的用户有对应的权限 满足三者才能修改权限
             if (model.isAdmin() && member.getPermissionType() == GroupMember.NOTIFY_LEVEL_NONE && isAdmin)
                 member.setPermissionType(GroupMember.PERMISSION_TYPE_ADMIN);
             session.saveOrUpdate(member);
-            session.flush();
-            session.load(member, memberId);
             return member;
         });
     }
 
     /**
      * 创建一个添加群的推送记录model
+     *
      * @param groupId id
-     * @param self 申请人
-     * @param model 申请描述
+     * @param self    申请人
+     * @param model   申请描述
      * @return Apply
      */
     public static Apply joinApply(String groupId, User self, GroupApplyModel model) {

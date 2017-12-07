@@ -1,16 +1,12 @@
 package com.example.ggxiaozhi.italker.fragment.message;
 
 
-import android.graphics.Rect;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -38,15 +34,9 @@ public class ChatUserFragment extends ChatFragment<User> implements ChatContract
     @BindView(R.id.im_portrait)
     PortraitView mPortrait;
 
-    public ChatUserFragment() {
-        // Required empty public constructor
-    }
-
-
-
     @Override
-    protected int getContentLayoutId() {
-        return R.layout.fragment_chat_user;
+    protected int getHeaderLayoutId() {
+        return R.layout.lay_chat_header_user;
     }
 
     @Override

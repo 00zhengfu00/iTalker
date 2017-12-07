@@ -38,4 +38,15 @@
     </style>
     <!--供外界使用-->
     <style name="AppTheme.Base" parent="Theme.private"/>
+
+    <style name="AppTheme.Dialog.Alert.Light" parent="Base.Theme.AppCompat.Light.Dialog.Alert">
+        <!--当弹出对话框后背景是否变暗-->
+        <item name="android:backgroundDimEnabled">false</item>
+        <!--将白色背景去掉-->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!-- 复写3个主要的色彩. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
 </resources>

@@ -136,8 +136,8 @@ public class MainActivity extends Activity implements
         //如果是群 则打开创建群界面
 
         if (Objects.equals(mHelper.getCurrentTab().extra, R.string.title_group)) {
-            //TODO 打开添加群界面
-            SearchActivity.show(this, SearchActivity.TYPE_GROUP);
+            //打开添加群界面
+            GroupCreateActivity.show(this);
         } else {
             //如果是其他都打开用户添加界面
             SearchActivity.show(this, SearchActivity.TYPE_USER);

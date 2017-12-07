@@ -36,7 +36,7 @@ public class Network {
 
     }
 
-    public static Retrofit getRetrofit() {
+    private static Retrofit getRetrofit() {
         if (instance.mRetrofit != null) {
             return instance.mRetrofit;
         }
@@ -72,7 +72,7 @@ public class Network {
     /**
      * 返回一个请求代理
      *
-     * @return
+     * @return RemoteService代理
      */
     public static RemoteService remote() {
         return Network.getRetrofit().create(RemoteService.class);

@@ -21,8 +21,4 @@ public interface Author {
     String getPortrait();
 
     void setPortrait(String portrait);
-
-    String getDesc();
-
-    void setDesc(String desc);
 }

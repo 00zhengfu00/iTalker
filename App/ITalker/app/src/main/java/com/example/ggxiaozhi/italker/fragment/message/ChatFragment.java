@@ -3,6 +3,7 @@ package com.example.ggxiaozhi.italker.fragment.message;
 
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -12,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -81,7 +83,23 @@ public abstract class ChatFragment<InitModel>
     }
 
     @Override
+    protected final int getContentLayoutId() {
+        return R.layout.fragment_chat_common;
+    }
+
+    //得到子类要替换的布局Id
+    @LayoutRes
+    protected abstract int getHeaderLayoutId();
+
+    @Override
     protected void initWidget(View root) {
+        //拿到占位布局
+        //替换顶部布局 一定要在super之前
+        //防止控件绑定异常
+        ViewStub viewStub= (ViewStub) root.findViewById(R.id.view_stub_header);
+        viewStub.setLayoutResource(getHeaderLayoutId());
+        viewStub.inflate();
+        //在这里绑定界面布局
         super.initWidget(root);
         initToolbar();
         initAppbar();

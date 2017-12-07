@@ -8,8 +8,10 @@ import com.example.ggxiaozhi.factory.model.api.user.UserUpdateModel;
 import com.example.ggxiaozhi.factory.model.card.UserCard;
 import com.example.ggxiaozhi.factory.model.db.User;
 import com.example.ggxiaozhi.factory.model.db.User_Table;
+import com.example.ggxiaozhi.factory.model.db.view.UserSampleModel;
 import com.example.ggxiaozhi.factory.net.Network;
 import com.example.ggxiaozhi.factory.net.RemoteService;
+import com.example.ggxiaozhi.factory.presistance.Account;
 import com.example.ggxiaozhi.utils.CollectionUtil;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
@@ -197,11 +199,11 @@ public class UserHelper {
     /**
      * 从网络同步查询用户信息
      *
-     * @param id
+     * @param id 用户Id
      * @return 查询到的用户信息
      */
 
-    public static User findFromNet(String id) {
+    private static User findFromNet(String id) {
         RemoteService service = Network.remote();
         try {
             //同步执行
@@ -249,5 +251,40 @@ public class UserHelper {
             return findFromLocal(id);
         }
         return user;
+    }
+
+    /**
+     * 同步本地查询联系人的方法
+     *
+     * @return 联系人列表
+     */
+    public static List<User> getContact() {
+        return SQLite.select()
+                .from(User.class)
+                .where(User_Table.isFollow.eq(true))
+                .and(User_Table.id.notEq(Account.getUserId()))
+                .orderBy(User_Table.name, true)
+                .limit(100)
+                .queryList();
+    }
+
+
+    /**
+     * 同步本地查询联系人的方法
+     *
+     * @return 联系人列表
+     */
+    public static List<UserSampleModel> getSampleContact() {
+        //select id= "" from ...
+        //select User_id ="" from ...
+        //这样消耗更小 就不限制查询条数了
+        return SQLite.select(User_Table.id.withTable().as("id")
+                , User_Table.name.withTable().as("name")
+                , User_Table.portrait.withTable().as("portrait"))
+                .from(User.class)
+                .where(User_Table.isFollow.eq(true))
+                .and(User_Table.id.notEq(Account.getUserId()))
+                .orderBy(User_Table.name, true)
+                .queryCustomList(UserSampleModel.class);
     }
 }

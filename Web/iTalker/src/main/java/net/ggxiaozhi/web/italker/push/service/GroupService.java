@@ -168,7 +168,7 @@ public class GroupService extends BaseService {
      * @param id 群的Id
      * @return 返回群的信息
      */
-    @GET//date指定某一时间段的数据
+    @GET//
     @Path("/{groupId}")//http://.../api/group/0000-0000-0000-0000
     @Consumes(MediaType.APPLICATION_JSON)//指定传入的格式
     @Produces(MediaType.APPLICATION_JSON)//指定返回的格式
@@ -310,36 +310,34 @@ public class GroupService extends BaseService {
         Group group = GroupFactory.findById(model.getGroupId());
         if (group == null)
             return ResponseModel.buildParameterError();
-
-
         /*2.校验参数*/
 
         //得到当前群下所有群信息
         Set<GroupMember> members = GroupFactory.getMembers(group);
         //得到self 在群众的群成员卡片
         GroupMember selfMember = GroupFactory.getMember(self.getId(), model.getGroupId());
+        if (selfMember == null)
+            return ResponseModel.buildParameterError();
         List<String> menberIds = members.stream().map(GroupMember::getId).collect(Collectors.toList());
         boolean isAlready = false;
         for (String id : menberIds) {
-            if (id.equalsIgnoreCase(memberId) && id.equalsIgnoreCase(selfMember.getId()))
+            if (id.equalsIgnoreCase(memberId))
                 isAlready = true;
         }
         if (!isAlready)
             return ResponseModel.buildParameterError();
 
-        //权限错误
-        if (selfMember.getPermissionType() != GroupMember.PERMISSION_TYPE_NONE || selfMember.getUserId().equalsIgnoreCase(self.getId()))
-            return ResponseModel.buildNoPermissionError();
-        /*3.修改信息*/
         //1.自己只能修改自己的信息 只能修改自己在群中的别名
         //2.如果是管理员或是创建者 都能修改他人的权限和别名
-
-
+        //权限错误 如果你是普通权限 同时 传入的memberId不是你自己的群成员id 那么就证明你想改别人的  那么返回权限不足
+        if (selfMember.getPermissionType() == GroupMember.PERMISSION_TYPE_NONE && !selfMember.getId().equalsIgnoreCase(memberId))
+            return ResponseModel.buildNoPermissionError();
+        /*3.修改信息*/
         boolean isAmind = false;
         if (selfMember.getPermissionType() != GroupMember.NOTIFY_LEVEL_NONE)
             isAmind = true;
         //获取存储到数据库返回的member
-        GroupMember member = GroupFactory.updateMember(group, memberId, model, isAmind);
+        GroupMember member = GroupFactory.updateMember(memberId, model, isAmind);
         if (member == null) {
             return ResponseModel.buildServiceError();
         }

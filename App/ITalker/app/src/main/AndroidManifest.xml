@@ -34,13 +34,11 @@
         <activity
             android:name=".activity.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Main">
-        </activity>
+            android:theme="@style/AppTheme.Main"/>
         <activity
             android:name=".activity.AccountActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Account">
-        </activity>
+            android:theme="@style/AppTheme.Account"/>
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
@@ -48,8 +46,7 @@
         <activity
             android:name=".activity.UserActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Account">
-        </activity>
+            android:theme="@style/AppTheme.Account"/>
         <!-- 个推的广播注册 -->
         <receiver
             android:name=".MessageReceiver"
@@ -65,20 +62,22 @@
             android:name=".activity.SearchActivity"
             android:label="@string/title_search"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.TransStatusBar">
-        </activity>
+            android:theme="@style/AppTheme.TransStatusBar"/>
         <activity
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
             android:name=".activity.MessageActivity"
             android:label="@string/title_activity_message"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Message">
-        </activity>
+            android:theme="@style/AppTheme.Message"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
         <activity
             android:name=".activity.PersonalActivity"
             android:label="@string/title_activity_personal"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.TransStatusBar"/>
+        <activity
+            android:name=".activity.GroupCreateActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Group.Create"/>
     </application>
 
 </manifest>
