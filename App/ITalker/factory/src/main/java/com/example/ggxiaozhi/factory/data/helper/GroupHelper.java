@@ -5,6 +5,7 @@ import com.example.ggxiaozhi.factory.R;
 import com.example.ggxiaozhi.factory.data.DataSource;
 import com.example.ggxiaozhi.factory.model.RspModel;
 import com.example.ggxiaozhi.factory.model.api.group.GroupCreateModel;
+import com.example.ggxiaozhi.factory.model.api.group.GroupMemberAddModel;
 import com.example.ggxiaozhi.factory.model.card.GroupCard;
 import com.example.ggxiaozhi.factory.model.card.GroupMemberCard;
 import com.example.ggxiaozhi.factory.model.card.UserCard;
@@ -17,6 +18,7 @@ import com.example.ggxiaozhi.factory.model.db.User_Table;
 import com.example.ggxiaozhi.factory.model.db.view.MemberUserModel;
 import com.example.ggxiaozhi.factory.net.Network;
 import com.example.ggxiaozhi.factory.net.RemoteService;
+import com.example.ggxiaozhi.factory.presenter.group.GroupMemberAddPresenter;
 import com.example.ggxiaozhi.factory.presenter.search.SearchGroupPresenter;
 import com.raizlabs.android.dbflow.sql.language.Join;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
@@ -156,6 +158,10 @@ public class GroupHelper {
         return rspModelCall;
     }
 
+    /**
+     * 刷新群的请求
+     * @param date 指定一个日期
+     */
     public static void refreshGroups(String date) {
         RemoteService service = Network.remote();
         Call<RspModel<List<GroupCard>>> rspModelCall = service.groups(date);
@@ -236,7 +242,7 @@ public class GroupHelper {
         return SQLite.select(GroupMember_Table.alias.withTable().as("alias")//群成员中的alias数据作为新表的数据 并将新表的字段定义为alias
                 , User_Table.name.withTable().as("name")//群成员中的name数据作为新表的数据 并将新表的字段定义为name
                 , User_Table.portrait.withTable().as("portrait")//群成员中的portrait数据作为新表的数据 并将新表的字段定义为portrait
-                , User_Table.id.withTable().as("i"))//群成员中的Id数据作为新表的数据 并将新表的字段定义为userId
+                , User_Table.id.withTable().as("userId"))//群成员中的Id数据作为新表的数据 并将新表的字段定义为userId
                 .from(GroupMember.class)//从成员表查询
                 .join(User.class, Join.JoinType.INNER)//将成员表与User表联合(内连接) 只要两个表的公共字段有匹配值，就将这两个表中的记录组合起来。
                 .on(GroupMember_Table.user_id.withTable().eq(User_Table.id.withTable()))//前提条件 需要时匹配同一个人
@@ -245,5 +251,37 @@ public class GroupHelper {
                 .limit(size)//查询个数
                 .queryCustomList(MemberUserModel.class);//返回自定义参数集合 将字段映射到新建表中
 
+    }
+
+    /**
+     * 网络请求进行成员添加
+     * @param groupId
+     * @param model
+     * @param callback
+     */
+    public static void addMembers(String groupId, GroupMemberAddModel model, final DataSource.Callback<List<GroupMemberCard>> callback) {
+        RemoteService service = Network.remote();
+        service.groupMemberAdd(groupId, model)
+                .enqueue(new Callback<RspModel<List<GroupMemberCard>>>() {
+                    @Override
+                    public void onResponse(Call<RspModel<List<GroupMemberCard>>> call, Response<RspModel<List<GroupMemberCard>>> response) {
+                        RspModel<List<GroupMemberCard>> rspModel = response.body();
+                        if (rspModel.success()) {
+                            List<GroupMemberCard> memberCards = rspModel.getResult();
+                            if (memberCards != null && memberCards.size() > 0) {
+                                // 进行调度显示
+                                Factory.getGroupCenter().groupMemberDispatch(memberCards.toArray(new GroupMemberCard[0]));
+                                callback.onDataLoaded(memberCards);
+                            }
+                        } else {
+                            Factory.decodeRspCode(rspModel, null);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<RspModel<List<GroupMemberCard>>> call, Throwable t) {
+                        callback.onDataNotAvailable(R.string.data_network_error);
+                    }
+                });
     }
 }

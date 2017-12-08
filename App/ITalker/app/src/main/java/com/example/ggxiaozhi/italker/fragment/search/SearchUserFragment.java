@@ -47,6 +47,7 @@ public class SearchUserFragment extends PresenterFragment<SearchContract.SearchP
     EmptyView mEmptyView;
 
     private RecyclerAdapter<UserCard> mAdapter;
+    private SearchUserFragment.ViewHolder mHolder;
 
     @Override
     protected int getContentLayoutId() {
@@ -65,11 +66,19 @@ public class SearchUserFragment extends PresenterFragment<SearchContract.SearchP
 
             @Override
             protected ViewHolder<UserCard> onCreateViewHolder(View root, int viewType) {
-                return new SearchUserFragment.ViewHolder(root);
+                mHolder=new SearchUserFragment.ViewHolder(root);
+                return mHolder;
             }
         };
         mRecycler.setAdapter(mAdapter);
 
+        mAdapter.setAdapterListener(new RecyclerAdapter.AdapterListenerImpl<UserCard>() {
+            @Override
+            public void onItemClick(RecyclerAdapter.ViewHolder holder, UserCard userCard) {
+                super.onItemClick(holder, userCard);
+                ((SearchUserFragment.ViewHolder)holder).onFollowClick();
+            }
+        });
         //初始化占位布局
         mEmptyView.bind(mRecycler);
         setPlaceHolderView(mEmptyView);

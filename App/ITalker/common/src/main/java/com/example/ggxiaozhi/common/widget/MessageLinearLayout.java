@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
+import net.qiujuer.widget.airpanel.AirPanelLinearLayout;
+
 /**
  * 工程名 ： ITalker
  * 包名   ： com.example.ggxiaozhi.common.widget
@@ -15,7 +17,7 @@ import android.widget.LinearLayout;
  * 功能   ：解决消息聊天布局无法在软键盘弹出时无法设置沉浸式状态栏的问题
  */
 
-public class MessageLinearLayout extends LinearLayout {
+public class MessageLinearLayout extends AirPanelLinearLayout {
     public MessageLinearLayout(Context context) {
         super(context);
     }

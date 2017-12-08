@@ -57,6 +57,6 @@ public interface ChatContract {
         void showAdminOption(boolean isAdmin);
 
         //初始化群成员信息
-        void onInitGroupMembers(List<MemberUserModel> memberUserModels, int memberCount);
+        void onInitGroupMembers(List<MemberUserModel> memberUserModels, long memberCount);
     }
 }

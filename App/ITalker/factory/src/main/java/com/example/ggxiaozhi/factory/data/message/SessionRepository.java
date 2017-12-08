@@ -60,7 +60,6 @@ public class SessionRepository extends BaseDbRepository<Session> implements Sess
     public void onListQueryResult(QueryTransaction transaction, @NonNull List<Session> tResult) {
         //将数据进行反转
         Collections.reverse(tResult);
-
         super.onListQueryResult(transaction, tResult);
     }
 

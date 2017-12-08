@@ -139,19 +139,16 @@ public class ActiveFragment extends PresenterFragment<SessionContract.Presenter>
             } else {
                 mTime.setText(DateTimeUtils.getSimpleDateHour(modifyAt));
             }
-//            if (((currentDate.getTime() - modifyAt.getTime()) / (24 * 60 * 60 * 1000)) >= 1) {
-//                mTime.setText("昨天");
-//            }
             newCalendar.setTime(currentDate);
             oldCalendar.setTime(modifyAt);
-            if (newCalendar.get(Calendar.DAY_OF_YEAR) - oldCalendar.get(Calendar.DAY_OF_YEAR) == 0)
-                Log.d("TAG", "onBind: newCalendar.get(Calendar.DAY_OF_YEAR):"+newCalendar.get(Calendar.DAY_OF_YEAR)+"       oldCalendar.get(Calendar.DAY_OF_YEAR):"+oldCalendar.get(Calendar.DAY_OF_YEAR));
+            if (newCalendar.get(Calendar.DAY_OF_YEAR) - oldCalendar.get(Calendar.DAY_OF_YEAR) == 1) {
+                Log.d("TAG", "onBind: newCalendar.get(Calendar.DAY_OF_YEAR):" + newCalendar.get(Calendar.DAY_OF_YEAR)
+                        + "       oldCalendar.get(Calendar.DAY_OF_YEAR):" + oldCalendar.get(Calendar.DAY_OF_YEAR));
                 mTime.setText("昨天");
-            if (((currentDate.getTime() - modifyAt.getTime()) / (3 * 24 * 60 * 60 * 1000)) >= 3
-                    && ((currentDate.getTime() - modifyAt.getTime()) / (3 * 24 * 60 * 60 * 1000)) < 4) {
-                mTime.setText("3天前");
             }
-            if ((currentDate.getTime() - modifyAt.getTime()) / (3 * 24 * 60 * 60 * 1000) >= 4) {
+            if (newCalendar.get(Calendar.DAY_OF_YEAR) - oldCalendar.get(Calendar.DAY_OF_YEAR) == 3) {
+                mTime.setText("3天前");
+            } else if ((currentDate.getTime() - modifyAt.getTime()) / (3 * 24 * 60 * 60 * 1000) >= 4) {
                 mTime.setText(DateTimeUtils.getSimpleDate(modifyAt));
             }
         }

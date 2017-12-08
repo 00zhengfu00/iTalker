@@ -72,7 +72,7 @@
             android:layout_marginStart="@dimen/len_44"
             android:layout_marginTop="@dimen/len_2"
             android:background="@color/black_alpha_32"
-            ></View>
+            />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -117,7 +117,7 @@
             android:layout_marginStart="@dimen/len_44"
             android:layout_marginTop="@dimen/len_2"
             android:background="@color/black_alpha_32"
-            ></View>
+            />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -180,7 +180,7 @@
             android:layout_width="@dimen/len_12"
             android:layout_height="@dimen/len_12"
             android:layout_gravity="end|center_vertical"
-            android:contentDescription=""
+            android:contentDescription="@string/app_name"
             android:scaleType="centerInside"
             android:src="@drawable/ic_direction_right"
             android:tint="@color/white"/>

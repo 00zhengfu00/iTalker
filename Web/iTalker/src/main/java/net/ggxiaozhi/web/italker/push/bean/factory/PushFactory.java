@@ -2,10 +2,7 @@ package net.ggxiaozhi.web.italker.push.bean.factory;
 
 import com.google.common.base.Strings;
 import net.ggxiaozhi.web.italker.push.bean.api.base.PushModel;
-import net.ggxiaozhi.web.italker.push.bean.card.ApplyCard;
-import net.ggxiaozhi.web.italker.push.bean.card.GroupMemberCard;
-import net.ggxiaozhi.web.italker.push.bean.card.MessageCard;
-import net.ggxiaozhi.web.italker.push.bean.card.UserCard;
+import net.ggxiaozhi.web.italker.push.bean.card.*;
 import net.ggxiaozhi.web.italker.push.bean.db.*;
 import net.ggxiaozhi.web.italker.push.utils.Hib;
 import net.ggxiaozhi.web.italker.push.utils.PushDispatcher;
@@ -141,20 +138,18 @@ public class PushFactory {
      *
      * @param members 要通知的群成员集合
      */
-    public static void pushJoinGroup(Set<GroupMember> members) {
+    public static void pushJoinGroup(Set<GroupMember> members, Group group) {
+
         //个推推送工具类
         PushDispatcher dispatcher = new PushDispatcher();
         //历史记录集合
         List<PushHistory> histories = new ArrayList<>();
-
         for (GroupMember member : members) {
             //这里是加载 群存在 那么群成员一定存在 所以不需要利用ID去查询用户信息
             User receiver = member.getUser();
             if (receiver == null)
                 return;
-
-            GroupMemberCard memberCard = new GroupMemberCard(member);
-            String entity = TextUtil.toJson(memberCard);
+            String entity = TextUtil.toJson(new GroupCard(group, member));
             //构建推送历史消息Model
             PushHistory pushHistory = new PushHistory();
             pushHistory.setEntityType(PushModel.ENTITY_TYPE_ADD_GROUP);

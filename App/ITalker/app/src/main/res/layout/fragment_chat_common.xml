@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/lay_content"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:context="com.example.ggxiaozhi.italker.fragment.message.ChatUserFragment">
@@ -19,7 +20,10 @@
             android:layout_height="wrap_content"
             android:background="@color/trans">
             <!--这是一个占位布局 具体的内容由 chatUser 和chatGroup去替换决定-->
+            <!--此时 会没有弹出收缩效果 因为在替换的时候 ViewStub的属性会全部赋值给替换的布局-->
+            <!--app:layout_scrollFlags="scroll|exitUntilCollapsed|snap" 设置子类无效 因为他是Appbarlayout的标识属性-->
             <ViewStub
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
                 android:id="@+id/view_stub_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -93,4 +97,18 @@
             android:src="@drawable/ic_submit"
             android:tint="@color/textPrimary"/>
     </LinearLayout>
+
+    <!--Id是固定的airPanelSubLayout-->
+    <net.qiujuer.widget.airpanel.AirPanelLinearLayout
+        android:id="@id/airPanelSubLayout"
+        android:background="@color/grey_300"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <fragment
+            class="com.example.ggxiaozhi.italker.fragment.panel.PanelFragment"
+            android:id="@+id/frag_panel"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"/>
+    </net.qiujuer.widget.airpanel.AirPanelLinearLayout>
 </com.example.ggxiaozhi.common.widget.MessageLinearLayout>

@@ -48,6 +48,8 @@ dependencies {
     //注解框架
     compile "com.jakewharton:butterknife:$rootProject.ext.butterknifeVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.ext.butterknifeVersion"
+    //空气面板
+    compile "net.qiujuer.widget:airpanel:$rootProject.ext.airpanelVersion"
     compile project(':factory')
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:support-v4:25.3.1'

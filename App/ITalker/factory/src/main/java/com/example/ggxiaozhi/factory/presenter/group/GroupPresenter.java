@@ -38,7 +38,7 @@ public class GroupPresenter extends BaseSourcePresenter<Group, Group, GroupDataS
     @Override
     public void start() {
         super.start();
-        //服务器拉取联系人
+        //服务器拉取群
         //这里可以进行优化 只有用户下拉时刷新
         GroupHelper.refreshGroups("");
     }

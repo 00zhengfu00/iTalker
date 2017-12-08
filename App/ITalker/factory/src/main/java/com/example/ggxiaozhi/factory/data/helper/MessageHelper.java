@@ -100,7 +100,7 @@ public class MessageHelper {
     public static Message findLastWithGroup(String groupId) {
         return SQLite.select()
                 .from(Message.class)
-                .where(Message_Table.id.eq(groupId))
+                .where(Message_Table.group_id.eq(groupId))
                 .orderBy(Message_Table.createAt, false)//倒叙查询
                 .querySingle();
     }

@@ -17,7 +17,7 @@
             android:textAlignment="center"
             app:title="@string/title_assist_permissions"
             app:titleTextAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-            app:titleTextColor="@color/colorPrimary"></android.support.v7.widget.Toolbar>
+            app:titleTextColor="@color/colorPrimary"/>
     </android.support.design.widget.AppBarLayout>
     <!--android:clipToPadding="false" 设置的padding跟随滚动-->
     <android.support.v4.widget.NestedScrollView

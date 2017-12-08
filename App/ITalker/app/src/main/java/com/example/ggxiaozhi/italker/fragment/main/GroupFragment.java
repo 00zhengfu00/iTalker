@@ -1,11 +1,15 @@
 package com.example.ggxiaozhi.italker.fragment.main;
 
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.ggxiaozhi.common.app.PresenterFragment;
@@ -16,7 +20,10 @@ import com.example.ggxiaozhi.factory.model.db.Group;
 import com.example.ggxiaozhi.factory.presenter.group.GroupContract;
 import com.example.ggxiaozhi.factory.presenter.group.GroupPresenter;
 import com.example.ggxiaozhi.italker.R;
+import com.example.ggxiaozhi.italker.activity.MainActivity;
 import com.example.ggxiaozhi.italker.activity.MessageActivity;
+
+import net.qiujuer.genius.ui.Ui;
 
 import butterknife.BindView;
 
@@ -59,6 +66,19 @@ public class GroupFragment extends PresenterFragment<GroupContract.Presenter>
         };
         mRecycler.setAdapter(mAdapter);
 
+        //滑动隐藏浮动按钮
+        mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState==RecyclerView.SCROLL_STATE_DRAGGING){
+                    ((MainActivity)getActivity()).actionAnimation(360, Ui.dipToPx(getResources(), 76),200);
+                }else {
+                    ((MainActivity)getActivity()).actionAnimation(360, 0,200);
+                }
+            }
+        });
+
         //初始化占位布局
         mEmptyView.bind(mRecycler);
         setPlaceHolderView(mEmptyView);
@@ -94,6 +114,7 @@ public class GroupFragment extends PresenterFragment<GroupContract.Presenter>
     @Override
     public void onAdapterDataChanged() {
         //检查是否有数据 决定如何显示页面
+        Toast.makeText(getContext(), "有新的群 ", Toast.LENGTH_SHORT).show();
         mEmptyView.triggerOkOrEmpty(mAdapter.getItemCount() > 0);
     }
 

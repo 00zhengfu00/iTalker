@@ -118,7 +118,7 @@ public abstract class RecyclerAdapter<Data> extends
         //得到绑定的数据
         Data data = mDataList.get(position);
         //触发Holder的绑定方法
-        holder.bind(data,position);
+        holder.bind(data, position);
     }
 
     /**
@@ -128,12 +128,14 @@ public abstract class RecyclerAdapter<Data> extends
     public int getItemCount() {
         return mDataList.size();
     }
+
     /**
      * 得到当前集合
      */
     public List<Data> getItems() {
         return mDataList;
     }
+
     /**
      * 插入一条数据并通知插入
      *
@@ -219,6 +221,8 @@ public abstract class RecyclerAdapter<Data> extends
         ViewHolder<Data> holder = (ViewHolder<Data>) v.getTag(R.id.tag_recycler_holder);
         if (mDataList != null) {
             int position = holder.getAdapterPosition();
+            if (mListener == null)
+                return;
             mListener.onItemClick(holder, mDataList.get(position));
         }
     }
@@ -229,6 +233,8 @@ public abstract class RecyclerAdapter<Data> extends
         ViewHolder<Data> holder = (ViewHolder<Data>) v.getTag(R.id.tag_recycler_holder);
         if (mDataList != null) {
             int position = holder.getAdapterPosition();
+            if (mListener == null)
+                return false;
             mListener.onItemLongClick(holder, mDataList.get(position));
             //事件消费返回true不再触发单击事件
             return true;
@@ -291,9 +297,9 @@ public abstract class RecyclerAdapter<Data> extends
          *
          * @param data 绑定的数据
          */
-        void bind(Data data,int position) {
+        void bind(Data data, int position) {
             this.mData = data;
-            onBind(mData,position);
+            onBind(mData, position);
         }
 
         /**
@@ -301,7 +307,7 @@ public abstract class RecyclerAdapter<Data> extends
          *
          * @param data
          */
-        public abstract void onBind(Data data,int position);
+        public abstract void onBind(Data data, int position);
 
         /**
          * holder自己对自己对应的Data进行更新操作

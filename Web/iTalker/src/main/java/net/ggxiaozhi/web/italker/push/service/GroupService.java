@@ -94,7 +94,7 @@ public class GroupService extends BaseService {
         members.stream().filter(groupMember -> !groupMember.getId().equalsIgnoreCase(createMember.getId())).collect(Collectors.toSet());
 
         //给群成员推送一条加入群的通知
-        PushFactory.pushJoinGroup(members);
+        PushFactory.pushJoinGroup(members,group);
         return ResponseModel.buildOk(new GroupCard(createMember));
     }
 
@@ -278,7 +278,7 @@ public class GroupService extends BaseService {
 
         //转换完成后 我们进行通知
         //1.通知新增的成员-->你被加入了XXX群
-        PushFactory.pushJoinGroup(alreadyInsert);
+        PushFactory.pushJoinGroup(alreadyInsert,group);
         //2.通知群中老的成员，有XXX,XXX加入群
         PushFactory.pushGroupMembersAdd(oldMembers, alreadyInsert);
         return ResponseModel.buildOk(insertCards);

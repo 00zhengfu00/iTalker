@@ -121,7 +121,7 @@ public class GroupCreatePresenter extends
         }
     };
 
-    protected void registerDbChangedListener() {
+    private void registerDbChangedListener() {
         DbHelper.addChangedListener(User.class, this);
     }
 

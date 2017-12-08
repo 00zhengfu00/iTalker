@@ -160,7 +160,7 @@ public interface RemoteService {
      * @return 添加的成员列表
      */
     @POST("group/{groupId}/member")
-    Call<RspModel<GroupCard>> groupMemberAdd(@Path("groupId") String groupId, @Body GroupMemberAddModel model);
+    Call<RspModel<List<GroupMemberCard>>> groupMemberAdd(@Path("groupId") String groupId, @Body GroupMemberAddModel model);
 
     /**
      * 更改成员信息，请求的人要么是管理员，要么就是成员本人

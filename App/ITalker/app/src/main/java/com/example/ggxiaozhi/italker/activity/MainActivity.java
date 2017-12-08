@@ -184,13 +184,22 @@ public class MainActivity extends Activity implements
             }
         }
 
+        actionAnimation(rotation, transY,480);
+    }
+
+    /**
+     * 浮动按钮动画
+     * @param rotation 旋转角度
+     * @param transY Y轴位移
+     */
+    public void actionAnimation(float rotation, float transY,int time) {
         //开始动画
         //旋转 Y轴位移 弹性插值器 时间
         mAction.animate()
                 .rotation(rotation)
                 .translationY(transY)
                 .setInterpolator(new AnticipateOvershootInterpolator(1))
-                .setDuration(480)
+                .setDuration(time)
                 .start();
     }
 }

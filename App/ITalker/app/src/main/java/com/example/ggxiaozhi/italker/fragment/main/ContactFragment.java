@@ -15,8 +15,11 @@ import com.example.ggxiaozhi.factory.model.db.User;
 import com.example.ggxiaozhi.factory.presenter.contact.ContactContract;
 import com.example.ggxiaozhi.factory.presenter.contact.ContactPresenter;
 import com.example.ggxiaozhi.italker.R;
+import com.example.ggxiaozhi.italker.activity.MainActivity;
 import com.example.ggxiaozhi.italker.activity.MessageActivity;
 import com.example.ggxiaozhi.italker.activity.PersonalActivity;
+
+import net.qiujuer.genius.ui.Ui;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -61,7 +64,18 @@ public class ContactFragment extends PresenterFragment<ContactContract.Presenter
             }
         };
         mRecycler.setAdapter(mAdapter);
-
+        //滑动隐藏浮动按钮
+        mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    ((MainActivity) getActivity()).actionAnimation(360, Ui.dipToPx(getResources(), 76), 200);
+                } else {
+                    ((MainActivity) getActivity()).actionAnimation(360, 0, 200);
+                }
+            }
+        });
         //初始化占位布局
         mEmptyView.bind(mRecycler);
         setPlaceHolderView(mEmptyView);
@@ -114,7 +128,7 @@ public class ContactFragment extends PresenterFragment<ContactContract.Presenter
         }
 
         @Override
-        public void onBind(User user,int position) {
+        public void onBind(User user, int position) {
             mPortraitView.setup(Glide.with(ContactFragment.this), user.getPortrait());
             mName.setText(user.getName());
             mDesc.setText(user.getDesc());

@@ -20,21 +20,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.ggxiaozhi.common.app.Fragment;
 import com.example.ggxiaozhi.common.app.PresenterFragment;
 import com.example.ggxiaozhi.common.widget.PortraitView;
 import com.example.ggxiaozhi.common.widget.adapter.TextWatcherAdapter;
 import com.example.ggxiaozhi.common.widget.recycler.RecyclerAdapter;
 import com.example.ggxiaozhi.factory.model.db.Message;
 import com.example.ggxiaozhi.factory.model.db.User;
-import com.example.ggxiaozhi.factory.presenter.BaseContract;
 import com.example.ggxiaozhi.factory.presenter.message.ChatContract;
 import com.example.ggxiaozhi.factory.presistance.Account;
 import com.example.ggxiaozhi.italker.R;
 import com.example.ggxiaozhi.italker.activity.MessageActivity;
+import com.example.ggxiaozhi.italker.fragment.panel.PanelFragment;
 
 import net.qiujuer.genius.ui.compat.UiCompat;
 import net.qiujuer.genius.ui.widget.Loading;
+import net.qiujuer.widget.airpanel.AirPanel;
+import net.qiujuer.widget.airpanel.Util;
 
 import java.util.Objects;
 
@@ -69,12 +70,15 @@ public abstract class ChatFragment<InitModel>
     @BindView(R.id.btn_submit)
     ImageView mViewSubmit;
 
+
     /**
      * Data
      */
     protected Adapter mAdapter;
     protected String receiverId;
     private int isFirst = 0;//解决弹出软键盘问题
+    private AirPanel.Boss boss;//面板 解决他出框与软键盘不协调问题
+    private PanelFragment mFragPanel;
 
     @Override
     protected void initArgs(Bundle bundle) {
@@ -96,11 +100,24 @@ public abstract class ChatFragment<InitModel>
         //拿到占位布局
         //替换顶部布局 一定要在super之前
         //防止控件绑定异常
-        ViewStub viewStub= (ViewStub) root.findViewById(R.id.view_stub_header);
+        ViewStub viewStub = (ViewStub) root.findViewById(R.id.view_stub_header);
         viewStub.setLayoutResource(getHeaderLayoutId());
         viewStub.inflate();
         //在这里绑定界面布局
         super.initWidget(root);
+
+        //初始化面板
+        boss = (AirPanel.Boss) root.findViewById(R.id.lay_content);
+        boss.setup(new AirPanel.PanelListener() {
+            @Override
+            public void requestHideSoftKeyboard() {
+                //请求隐藏软键盘
+                Util.hideKeyboard(mEditContent);
+            }
+        });
+        //初始化更多界面
+        mFragPanel= (PanelFragment) getChildFragmentManager().findFragmentById(R.id.frag_panel);
+
         initToolbar();
         initAppbar();
         initEditContent();
@@ -162,12 +179,17 @@ public abstract class ChatFragment<InitModel>
 
     @OnClick(R.id.btn_face)
     void onFaceClick() {
-// TODO
+        // 弹出面板
+        boss.openPanel();
+        mFragPanel.showFace();
     }
 
     @OnClick(R.id.btn_record)
     void onRecordClick() {
-// TODO
+        // 弹出面板
+        boss.openPanel();
+
+
     }
 
     @OnClick(R.id.btn_submit)
@@ -186,7 +208,9 @@ public abstract class ChatFragment<InitModel>
     }
 
     protected void onMoreClick() {
-        //TODO
+        // 弹出面板
+        boss.openPanel();
+        mFragPanel.showMore();
     }
 
     @Override
@@ -221,6 +245,9 @@ public abstract class ChatFragment<InitModel>
             }
         });
 
+       if (boss.isOpen()){
+           Toast.makeText(getContext(), "打开", Toast.LENGTH_SHORT).show();
+       }
     }
 
     private void onBottomPanelOpened() {

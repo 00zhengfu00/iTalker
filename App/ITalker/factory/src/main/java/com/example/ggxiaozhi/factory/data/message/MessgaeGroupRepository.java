@@ -35,27 +35,27 @@ public class MessgaeGroupRepository extends BaseDbRepository<Message> implements
     @Override
     public void load(SucceedCallback<List<Message>> callback) {
         super.load(callback);
-        //TODO
-        /*
+        //无论是直接发送还是给别人发送 只要发到这个群
+        //那么这个群group_id就是receiveId
         SQLite.select()
                 .from(Message.class)
-                .where(OperatorGroup.clause().and(Message_Table.sender_id.eq(receiverId))
-                        .and(Message_Table.group_id.isNull()))
-                .or(Message_Table.receiver_id.eq(receiverId))
+                .where(Message_Table.group_id.eq(receiverId))
                 .orderBy(Message_Table.createAt, false)//降序 最近的时间在上面
                 .limit(30)//30条
                 .async()//异步执行
                 .queryListResultCallback(this)
-                .execute();*/
+                .execute();
     }
 
     /**
      * @param message message
-     * @return True 与人聊天
+     * @return True 通过
      */
     @Override
     protected boolean isRequired(Message message) {
-        return false;
+        //如果消息中的GroupId 不等于null 那么一定是发送给群的
+        //如果接受者Id 就是我们消息中的群Id那么就通过拦截
+        return message.getGroup() != null && message.getGroup().getId().equalsIgnoreCase(receiverId);
     }
 
     @Override
