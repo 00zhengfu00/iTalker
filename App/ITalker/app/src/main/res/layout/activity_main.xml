@@ -38,7 +38,6 @@
             1. 安卓M版本（6.0）及以上
             2. FrameLayout本身及其子类-->
             <TextView
-
                 android:id="@+id/txt_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -58,7 +57,8 @@
                 android:padding="@dimen/len_10"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_search"
-                android:tint="?attr/toolbarMenuIconColor"/>
+                android:tint="?attr/toolbarMenuIconColor"
+                android:contentDescription="@string/app_name"/>
         </FrameLayout>
     </android.support.design.widget.AppBarLayout>
 
@@ -84,7 +84,6 @@
         app:layout_anchorGravity="bottom|end"/>
     <!--    app:layout_anchor="@id/lay_content" 相对于某个空间设置锚点
             app:layout_anchorGravity="bottom|end"
-
             android:tint="@color/white" svg内容图片颜色
             -->
     <android.support.design.widget.BottomNavigationView

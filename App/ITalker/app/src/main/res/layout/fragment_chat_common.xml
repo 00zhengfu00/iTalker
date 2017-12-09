@@ -101,7 +101,7 @@
     <!--Id是固定的airPanelSubLayout-->
     <net.qiujuer.widget.airpanel.AirPanelLinearLayout
         android:id="@id/airPanelSubLayout"
-        android:background="@color/grey_300"
+        android:background="@color/white_alpha_224"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

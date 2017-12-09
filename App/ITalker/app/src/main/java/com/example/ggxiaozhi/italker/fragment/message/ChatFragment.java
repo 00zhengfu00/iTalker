@@ -11,6 +11,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewStub;
@@ -24,6 +26,7 @@ import com.example.ggxiaozhi.common.app.PresenterFragment;
 import com.example.ggxiaozhi.common.widget.PortraitView;
 import com.example.ggxiaozhi.common.widget.adapter.TextWatcherAdapter;
 import com.example.ggxiaozhi.common.widget.recycler.RecyclerAdapter;
+import com.example.ggxiaozhi.face.FaceUtil;
 import com.example.ggxiaozhi.factory.model.db.Message;
 import com.example.ggxiaozhi.factory.model.db.User;
 import com.example.ggxiaozhi.factory.presenter.message.ChatContract;
@@ -32,6 +35,7 @@ import com.example.ggxiaozhi.italker.R;
 import com.example.ggxiaozhi.italker.activity.MessageActivity;
 import com.example.ggxiaozhi.italker.fragment.panel.PanelFragment;
 
+import net.qiujuer.genius.ui.Ui;
 import net.qiujuer.genius.ui.compat.UiCompat;
 import net.qiujuer.genius.ui.widget.Loading;
 import net.qiujuer.widget.airpanel.AirPanel;
@@ -48,7 +52,7 @@ import butterknife.OnClick;
 public abstract class ChatFragment<InitModel>
         extends PresenterFragment<ChatContract.Presenter>
         implements AppBarLayout.OnOffsetChangedListener
-        , ChatContract.View<InitModel> {
+        , ChatContract.View<InitModel>, PanelFragment.PanelCallback {
 
     /**
      * UI
@@ -116,8 +120,8 @@ public abstract class ChatFragment<InitModel>
             }
         });
         //初始化更多界面
-        mFragPanel= (PanelFragment) getChildFragmentManager().findFragmentById(R.id.frag_panel);
-
+        mFragPanel = (PanelFragment) getChildFragmentManager().findFragmentById(R.id.frag_panel);
+        mFragPanel.setup(this);
         initToolbar();
         initAppbar();
         initEditContent();
@@ -154,6 +158,11 @@ public abstract class ChatFragment<InitModel>
                 getActivity().finish();
             }
         });
+    }
+
+    @Override//实现面板的接口 给面板提供输入框
+    public EditText getInputEditText() {
+        return mEditContent;
     }
 
     //设置appBarLayout滑动距离监听 让子类去实现
@@ -245,9 +254,9 @@ public abstract class ChatFragment<InitModel>
             }
         });
 
-       if (boss.isOpen()){
-           Toast.makeText(getContext(), "打开", Toast.LENGTH_SHORT).show();
-       }
+        if (boss.isOpen()) {
+            Toast.makeText(getContext(), "打开", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void onBottomPanelOpened() {
@@ -336,7 +345,7 @@ public abstract class ChatFragment<InitModel>
         @BindView(R.id.loading)
         Loading mLoading;
 
-        public BaseViewHolder(View itemView) {
+        BaseViewHolder(View itemView) {
             super(itemView);
         }
 
@@ -391,15 +400,18 @@ public abstract class ChatFragment<InitModel>
         @BindView(R.id.txt_content)
         TextView mContent;
 
-        public TextViewHolder(View itemView) {
+        TextViewHolder(View itemView) {
             super(itemView);
         }
 
         @Override
         public void onBind(Message message, int postion) {
             super.onBind(message, postion);
+            Spannable spannable=new SpannableString(message.getContent());
+            //解析表情
+            FaceUtil.decode(mContent,spannable, (int) Ui.dipToPx(getResources(),20));
             //把内容设置到文字上去
-            mContent.setText(message.getContent());
+            mContent.setText(spannable);
         }
     }
 

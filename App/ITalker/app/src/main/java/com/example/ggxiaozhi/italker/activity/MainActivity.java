@@ -20,8 +20,6 @@ import com.example.ggxiaozhi.common.app.Activity;
 import com.example.ggxiaozhi.common.widget.PortraitView;
 import com.example.ggxiaozhi.factory.presistance.Account;
 import com.example.ggxiaozhi.italker.R;
-import com.example.ggxiaozhi.italker.activity.AccountActivity;
-import com.example.ggxiaozhi.italker.fragment.assist.PermissionsFragment;
 import com.example.ggxiaozhi.italker.fragment.main.ActiveFragment;
 import com.example.ggxiaozhi.italker.fragment.main.ContactFragment;
 import com.example.ggxiaozhi.italker.fragment.main.GroupFragment;
@@ -61,7 +59,7 @@ public class MainActivity extends Activity implements
     /**
      * MainActivity的入口
      *
-     * @param context
+     * @param context 上下文
      */
     public static void show(Context context) {
         context.startActivity(new Intent(context, MainActivity.class));
@@ -159,8 +157,8 @@ public class MainActivity extends Activity implements
     /**
      * NaHalper处理Fragemnt完成后的回调
      *
-     * @param newTab
-     * @param oldTab
+     * @param newTab 正在点击的Tab
+     * @param oldTab 上一个Tab
      */
     @Override
     public void onTabChanged(NavHelper.Tab<Integer> newTab, NavHelper.Tab<Integer> oldTab) {

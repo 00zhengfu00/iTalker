@@ -3,6 +3,8 @@ package com.example.ggxiaozhi.italker.fragment.main;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -13,12 +15,15 @@ import com.example.ggxiaozhi.common.app.PresenterFragment;
 import com.example.ggxiaozhi.common.widget.EmptyView;
 import com.example.ggxiaozhi.common.widget.PortraitView;
 import com.example.ggxiaozhi.common.widget.recycler.RecyclerAdapter;
+import com.example.ggxiaozhi.face.FaceUtil;
 import com.example.ggxiaozhi.factory.model.db.Session;
 import com.example.ggxiaozhi.factory.presenter.message.SessionContract;
 import com.example.ggxiaozhi.factory.presenter.message.SessionPresenter;
 import com.example.ggxiaozhi.italker.R;
 import com.example.ggxiaozhi.italker.activity.MessageActivity;
 import com.example.ggxiaozhi.utils.DateTimeUtils;
+
+import net.qiujuer.genius.ui.Ui;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -129,7 +134,12 @@ public class ActiveFragment extends PresenterFragment<SessionContract.Presenter>
         public void onBind(Session session, int position) {
             mPortraitView.setup(Glide.with(ActiveFragment.this), session.getPicture());
             mName.setText(session.getTitle());
-            mContent.setText(TextUtils.isEmpty(session.getContent()) ? "" : session.getContent());
+            String str = TextUtils.isEmpty(session.getContent()) ? "" : session.getContent();
+            Spannable spannable = new SpannableString(str);
+            //解析表情
+            FaceUtil.decode(mContent, spannable, (int) Ui.dipToPx(getResources(), 20));
+            //把内容设置到文字上去
+            mContent.setText(spannable);
             Calendar oldCalendar = Calendar.getInstance();
             Calendar newCalendar = Calendar.getInstance();
             Date currentDate = new Date(System.currentTimeMillis());
