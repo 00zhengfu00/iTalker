@@ -8,6 +8,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -45,7 +46,6 @@ public class ActiveFragment extends PresenterFragment<SessionContract.Presenter>
     @BindView(R.id.empty)
     EmptyView mEmptyView;
     private RecyclerAdapter<Session> mAdapter;
-
     private boolean isFrist = false;
 
     @Override
@@ -146,7 +146,10 @@ public class ActiveFragment extends PresenterFragment<SessionContract.Presenter>
             Date modifyAt = session.getModifyAt();
             if (((currentDate.getTime() - modifyAt.getTime()) / (60 * 1000)) < 1) {
                 mTime.setText("刚刚");
-            } else {
+            } else if ((currentDate.getTime() - modifyAt.getTime()) / (3 * 24 * 60 * 60 * 1000) >= 4) {
+                //
+                mTime.setText(DateTimeUtils.getSimpleDate(modifyAt));
+            }else {
                 mTime.setText(DateTimeUtils.getSimpleDateHour(modifyAt));
             }
             newCalendar.setTime(currentDate);
@@ -158,8 +161,6 @@ public class ActiveFragment extends PresenterFragment<SessionContract.Presenter>
             }
             if (newCalendar.get(Calendar.DAY_OF_YEAR) - oldCalendar.get(Calendar.DAY_OF_YEAR) == 3) {
                 mTime.setText("3天前");
-            } else if ((currentDate.getTime() - modifyAt.getTime()) / (3 * 24 * 60 * 60 * 1000) >= 4) {
-                mTime.setText(DateTimeUtils.getSimpleDate(modifyAt));
             }
         }
     }

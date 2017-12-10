@@ -5,6 +5,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.ggxiaozhi.common.widget.recycler.RecyclerAdapter;
 import com.example.ggxiaozhi.face.FaceUtil;
 import com.example.ggxiaozhi.italker.R;
@@ -16,7 +17,7 @@ import butterknife.BindView;
  * 包名   ： com.example.ggxiaozhi.italker.fragment.panel
  * 作者名 ： 志先生_
  * 日期   ： 2017/12
- * 功能   ：
+ * 功能   ：表情盘中表情的ViewHolder
  */
 
 public class FaceHolder extends RecyclerAdapter.ViewHolder<FaceUtil.Bean> {

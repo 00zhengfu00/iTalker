@@ -15,12 +15,10 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ImageSpan;
-import android.util.Log;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -30,6 +28,7 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -192,18 +191,21 @@ public class FaceUtil {
         String packageName = context.getApplicationInfo().packageName;
 
         //循环资源下的文件个数
-        for (int i = 1; 142 >= i; i++) {
+        for (int i = 0; 106 >= i; i++) {
             //资源名称
-            String resStr = String.format(Locale.ENGLISH, "face_base_%03d", i);
+            String resPng = String.format(Locale.ENGLISH, "f_static_%03d", i);
             //创建key 将资源文件重新命名 这个命名就是我们在发送时的唯一标识 fb%03d-> i=1时 fb001 3d标识三位数 0占位
-            String key = String.format(Locale.ENGLISH, "fb%03d", i);
+            String keyPng = String.format(Locale.ENGLISH, "fb%03d", i);
+            //资源名称
+            String resGif = String.format(Locale.ENGLISH, "f%03d", i);
             //指定资源文件中的drawable目录下的 以resStr命名的资源 返回一个int值 例如：R.id.face_base_001
-            int resId = resources.getIdentifier(resStr, "drawable", packageName);
-            if (resId == 0)
+            int resPngId = resources.getIdentifier(resPng, "drawable", packageName);
+            int resGigId = resources.getIdentifier(resGif, "drawable", packageName);
+            if (resPngId == 0 || resGigId == 0)
                 //没有找到 跳过
                 continue;
             //添加表情
-            faces.add(new Bean(key, resId));
+            faces.add(new Bean(keyPng, resPngId, resGigId));
         }
         if (faces.size() == 0)
             return null;
@@ -226,7 +228,7 @@ public class FaceUtil {
      *
      * @param context  上下文
      * @param editable 将表情输入到Editable上去 Editable是一个接口继承了基础的文本CharSequence接口
-     *                 同时继承Spannable(实现对字符的标记 并且提供对字符的移除和添加标记"Span"的操作)
+     *                 同时实现Spannable接口(实现对字符的标记 并且提供对字符的移除和添加标记"Span"的操作)
      *                 "Span"标记 任意类型 Object
      * @param bean     输入的一个表情
      * @param size     表情的尺寸大小
@@ -257,7 +259,7 @@ public class FaceUtil {
      * @param size      表情的大小
      * @return 返回一个表情盘
      */
-    public static Spannable decode(@NonNull View target, final Spannable spannable, final int size) {
+    public static Spannable decode(@NonNull final View target, final Spannable spannable, final int size) {
         if (spannable == null)
             return null;
         String str = spannable.toString();
@@ -265,7 +267,7 @@ public class FaceUtil {
             return null;
         final Context context = target.getContext();
 
-        // 进行正在匹配[][][]
+        // 进行正则匹配[][][]
         Pattern pattern = Pattern.compile("(\\[[^\\[\\]:\\s\\n]+\\])");
         Matcher matcher = pattern.matcher(str);
 
@@ -283,9 +285,27 @@ public class FaceUtil {
             final int start = matcher.start();
             final int end = matcher.end();
 
-            // 得到一个复写后的标示
-            ImageSpan span = new FaceSpan(context, target, bean.preview, size);
+            // 得到一个复写后的标示  这个是今天图的方法 下面动态图的实现是不停的在子线程中刷新
+            // 势必会产生消耗 目前测试没有问题后期如果有问题 可以改回来变成静态图片
+            //ImageSpan span = new FaceSpan(context, target, bean.preview, size);
+            InputStream is = null;
+            if (bean.preview instanceof Integer)
+                is = context.getResources().openRawResource((Integer) bean.source);
+            else {
+                File file = new File((String) bean.source);
+                try {
+                    is = new FileInputStream(file);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
 
+            }
+            AnimatedImageSpan span = new AnimatedImageSpan(new AnimatedGifDrawable(is, new AnimatedGifDrawable.UpdateListener() {
+                @Override
+                public void update() {
+                    target.postInvalidate();
+                }
+            }));
             // 设置标示
             spannable.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
@@ -349,15 +369,14 @@ public class FaceUtil {
             super(context, R.drawable.default_face, ImageSpan.ALIGN_BOTTOM);
             mView = view;
             mSize = size;
-//            int lastIndexOf = source.toString().lastIndexOf(".");
-//            String substring = source.toString().substring(lastIndexOf);
-            Log.i("TAG", "FaceSpan: " + source);
             Glide.with(context)
                     .load(source)
+                    .asGif()
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .fitCenter()
-                    .into(new SimpleTarget<GlideDrawable>(size, size) {
+                    .into(new SimpleTarget<GifDrawable>() {
                         @Override
-                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                        public void onResourceReady(GifDrawable resource, GlideAnimation<? super GifDrawable> glideAnimation) {
                             mDrawable = resource.getCurrent();
                             //自己测量 得到本身的 宽高
                             int width = mDrawable.getIntrinsicWidth();
@@ -368,7 +387,6 @@ public class FaceUtil {
                             mView.invalidate();
                         }
                     });
-
         }
 
         @Override
@@ -410,6 +428,12 @@ public class FaceUtil {
             this.key = key;
             this.source = preview;
             this.preview = preview;
+        }
+
+        Bean(String key, int preview, Object source) {
+            this.key = key;
+            this.preview = preview;
+            this.source = source;
         }
 
         public String key;

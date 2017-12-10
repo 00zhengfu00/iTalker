@@ -41,6 +41,7 @@ import net.qiujuer.genius.ui.widget.Loading;
 import net.qiujuer.widget.airpanel.AirPanel;
 import net.qiujuer.widget.airpanel.Util;
 
+import java.io.File;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -163,6 +164,16 @@ public abstract class ChatFragment<InitModel>
     @Override//实现面板的接口 给面板提供输入框
     public EditText getInputEditText() {
         return mEditContent;
+    }
+
+    @Override
+    public void onSendGallery(String[] paths) {
+        //图片回来的回调
+    }
+
+    @Override
+    public void onRecordDone(File file, long time) {
+        //TODO 语音回来的回调
     }
 
     //设置appBarLayout滑动距离监听 让子类去实现
@@ -319,7 +330,7 @@ public abstract class ChatFragment<InitModel>
                 //左右文字2个布局公用一个ViewHolder
                 case R.layout.cell_chat_pic_right:
                 case R.layout.cell_chat_pic_left:
-                    return new TextViewHolder(root); //左右文字2个布局公用一个ViewHolder
+                    return new PicViewHolder(root); //左右文字2个布局公用一个ViewHolder
                 case R.layout.cell_chat_file_right:
                 case R.layout.cell_chat_file_left:
                     return new TextViewHolder(root); //左右文字2个布局公用一个ViewHolder
@@ -407,9 +418,9 @@ public abstract class ChatFragment<InitModel>
         @Override
         public void onBind(Message message, int postion) {
             super.onBind(message, postion);
-            Spannable spannable=new SpannableString(message.getContent());
+            Spannable spannable = new SpannableString(message.getContent());
             //解析表情
-            FaceUtil.decode(mContent,spannable, (int) Ui.dipToPx(getResources(),20));
+            FaceUtil.decode(mContent, spannable, (int) Ui.dipToPx(getResources(), 20));
             //把内容设置到文字上去
             mContent.setText(spannable);
         }
@@ -420,6 +431,9 @@ public abstract class ChatFragment<InitModel>
      */
     class PicViewHolder extends BaseViewHolder {
 
+        @BindView(R.id.im_image)
+        ImageView mContent;
+
         public PicViewHolder(View itemView) {
             super(itemView);
         }
@@ -427,7 +441,12 @@ public abstract class ChatFragment<InitModel>
         @Override
         public void onBind(Message message, int postion) {
             super.onBind(message, postion);
-            //TODO
+            //当发送图片的时候 内容就是图片的地址
+            String content = message.getContent();
+            Glide.with(ChatFragment.this)
+                    .load(content)
+                    .fitCenter()
+                    .into(mContent);
         }
     }
 
