@@ -1,6 +1,7 @@
 package com.example.ggxiaozhi.factory.presenter.message;
 
 import android.support.v7.util.DiffUtil;
+import android.text.TextUtils;
 
 import com.example.ggxiaozhi.factory.data.helper.MessageHelper;
 import com.example.ggxiaozhi.factory.data.message.MessageDataSource;
@@ -9,6 +10,8 @@ import com.example.ggxiaozhi.factory.model.db.Message;
 import com.example.ggxiaozhi.factory.presenter.BaseSourcePresenter;
 import com.example.ggxiaozhi.factory.presistance.Account;
 import com.example.ggxiaozhi.factory.utils.DiffUiDataCallback;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -45,14 +48,35 @@ public class ChatPresenter<View extends ChatContract.View>
         MessageHelper.push(model);
     }
 
-    @Override
-    public void pushAudio(String path) {
-        //TODO
-    }
 
     @Override
     public void pushImages(String[] paths) {
-        //TODO
+        //构建发送图片消息的model
+        if (paths == null || paths.length == 0)
+            return;
+        //此时上传的路径还是本地路径
+        for (String path : paths) {
+            MsgCreateModel model = new MsgCreateModel.Builder()
+                    .receiver(mReceiverId, receiverType)
+                    .content(path, Message.TYPE_PIC)
+                    .build();
+            MessageHelper.push(model);
+        }
+
+    }
+
+    @Override
+    public void pushAudio(String path, long time) {
+        //构建发送图片消息的model
+        if (TextUtils.isEmpty(path))
+            return;
+        //此时上传的路径还是本地路径
+        MsgCreateModel model = new MsgCreateModel.Builder()
+                .receiver(mReceiverId, receiverType)
+                .content(path, Message.TYPE_AUDIO)
+                .attach(String.valueOf(time))
+                .build();
+        MessageHelper.push(model);
     }
 
     @Override
@@ -71,7 +95,7 @@ public class ChatPresenter<View extends ChatContract.View>
             MsgCreateModel model = MsgCreateModel.buildWithMessage(message);
             MessageHelper.push(model);
             return true;
-        }else {
+        } else {
             return false;
         }
     }

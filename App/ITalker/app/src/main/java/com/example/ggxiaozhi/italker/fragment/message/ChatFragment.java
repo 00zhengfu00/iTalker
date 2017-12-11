@@ -1,7 +1,6 @@
 package com.example.ggxiaozhi.italker.fragment.message;
 
 
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
@@ -19,10 +18,11 @@ import android.view.ViewStub;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.ggxiaozhi.common.app.Application;
 import com.example.ggxiaozhi.common.app.PresenterFragment;
+import com.example.ggxiaozhi.common.tools.AudioPlayHelper;
 import com.example.ggxiaozhi.common.widget.PortraitView;
 import com.example.ggxiaozhi.common.widget.adapter.TextWatcherAdapter;
 import com.example.ggxiaozhi.common.widget.recycler.RecyclerAdapter;
@@ -31,10 +31,13 @@ import com.example.ggxiaozhi.factory.model.db.Message;
 import com.example.ggxiaozhi.factory.model.db.User;
 import com.example.ggxiaozhi.factory.presenter.message.ChatContract;
 import com.example.ggxiaozhi.factory.presistance.Account;
+import com.example.ggxiaozhi.factory.utils.FileCacheUtil;
 import com.example.ggxiaozhi.italker.R;
 import com.example.ggxiaozhi.italker.activity.MessageActivity;
 import com.example.ggxiaozhi.italker.fragment.panel.PanelFragment;
 
+import net.qiujuer.genius.kit.handler.Run;
+import net.qiujuer.genius.kit.handler.runable.Action;
 import net.qiujuer.genius.ui.Ui;
 import net.qiujuer.genius.ui.compat.UiCompat;
 import net.qiujuer.genius.ui.widget.Loading;
@@ -84,6 +87,8 @@ public abstract class ChatFragment<InitModel>
     private int isFirst = 0;//解决弹出软键盘问题
     private AirPanel.Boss boss;//面板 解决他出框与软键盘不协调问题
     private PanelFragment mFragPanel;
+    private FileCacheUtil<AudioViewHolder> mFileCacheUtil;//语音下载工具类
+    private AudioPlayHelper<AudioViewHolder> helper; //播放的工具类
 
     @Override
     protected void initArgs(Bundle bundle) {
@@ -130,7 +135,61 @@ public abstract class ChatFragment<InitModel>
         mRecyclerView.setLayoutManager(manager);
         mAdapter = new Adapter();
         mRecyclerView.setAdapter(mAdapter);
+        mAdapter.setAdapterListener(new RecyclerAdapter.AdapterListenerImpl<Message>() {
+            @SuppressWarnings("unchecked")
+            @Override
+            public void onItemClick(RecyclerAdapter.ViewHolder holder, Message message) {
+                if (message.getType() == Message.TYPE_AUDIO && holder instanceof ChatFragment.AudioViewHolder) {
+                    //此时要授予权限 当然 已经在全局申请了
+                    mFileCacheUtil.downloadFile((AudioViewHolder) holder, message.getContent());
+                }
+            }
+        });
         refreshRecyclerView();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        helper = new AudioPlayHelper<>(new AudioPlayHelper.RecordPlayListener<AudioViewHolder>() {
+            @Override
+            public void onPlayStart(AudioViewHolder audioViewHolder) {
+                //泛型的作用 开始播放
+                audioViewHolder.onPlayStart();
+            }
+
+            @Override
+            public void onPlayStop(AudioViewHolder audioViewHolder) {
+                //停止播放
+                audioViewHolder.onPlayStop();
+            }
+
+            @Override
+            public void onPlayError(AudioViewHolder audioViewHolder) {
+                //提示错误
+                Application.showToast(R.string.toast_audio_play_error);
+            }
+        });
+        //语音的播放时 先将语音文件下载到本地baseDir文件夹下 然后在播放
+        mFileCacheUtil = new FileCacheUtil("audio/cache", "mp3", new FileCacheUtil.CacheListener<AudioViewHolder>() {
+            @Override
+            public void onDownLoadSuccess(final AudioViewHolder holder, final File file) {
+                Run.onUiAsync(new Action() {
+                    @Override
+                    public void call() {
+                        //在主线程进行播放
+                        helper.trigger(holder, file.getAbsolutePath());
+                    }
+                });
+            }
+
+            @Override
+            public void onDownLoadFailed(AudioViewHolder holder) {
+                Application.showToast(R.string.toast_download_error);
+            }
+        });
     }
 
     @Override
@@ -140,6 +199,11 @@ public abstract class ChatFragment<InitModel>
         mPresenter.start();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        helper.destroy();//停止播放 避免内存泄漏
+    }
 
     /**
      * 初始化 Appbar
@@ -169,11 +233,15 @@ public abstract class ChatFragment<InitModel>
     @Override
     public void onSendGallery(String[] paths) {
         //图片回来的回调
+        mPresenter.pushImages(paths);
+        refreshRecyclerView();
     }
 
     @Override
     public void onRecordDone(File file, long time) {
-        //TODO 语音回来的回调
+        // 语音回来的回调
+        mPresenter.pushAudio(file.getAbsolutePath(), time);
+        refreshRecyclerView();
     }
 
     //设置appBarLayout滑动距离监听 让子类去实现
@@ -208,6 +276,7 @@ public abstract class ChatFragment<InitModel>
     void onRecordClick() {
         // 弹出面板
         boss.openPanel();
+        mFragPanel.showRecord();
 
 
     }
@@ -247,7 +316,7 @@ public abstract class ChatFragment<InitModel>
     public void onResume() {
         super.onResume();
         //获取当前屏幕内容的高度
-        getActivity().getWindow().getDecorView().addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+     /*   getActivity().getWindow().getDecorView().addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom,
                                        int oldLeft, int oldTop, int oldRight, int oldBottom) {
@@ -258,16 +327,16 @@ public abstract class ChatFragment<InitModel>
                     if (isFirst > 3) {//隐藏=2时是第一次进入 等于3是第一次点击
                     }
                 } else {
-//                    if (isFirst > 1)//显示
-//                        onBottomPanelOpened();
+                    if (isFirst > 1)//显示
+                        onBottomPanelOpened();
                 }
-//                isFirst++;
+                isFirst++;
             }
         });
 
         if (boss.isOpen()) {
             Toast.makeText(getContext(), "打开", Toast.LENGTH_SHORT).show();
-        }
+        }*/
     }
 
     private void onBottomPanelOpened() {
@@ -297,7 +366,6 @@ public abstract class ChatFragment<InitModel>
         @Override
         protected int getItemViewType(int position, Message message) {
             //这里返回6种布局-->发送文字和表情x2/发送语音x2/发送图片x2  x2是因为左右区分创建相应的布局
-
             //获取当前发送的类型
             int type = message.getType();
             //判断发送者是我还是对方
@@ -336,7 +404,7 @@ public abstract class ChatFragment<InitModel>
                     return new TextViewHolder(root); //左右文字2个布局公用一个ViewHolder
                 case R.layout.cell_chat_audio_right:
                 case R.layout.cell_chat_audio_left:
-                    return new TextViewHolder(root);
+                    return new AudioViewHolder(root);
                 default:
                     //默认情况下 就返回Text类型的Holder 进行处理
                     return new TextViewHolder(root);
@@ -434,7 +502,7 @@ public abstract class ChatFragment<InitModel>
         @BindView(R.id.im_image)
         ImageView mContent;
 
-        public PicViewHolder(View itemView) {
+        PicViewHolder(View itemView) {
             super(itemView);
         }
 
@@ -471,15 +539,51 @@ public abstract class ChatFragment<InitModel>
      * 语音类型的ViewHolder
      */
     class AudioViewHolder extends BaseViewHolder {
+        @BindView(R.id.txt_content)
+        TextView mContent;
+        @BindView(R.id.im_audio_track)
+        ImageView mAudioTrack;
 
-        public AudioViewHolder(View itemView) {
+        AudioViewHolder(View itemView) {
             super(itemView);
         }
 
         @Override
         public void onBind(Message message, int postion) {
             super.onBind(message, postion);
-            //TODO
+            //30000
+            String attach = TextUtils.isEmpty(message.getAttach()) ? "已选0张" : message.getAttach();
+            mContent.setText(formatTime(attach));
+
+        }
+
+        // 当播放开始
+        void onPlayStart() {
+            // 显示
+            mAudioTrack.setVisibility(View.VISIBLE);
+        }
+
+        // 当播放停止
+        void onPlayStop() {
+            // 占位并隐藏
+            mAudioTrack.setVisibility(View.INVISIBLE);
+        }
+
+        private String formatTime(String attach) {
+            float time;
+            try {
+                time = Float.parseFloat(attach) / 1000f;
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                time = 0;
+            }
+            //time / 1000f->12000/1000f=12.000 不需要后面0
+            //所以我们需要处理 取一位小数 Math.round()先取整数 在除以10f就可以取到一位小数
+            String shortTime = String.valueOf(Math.round(time * 10f) / 10f);
+            //可能的情况 1.234->1.2 1.02->1.0 1.0 也不想要 所以还需要再次处理下
+            // 1.0 -> 1     1.2000 -> 1.2
+            shortTime = shortTime.replaceAll("[.]0+?$|0+?$", "");
+            return String.format("%s″", shortTime);
         }
     }
 }

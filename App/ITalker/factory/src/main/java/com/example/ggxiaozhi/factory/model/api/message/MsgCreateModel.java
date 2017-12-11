@@ -95,6 +95,7 @@ public class MsgCreateModel {
 
     /**
      * 把一个Message消息转成一个创建状态的CreateModel
+     *
      * @param message Message
      * @return CreateModel
      */
@@ -112,6 +113,15 @@ public class MsgCreateModel {
             model.receiverType = Message.RECEIVER_TYPE_GROUP;
         }
         return model;
+    }
+
+    //刷新创建的发送消息
+    public void refreshByCard() {
+        if (mCard == null)
+            return;
+        //刷新内容和附件内容
+        this.content = mCard.getContent();
+        this.attach = mCard.getAttach();
     }
 
     /**

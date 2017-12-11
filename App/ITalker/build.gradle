@@ -55,4 +55,6 @@ ext {//依赖库的版本
     dbflowVersion = "4.0.0-beta7"
     //空气面板
     airpanelVersion = "1.1.0"
+    //Lame 录音 MP3 转码器
+    lameVersion = "1.0.0"
 }

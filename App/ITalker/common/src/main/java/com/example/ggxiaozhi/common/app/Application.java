@@ -75,20 +75,8 @@ public class Application extends android.app.Application {
      * @return 录音文件地址
      */
     public static File getAudioTmpFile(boolean isTmp) {
-
-        File dir = new File(getCacheDirFile(), "audio");
-        dir.mkdirs();
-        File[] files = dir.listFiles();
-        if (files.length > 0 && files.length > 0) {
-            for (File file : files) {
-                file.delete();
-            }
-        }
-
         //aar
-        File path = new File(dir, isTmp ? "tmp.mp3" : SystemClock.uptimeMillis() + ".mp3");
-        Log.d(TAG, "getCacheDirFile: " + getCacheDirFile());
-        Log.d(TAG, "path: " + path.getAbsolutePath());
+        File path = new File(getCacheDirFile(), isTmp ? "tmp.mp3" : SystemClock.uptimeMillis() + ".mp3");
         return path.getAbsoluteFile();
     }
 
@@ -100,7 +88,7 @@ public class Application extends android.app.Application {
     public static void showToast(final String msg) {
         // Toast 只能在主线程中显示，所有需要进行线程转换，
         // 保证一定是在主线程进行的show操作
-//        Toast.makeText(instance, msg, Toast.LENGTH_SHORT).show();
+        // Toast.makeText(instance, msg, Toast.LENGTH_SHORT).show();
         Run.onUiAsync(new Action() {
             @Override
             public void call() {

@@ -16,5 +16,7 @@ public class Common {
 
         //所有请求的Base_Url
         String API_URL = "http://192.168.1.103:8080/api/";
+        //上传图片的最大大小860kb
+        long MAX_UPLOAD_IMAGE_LENGTH = 860 * 1024;
     }
 }

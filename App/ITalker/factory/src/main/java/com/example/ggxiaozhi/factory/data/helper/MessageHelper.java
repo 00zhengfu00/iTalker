@@ -1,5 +1,12 @@
 package com.example.ggxiaozhi.factory.data.helper;
 
+import android.os.SystemClock;
+import android.text.TextUtils;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.Target;
+import com.example.ggxiaozhi.common.Common;
+import com.example.ggxiaozhi.common.app.Application;
 import com.example.ggxiaozhi.factory.Factory;
 import com.example.ggxiaozhi.factory.model.RspModel;
 import com.example.ggxiaozhi.factory.model.api.message.MsgCreateModel;
@@ -8,8 +15,14 @@ import com.example.ggxiaozhi.factory.model.db.Message;
 import com.example.ggxiaozhi.factory.model.db.Message_Table;
 import com.example.ggxiaozhi.factory.net.Network;
 import com.example.ggxiaozhi.factory.net.RemoteService;
+import com.example.ggxiaozhi.factory.net.UploadHelper;
+import com.example.ggxiaozhi.utils.PicturesCompressor;
+import com.example.ggxiaozhi.utils.StreamUtil;
 import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
+
+import java.io.File;
+import java.util.concurrent.ExecutionException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -53,13 +66,42 @@ public class MessageHelper {
                 Message message = MessageHelper.findFromLocal(model.getId());
                 if (message != null && message.getStatus() != Message.STATUS_FAILED)
                     return;
-                // TODO 如果是文件文件类型(语音 图片 文件) 需要先上传后才能发送
 
                 //我们在发送的时候需要通知界面更新状态
                 final MessageCard card = model.buildCard(); //这是利用传入的model构建卡片
                 //保存数据库与通知
                 Factory.getMessageCenter().dispatch(card);
+                //  如果是文件文件类型(语音 图片 文件) 需要先上传后才能发送
+                if (card.getType() != Message.TYPE_STR) {//发送的消息类型不是语音类型
+                    String content;
+                    switch (card.getType()) {
+                        case Message.TYPE_PIC:
+                            content = uploadPicture(card.getContent());
+                            break;
+                        case Message.TYPE_AUDIO:
+                            content = uploadAudio(card.getContent());
+                            break;
+                        case Message.TYPE_FILE:
+                            content = uploadFile(card.getContent());
+                            break;
+                        default:
+                            content = "";
+                            break;
+                    }
 
+                    if (TextUtils.isEmpty(content)) {
+                        //上传失败的情况下  设置失败的状态 并进行一次调度 通知界面
+                        card.setStatus(Message.STATUS_FAILED);
+                        Factory.getMessageCenter().dispatch(card);
+                    }
+
+                    //重新设置内容
+                    card.setContent(content);
+                    //重新刷新界面
+                    Factory.getMessageCenter().dispatch(card);
+                    //重新构建发送的model 这个时候发送的内容就是外网的地址了
+                    model.refreshByCard();
+                }
                 RemoteService service = Network.remote();
                 Call<RspModel<MessageCard>> rspModelCall = service.msgPush(model);
                 rspModelCall.enqueue(new Callback<RspModel<MessageCard>>() {
@@ -91,6 +133,66 @@ public class MessageHelper {
         });
     }
 
+
+    /**
+     * 构建发送消息之 上传图片
+     *
+     * @param path 上传的路径
+     * @return 外网地址
+     */
+    private static String uploadPicture(String path) {
+        File file = null;//根据图片的本地路径创建对应的托片文件
+        try {
+            file = Glide.with(Factory.app())
+                    .load(path)
+                    .downloadOnly(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)//按照图片的原比例进行下载
+                    .get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (file != null) {
+            String cacheDir = Application.getCacheDirFile().getAbsolutePath();//获取整个应用的文件缓存路径
+            //临时的压缩处理图片 将这个压缩的处理图片上传到云服务器 这样可以节省云服务器空间和减少加载的流量
+            String fileFormat = path.substring(path.lastIndexOf("."));//获取图片的后缀格式
+            String tempFile = String.format("%s/image/Cache_%s.%s", cacheDir, SystemClock.uptimeMillis(), fileFormat);
+            try {
+                if (PicturesCompressor.compressImage(file.getAbsolutePath(), tempFile, Common.Constance.MAX_UPLOAD_IMAGE_LENGTH)) {
+                    //上传压缩图片到云服务器
+                    String ossPath = UploadHelper.uploadIamge(tempFile);
+                    //清楚缓存
+                    StreamUtil.delete(tempFile);
+                    return ossPath;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 构建发送消息之 上传语音
+     *
+     * @param path 上传的路径
+     * @return 外网地址
+     */
+    private static String uploadAudio(String path) {
+        File file = new File(path);
+        if (!file.exists() || file.length() <= 0)
+            return null;
+        return UploadHelper.uploadAudio(path);
+    }
+
+    /**
+     * 构建发送消息之 上传文件
+     *
+     * @param content 上传的路径
+     * @return 外网地址
+     */
+    private static String uploadFile(String content) {
+        return null;
+    }
+
     /**
      * 查询与群聊天的最后一条消息
      *
@@ -107,6 +209,7 @@ public class MessageHelper {
 
     /**
      * 查询与人聊天的最后一条消息
+     *
      * @param userId
      * @return
      */

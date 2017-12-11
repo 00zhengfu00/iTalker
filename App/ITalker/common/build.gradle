@@ -50,6 +50,8 @@ dependencies {
     compile "net.qiujuer.widget:airpanel:$rootProject.ext.airpanelVersion"
     //Gson
     compile "com.google.code.gson:gson:$rootProject.ext.gsonVersion"
+    // Lame 录音 MP3 转码器
+    compile "net.qiujuer.lame:lame:$rootProject.ext.lameVersion"
     testCompile 'junit:junit:4.12'
     compile project(':lang')
     compile project(':face-res')

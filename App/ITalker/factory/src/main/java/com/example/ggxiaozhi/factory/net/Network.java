@@ -27,6 +27,7 @@ public class Network {
 
     private static Network instance;
     private Retrofit mRetrofit;
+    private OkHttpClient mClient;
 
     static {
         instance = new Network();
@@ -36,9 +37,9 @@ public class Network {
 
     }
 
-    private static Retrofit getRetrofit() {
-        if (instance.mRetrofit != null) {
-            return instance.mRetrofit;
+    public static OkHttpClient getOkHttpClient() {
+        if (instance.mClient != null) {
+            return instance.mClient;
         }
         //创建一个client
         OkHttpClient client = new OkHttpClient.Builder()
@@ -59,12 +60,21 @@ public class Network {
                     }
                 })
                 .build();
+        instance.mClient = client;
+        return instance.mClient;
+    }
 
+    private static Retrofit getRetrofit() {
+        if (instance.mRetrofit != null) {
+            return instance.mRetrofit;
+        }
+        getOkHttpClient();
+        //Retrofit
         Retrofit.Builder builder = new Retrofit.Builder();
         instance.mRetrofit = builder.baseUrl(Common.Constance.API_URL)
                 //设置我们自己的Json解析器
                 .addConverterFactory(GsonConverterFactory.create(Factory.getGson()))
-                .client(client)
+                .client(instance.mClient)
                 .build();
         return instance.mRetrofit;
     }

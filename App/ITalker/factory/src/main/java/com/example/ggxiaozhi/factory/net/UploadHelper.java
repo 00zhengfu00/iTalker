@@ -35,7 +35,7 @@ public class UploadHelper {
     }
 
     /**
-     * 上传的最终方法 成功则返回一个路径
+     * 上传的最终方法 成功则返回一个路径N
      *
      * @param objKey 上传上去后 在服务器上的独立的Key
      * @param path   需要上传的文件路径

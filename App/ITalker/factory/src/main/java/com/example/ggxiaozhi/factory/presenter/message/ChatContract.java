@@ -23,7 +23,7 @@ public interface ChatContract {
         void pushText(String content);
 
         //推送语音
-        void pushAudio(String path);
+        void pushAudio(String path,long time);
 
         //推送图片
         void pushImages(String[] paths);

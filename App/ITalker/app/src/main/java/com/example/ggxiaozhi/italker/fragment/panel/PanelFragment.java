@@ -14,8 +14,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.ggxiaozhi.common.app.Application;
 import com.example.ggxiaozhi.common.app.Fragment;
+import com.example.ggxiaozhi.common.tools.AudioRecordHelper;
 import com.example.ggxiaozhi.common.tools.UiTool;
+import com.example.ggxiaozhi.common.widget.AudioRecordView;
 import com.example.ggxiaozhi.common.widget.GalleryView;
 import com.example.ggxiaozhi.common.widget.recycler.RecyclerAdapter;
 import com.example.ggxiaozhi.face.FaceUtil;
@@ -34,6 +37,7 @@ public class PanelFragment extends Fragment {
     private View mFacePanel, mGalleryPanel, mRecordPanel;
     //输入框界面实现的Callback
     private PanelCallback mCallback;
+    TextView selectedSize = null;
 
     @Override
     protected int getContentLayoutId() {
@@ -46,7 +50,7 @@ public class PanelFragment extends Fragment {
         super.initWidget(root);
         initFace(root);
         initRecord(root);
-        inirMore(root);
+        initMore(root);
     }
 
     /**
@@ -134,13 +138,70 @@ public class PanelFragment extends Fragment {
     }
 
     private void initRecord(View root) {
-        View viewRecord = mRecordPanel = root.findViewById(R.id.lay_panel_face);
+        View viewRecord = mRecordPanel = root.findViewById(R.id.lay_panel_record);
+        final AudioRecordView audioRecordView = (AudioRecordView) viewRecord.findViewById(R.id.view_audio_record);
+
+        File temFile = Application.getAudioTmpFile(true);
+        final AudioRecordHelper helper = new AudioRecordHelper(temFile, new AudioRecordHelper.RecordCallback() {
+            @Override
+            public void onRecordStart() {
+                //录音开始时要做的一些事情
+            }
+
+            @Override
+            public void onProgress(long time) {
+                //当前录音的进度 可以在这里做一些界面的完善处理 或是逻辑处理
+
+            }
+
+            @Override
+            public void onRecordDone(File file, long time) {
+                // 时间是毫秒，小于1秒则不发送
+                if (time < 1000) {
+                    return;
+                }
+                // 更改为一个发送的录音文件
+                File audioFile = Application.getAudioTmpFile(false);
+                if (file.renameTo(audioFile)) {
+                    // 通知到聊天界面
+                    PanelCallback panelCallback = mCallback;
+                    if (panelCallback != null) {
+                        panelCallback.onRecordDone(audioFile, time);
+                    }
+                }
+            }
+        });
+        //初始化
+        audioRecordView.setup(new AudioRecordView.Callback() {
+            @Override
+            public void requestStartRecord() {
+                //请求开始
+                helper.recordAsync();
+            }
+
+            @Override
+            public void requestStopRecord(int type) {
+                //请求结束
+                switch (type) {
+                    case AudioRecordView.END_TYPE_CANCEL:
+                    case AudioRecordView.END_TYPE_DELETE:
+                        // 删除和取消都代表想要取消
+                        helper.stop(true);
+                        break;
+                    case AudioRecordView.END_TYPE_NONE:
+                    case AudioRecordView.END_TYPE_PLAY:
+                        // 播放暂时当中就是想要发送
+                        helper.stop(false);
+                        break;
+                }
+            }
+        });
     }
 
-    private void inirMore(View root) {
+    private void initMore(View root) {
         final View viewMore = mGalleryPanel = root.findViewById(R.id.lay_gallery_panel);
         final GalleryView galleryView = (GalleryView) viewMore.findViewById(R.id.view_gallery);
-        final TextView selectedSize = (TextView) viewMore.findViewById(R.id.txt_gallery_select_count);
+        selectedSize = (TextView) viewMore.findViewById(R.id.txt_gallery_select_count);
         galleryView.setup(getLoaderManager(), new GalleryView.SelectedChangeListener() {
             @Override
             public void onSelectedCountChanged(int count) {
@@ -168,6 +229,7 @@ public class PanelFragment extends Fragment {
         //通知给聊天界面
         //清空选中的状态
         galleryView.clear();
+        selectedSize.setText("0");
         //删除操作
         if (mCallback == null)
             return;
