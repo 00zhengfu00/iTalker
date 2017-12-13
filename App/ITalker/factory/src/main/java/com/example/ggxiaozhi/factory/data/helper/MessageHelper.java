@@ -93,6 +93,8 @@ public class MessageHelper {
                         //上传失败的情况下  设置失败的状态 并进行一次调度 通知界面
                         card.setStatus(Message.STATUS_FAILED);
                         Factory.getMessageCenter().dispatch(card);
+                        //直接返回
+                        return;
                     }
 
                     //重新设置内容

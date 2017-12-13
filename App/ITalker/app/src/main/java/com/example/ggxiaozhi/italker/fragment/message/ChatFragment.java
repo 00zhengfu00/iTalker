@@ -84,7 +84,6 @@ public abstract class ChatFragment<InitModel>
      */
     protected Adapter mAdapter;
     protected String receiverId;
-    private int isFirst = 0;//解决弹出软键盘问题
     private AirPanel.Boss boss;//面板 解决他出框与软键盘不协调问题
     private PanelFragment mFragPanel;
     private FileCacheUtil<AudioViewHolder> mFileCacheUtil;//语音下载工具类
@@ -125,6 +124,22 @@ public abstract class ChatFragment<InitModel>
                 Util.hideKeyboard(mEditContent);
             }
         });
+        boss.setOnStateChangedListener(new AirPanel.OnStateChangedListener() {
+            @Override
+            public void onPanelStateChanged(boolean isOpen) {
+                //面板改变
+                if (isOpen)
+                    onBottomPanelOpened();
+
+            }
+
+            @Override
+            public void onSoftKeyboardStateChanged(boolean isOpen) {
+                //软键盘改变
+                if (isOpen)
+                    onBottomPanelOpened();
+            }
+        });
         //初始化更多界面
         mFragPanel = (PanelFragment) getChildFragmentManager().findFragmentById(R.id.frag_panel);
         mFragPanel.setup(this);
@@ -145,7 +160,6 @@ public abstract class ChatFragment<InitModel>
                 }
             }
         });
-        refreshRecyclerView();
     }
 
     @SuppressWarnings("unchecked")
@@ -197,6 +211,7 @@ public abstract class ChatFragment<InitModel>
         super.initData();
         //开始进行初始化操作
         mPresenter.start();
+        refreshRecyclerView();
     }
 
     @Override
@@ -312,33 +327,6 @@ public abstract class ChatFragment<InitModel>
         //这里什么也不做 这个方法主要是用来更新占位布局的状态 因为没有占位布局 Recycler是一直显示的 所以什么已不做
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        //获取当前屏幕内容的高度
-     /*   getActivity().getWindow().getDecorView().addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                //获取View可见区域的bottom
-                Rect rect = new Rect();
-                getActivity().getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
-                if (bottom != 0 && oldBottom != 0 && bottom - rect.bottom <= 0) {
-                    if (isFirst > 3) {//隐藏=2时是第一次进入 等于3是第一次点击
-                    }
-                } else {
-                    if (isFirst > 1)//显示
-                        onBottomPanelOpened();
-                }
-                isFirst++;
-            }
-        });
-
-        if (boss.isOpen()) {
-            Toast.makeText(getContext(), "打开", Toast.LENGTH_SHORT).show();
-        }*/
-    }
-
     private void onBottomPanelOpened() {
         if (mAppBarLayout != null) {
             mAppBarLayout.setExpanded(false, true);
@@ -356,6 +344,15 @@ public abstract class ChatFragment<InitModel>
                 mRecyclerView.scrollToPosition(mAdapter.getItemCount() - 1);
             }
         }, 200);
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        if (boss.isOpen()) {
+            boss.closePanel();
+            return true;
+        }
+        return super.onBackPressed();
     }
 
     /**

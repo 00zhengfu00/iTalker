@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -45,6 +46,7 @@ public class GroupMemberActivity extends PresenterToolBarActivity<GroupMembersCo
 
     private boolean isAdmin;
     private RecyclerAdapter<MemberUserModel> mAdapter;
+    private MenuItem mAddMembers;//关注Menu
 
     public static void show(Context context, String groupId) {
         show(context, groupId, false);
@@ -95,25 +97,37 @@ public class GroupMemberActivity extends PresenterToolBarActivity<GroupMembersCo
             }
         };
         mRecycler.setAdapter(mAdapter);
+        // 显示管理员界面，添加成员
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (isAdmin) {
+            MenuInflater menuInflater = getMenuInflater();
+            menuInflater.inflate(R.menu.chat_add, menu);
+            mAddMembers = menu.findItem(R.id.action_add);
+        }
+        return true;
+    }
+
+    @SuppressWarnings("SimplifiableIfStatement")
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item == null)
+            return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.action_add && isAdmin){
+            new GroupMemberAddFragment().show(getSupportFragmentManager(), GroupMemberAddFragment.class.getName());
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     protected void initData() {
         super.initData();
-        //开始刷新
+        // 开始数据刷新
         mPresenter.refresh();
-        // 显示管理员界面，添加成员
-        if (isAdmin) {
-            mToolbar.inflateMenu(R.menu.chat_add);
-            mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    new GroupMemberAddFragment().show(getSupportFragmentManager(), GroupMemberAddFragment.class.getName());
-                    return true;
-                }
-            });
-        }
+
     }
 
     @Override

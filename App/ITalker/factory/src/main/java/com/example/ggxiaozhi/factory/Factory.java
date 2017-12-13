@@ -1,12 +1,25 @@
 package com.example.ggxiaozhi.factory;
 
+import android.app.ActivityManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.net.Uri;
 import android.support.annotation.StringRes;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.example.ggxiaozhi.common.Common;
 import com.example.ggxiaozhi.common.app.Application;
 import com.example.ggxiaozhi.factory.data.DataSource;
 import com.example.ggxiaozhi.factory.data.group.GroupCenter;
 import com.example.ggxiaozhi.factory.data.group.GroupDispatcher;
+import com.example.ggxiaozhi.factory.data.helper.UserHelper;
 import com.example.ggxiaozhi.factory.data.message.MessageCenter;
 import com.example.ggxiaozhi.factory.data.message.MessageDispatcher;
 import com.example.ggxiaozhi.factory.data.user.UserCenter;
@@ -17,6 +30,7 @@ import com.example.ggxiaozhi.factory.model.card.GroupCard;
 import com.example.ggxiaozhi.factory.model.card.GroupMemberCard;
 import com.example.ggxiaozhi.factory.model.card.MessageCard;
 import com.example.ggxiaozhi.factory.model.card.UserCard;
+import com.example.ggxiaozhi.factory.model.db.User;
 import com.example.ggxiaozhi.factory.presistance.Account;
 import com.example.ggxiaozhi.factory.utils.DBFlowExclusionStrategies;
 import com.google.gson.Gson;
@@ -80,6 +94,7 @@ public class Factory {
     public static Application app() {
         return Application.getInstance();
     }
+
 
     /**
      * 异步执行的方法
@@ -146,7 +161,7 @@ public class Factory {
                 decodeRspCode(R.string.data_rsp_error_parameters_exist_name, callback);
                 break;
             case RspModel.ERROR_ACCOUNT_TOKEN:
-                Application.showToast(R.string.data_rsp_error_account_token);
+//                Application.showToast(R.string.data_rsp_error_account_token);
                 instance.logout();
                 break;
             case RspModel.ERROR_ACCOUNT_LOGIN:
@@ -175,13 +190,15 @@ public class Factory {
      * 收到账户退出的消息需要进行账户退出重新登录
      */
     private void logout() {
+        Intent intent = new Intent("com.example.broadcastbestpracrice.FORCE_OFFLINE");
+        Factory.app().sendBroadcast(intent);
 
     }
 
     /**
      * 处理推送来的消息
      */
-    public static void dispatchMessage(String message) {
+    public static void dispatchMessage(String message, Context context, PendingIntent pendingIntent) {
         //首次检查是否是登录状态
         if (!Account.isLogin())
             return;
@@ -190,7 +207,7 @@ public class Factory {
             return;
         // 对推送集合进行遍历
         for (PushModel.Entity entity : pushModel.getEntities()) {
-            Log.d(TAG, "dispatchMessage-Entity: "+pushModel.getEntities().toString());
+            Log.d(TAG, "dispatchMessage-Entity: " + pushModel.getEntities().toString());
 
             switch (entity.type) {
                 case PushModel.ENTITY_TYPE_LOGOUT:
@@ -201,6 +218,9 @@ public class Factory {
                     // 普通消息
                     MessageCard card = getGson().fromJson(entity.content, MessageCard.class);
                     getMessageCenter().dispatch(card);
+                    if (!getCurrentTask(context)) {
+                        createNotification(card, context, pendingIntent);
+                    }
                     break;
                 }
 
@@ -233,6 +253,54 @@ public class Factory {
                 }
             }
         }
+    }
+
+    /**
+     * 创建一个消息通知
+     *
+     * @param context
+     */
+    private static void createNotification(MessageCard card, Context context, PendingIntent pendingIntent) {
+        //获取发送者
+        SharedPreferences preferences = context.getSharedPreferences("notificationinfo", Context.MODE_PRIVATE);
+        boolean isSound = preferences.getBoolean(Common.Constance.NOTI_KEY_IS_SOUND, true);
+        boolean isVibrate = preferences.getBoolean(Common.Constance.NOTI_KEY_IS_VIBRATE, true);
+        boolean isLight = preferences.getBoolean(Common.Constance.NOTI_KEY_IS_LIGTHS, true);
+        int light = isLight ? 1000 : 0;
+        User user = UserHelper.findFromLocal(card.getSenderId());
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        Notification notification = new NotificationCompat.Builder(context)
+                .setContentTitle(user.getName())
+                .setContentText(card.getContent())
+                .setWhen(card.getCreateAt().getTime())
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher))
+                .setContentIntent(pendingIntent)
+                .setSound(isSound ? Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.fu) : Uri.parse(""))
+                .setVibrate(isVibrate ? new long[]{0, 1000, 1000, 1000} : new long[]{0, 0, 0, 0})
+                .setLights(Color.WHITE, light, light)
+                .build();
+        manager.notify(1, notification);
+    }
+
+    /**
+     * 这个是真正的获取指定包名的应用程序是否在运行(无论前台还是后台)
+     *
+     * @return true已启动
+     */
+    public static boolean getCurrentTask(Context context) {
+
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> appProcessInfos = activityManager.getRunningTasks(50);
+        for (ActivityManager.RunningTaskInfo process : appProcessInfos) {
+
+            if (process.baseActivity.getPackageName().equals(context.getPackageName())
+                    || process.topActivity.getPackageName().equals(context.getPackageName())) {
+
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

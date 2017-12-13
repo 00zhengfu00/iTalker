@@ -18,5 +18,9 @@ public class Common {
         String API_URL = "http://192.168.1.103:8080/api/";
         //上传图片的最大大小860kb
         long MAX_UPLOAD_IMAGE_LENGTH = 860 * 1024;
+
+        String NOTI_KEY_IS_SOUND="NOTI_KEY_IS_SOUND";
+        String NOTI_KEY_IS_VIBRATE="NOTI_KEY_IS_VIBRATE";
+        String NOTI_KEY_IS_LIGTHS="NOTI_KEY_IS_LIGTHS";
     }
 }

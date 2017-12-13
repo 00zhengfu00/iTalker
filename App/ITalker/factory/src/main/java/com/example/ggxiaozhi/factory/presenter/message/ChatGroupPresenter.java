@@ -42,8 +42,7 @@ public class ChatGroupPresenter extends ChatPresenter<ChatContract.GroupView> im
             //没有显示的成员数量
             long count = membersCount - latelyGroupMembers.size();
             //群成员信息初始化
-            view.onInitGroupMembers(latelyGroupMembers,count);
+            view.onInitGroupMembers(latelyGroupMembers, count);
         }
-
     }
 }

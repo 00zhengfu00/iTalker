@@ -13,6 +13,7 @@ import android.util.Property;
 import android.view.View;
 
 import com.example.ggxiaozhi.common.app.Activity;
+import com.example.ggxiaozhi.common.app.BaseActivity;
 import com.example.ggxiaozhi.factory.presistance.Account;
 import com.example.ggxiaozhi.italker.activity.AccountActivity;
 import com.example.ggxiaozhi.italker.activity.MainActivity;
@@ -21,7 +22,7 @@ import com.example.ggxiaozhi.italker.fragment.assist.PermissionsFragment;
 import net.qiujuer.genius.res.Resource;
 import net.qiujuer.genius.ui.compat.UiCompat;
 
-public class LaunchActivity extends Activity {
+public class LaunchActivity extends BaseActivity {
 
     private ColorDrawable mBgDrawable;//背景颜色的Drawable
 

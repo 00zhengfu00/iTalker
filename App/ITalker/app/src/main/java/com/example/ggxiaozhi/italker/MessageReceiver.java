@@ -1,5 +1,6 @@
 package com.example.ggxiaozhi.italker;
 
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +10,8 @@ import android.util.Log;
 import com.example.ggxiaozhi.factory.Factory;
 import com.example.ggxiaozhi.factory.data.helper.AccountHelper;
 import com.example.ggxiaozhi.factory.presistance.Account;
+import com.example.ggxiaozhi.italker.activity.AccountActivity;
+import com.example.ggxiaozhi.italker.activity.MainActivity;
 import com.igexin.sdk.PushConsts;
 
 /**
@@ -38,7 +41,7 @@ public class MessageReceiver extends BroadcastReceiver {
                 if (payloads != null) {
                     String message = new String(payloads);
                     Log.i(TAG, "message: " + message);
-                    onMessageArrived(message);
+                    onMessageArrived(message, context);
                 }
                 break;
             default:
@@ -68,9 +71,11 @@ public class MessageReceiver extends BroadcastReceiver {
      * @param message 消息
      */
 
-    private void onMessageArrived(String message) {
+    private void onMessageArrived(String message, Context context) {
         //交给Factory处理
-        Factory.dispatchMessage(message);
+        Intent intent = new Intent(context, Account.isLogin() ? AccountActivity.class : MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        Factory.dispatchMessage(message, context,pendingIntent);
     }
 
 }

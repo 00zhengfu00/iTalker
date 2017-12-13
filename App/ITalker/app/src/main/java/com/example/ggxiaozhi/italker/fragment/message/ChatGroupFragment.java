@@ -24,6 +24,7 @@ import com.example.ggxiaozhi.italker.R;
 import com.example.ggxiaozhi.italker.activity.GroupMemberActivity;
 import com.example.ggxiaozhi.italker.activity.PersonalActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -41,6 +42,9 @@ public class ChatGroupFragment extends ChatFragment<Group> implements ChatContra
 
     @BindView(R.id.txt_members_more)
     TextView mMoreMembers;
+
+    private List<ImageView> listAddImages = new ArrayList<>();
+    private Group mGroup = null;
 
     @Override
     protected int getHeaderLayoutId() {
@@ -106,17 +110,34 @@ public class ChatGroupFragment extends ChatFragment<Group> implements ChatContra
     }
 
     @Override
+    protected void initData() {
+        //重写父类加载群信息的方法 目的是为了实现新增群成员 Toolbar更新数据
+        //请求放在onResume中 只需要加载本地数据 消耗不大
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.start();
+    }
+
+    @Override
     public void onInit(Group group) {
+        if (mGroup != null)
+            return;
         mToolbarLayout.setTitle(group.getName());
         Glide.with(this)
                 .load(group.getPicture())
                 .centerCrop()
                 .placeholder(R.drawable.default_banner_group)
                 .into(im_header);
+        mGroup = group;
     }
 
     @Override
     public void showAdminOption(final boolean isAdmin) {
+        if (mGroup != null)
+            return;
         if (isAdmin) {
             mToolbar.inflateMenu(R.menu.chat_add);
             mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -124,7 +145,7 @@ public class ChatGroupFragment extends ChatFragment<Group> implements ChatContra
                 public boolean onMenuItemClick(MenuItem item) {
                     if (item.getItemId() == R.id.action_add) {
                         // 成员添加
-                        GroupMemberActivity.showAdmin(getContext(),receiverId);
+                        GroupMemberActivity.showAdmin(getContext(), receiverId);
                         return true;
                     }
                     return false;
@@ -137,10 +158,18 @@ public class ChatGroupFragment extends ChatFragment<Group> implements ChatContra
     public void onInitGroupMembers(List<MemberUserModel> memberUserModels, long memberCount) {
         if (memberUserModels == null || memberUserModels.size() == 0)
             return;
+        //解决无法刷新的问题
+        if (mLayout_members.getChildCount() >= 2) {
+            for (ImageView image : listAddImages) {
+                mLayout_members.removeView(image);
+            }
+        }
         LayoutInflater inflater = LayoutInflater.from(getContext());
         for (final MemberUserModel model : memberUserModels) {
             //加载布局
             ImageView p = (ImageView) inflater.inflate(R.layout.lay_chat_group_portrait, mLayout_members, false);
+            //向缓存集合中加入数据
+            listAddImages.add(p);
             //向容器中添加布局
             mLayout_members.addView(p, 0);
             //给布局添加动画
@@ -159,20 +188,17 @@ public class ChatGroupFragment extends ChatFragment<Group> implements ChatContra
         }
 
         //显示更多更多成员按钮
-
         if (memberCount > 0) {
             mMoreMembers.setText(String.format("+%s", memberCount));
             mMoreMembers.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     // 显示成员列表  receiverId就是群id
-                    GroupMemberActivity.show(getContext(),receiverId);
+                    GroupMemberActivity.show(getContext(), receiverId);
                 }
             });
         } else {
             mMoreMembers.setVisibility(View.GONE);
         }
     }
-
-
 }

@@ -1,14 +1,18 @@
 package com.example.ggxiaozhi.common.app;
 
+import android.app.Activity;
+import android.content.Context;
+import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.StringRes;
-import android.util.Log;
 import android.widget.Toast;
 
 import net.qiujuer.genius.kit.handler.Run;
 import net.qiujuer.genius.kit.handler.runable.Action;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 工程名 ： ITalker
@@ -22,12 +26,62 @@ public class Application extends android.app.Application {
 
     private static final String TAG = "Application";
     private static Application instance;
+    protected List<Activity> mActivities = new ArrayList<>();
 
     @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
+
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+                mActivities.add(activity);
+            }
+
+            @Override
+            public void onActivityStarted(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+                mActivities.remove(activity);
+            }
+        });
     }
+
+    public void finishAll() {
+        for (Activity activity : mActivities) {
+            activity.finish();
+        }
+
+    }
+
+    public void showAccountView(Context context) {
+
+    }
+
 
     /**
      * 获取单例的方法

@@ -1,15 +1,10 @@
 package com.example.ggxiaozhi.italker.fragment.main;
 
 
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.ggxiaozhi.common.app.PresenterFragment;
@@ -114,7 +109,6 @@ public class GroupFragment extends PresenterFragment<GroupContract.Presenter>
     @Override
     public void onAdapterDataChanged() {
         //检查是否有数据 决定如何显示页面
-        Toast.makeText(getContext(), "有新的群 ", Toast.LENGTH_SHORT).show();
         mEmptyView.triggerOkOrEmpty(mAdapter.getItemCount() > 0);
     }
 

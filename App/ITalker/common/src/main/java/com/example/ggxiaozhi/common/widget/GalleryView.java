@@ -1,5 +1,6 @@
 package com.example.ggxiaozhi.common.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -80,6 +81,7 @@ public class GalleryView extends RecyclerView {
      * @param image Image
      * @return True 代表了我们进行了数据更改 你需要刷新界面；反之不刷新
      */
+    @SuppressLint("StringFormatMatches")
     private boolean onItemSelectClick(Image image) {
         //是否需要进行刷新界面
         boolean notifyRefresh;
@@ -156,6 +158,7 @@ public class GalleryView extends RecyclerView {
         }
         mSelectedImages.clear();
         mAdapter.notifyDataSetChanged();
+        notifySelectChanged();
     }
 
     private class LoaderCallback implements LoaderManager.LoaderCallbacks<Cursor> {

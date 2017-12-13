@@ -144,24 +144,25 @@ public class ActiveFragment extends PresenterFragment<SessionContract.Presenter>
             Calendar newCalendar = Calendar.getInstance();
             Date currentDate = new Date(System.currentTimeMillis());
             Date modifyAt = session.getModifyAt();
-            if (((currentDate.getTime() - modifyAt.getTime()) / (60 * 1000)) < 1) {
-                mTime.setText("刚刚");
-            } else if ((currentDate.getTime() - modifyAt.getTime()) / (3 * 24 * 60 * 60 * 1000) >= 4) {
-                //
-                mTime.setText(DateTimeUtils.getSimpleDate(modifyAt));
-            }else {
-                mTime.setText(DateTimeUtils.getSimpleDateHour(modifyAt));
-            }
             newCalendar.setTime(currentDate);
             oldCalendar.setTime(modifyAt);
+            if (((currentDate.getTime() - modifyAt.getTime()) / (60 * 1000)) < 1) {
+                mTime.setText("刚刚");
+            } else if (newCalendar.get(Calendar.DAY_OF_YEAR) - oldCalendar.get(Calendar.DAY_OF_YEAR) < 1) {
+                mTime.setText(DateTimeUtils.getSimpleDateHour(modifyAt));
+            } else {
+                mTime.setText(DateTimeUtils.getSimpleDate(modifyAt));
+            }
             if (newCalendar.get(Calendar.DAY_OF_YEAR) - oldCalendar.get(Calendar.DAY_OF_YEAR) == 1) {
                 Log.d("TAG", "onBind: newCalendar.get(Calendar.DAY_OF_YEAR):" + newCalendar.get(Calendar.DAY_OF_YEAR)
                         + "       oldCalendar.get(Calendar.DAY_OF_YEAR):" + oldCalendar.get(Calendar.DAY_OF_YEAR));
                 mTime.setText("昨天");
             }
-            if (newCalendar.get(Calendar.DAY_OF_YEAR) - oldCalendar.get(Calendar.DAY_OF_YEAR) == 3) {
+            if (newCalendar.get(Calendar.DAY_OF_YEAR) - oldCalendar.get(Calendar.DAY_OF_YEAR) == 2) {
                 mTime.setText("3天前");
             }
+            if (newCalendar.get(Calendar.DAY_OF_YEAR) - oldCalendar.get(Calendar.DAY_OF_YEAR) > 4)
+                mTime.setText(DateTimeUtils.getSimpleDate(modifyAt));
         }
     }
 

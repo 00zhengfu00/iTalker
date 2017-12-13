@@ -229,7 +229,6 @@ public class PanelFragment extends Fragment {
         //通知给聊天界面
         //清空选中的状态
         galleryView.clear();
-        selectedSize.setText("0");
         //删除操作
         if (mCallback == null)
             return;

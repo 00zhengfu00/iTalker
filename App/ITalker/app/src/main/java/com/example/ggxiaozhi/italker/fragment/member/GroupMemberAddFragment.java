@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -76,7 +77,12 @@ public class GroupMemberAddFragment extends BottomSheetDialogFragment implements
         initToolbar();
         return root;
     }
-
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        // 界面初始化完成后进行初始化
+        mPresenter.start();
+    }
     private void initRecycler() {
         mRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecycler.setAdapter(mAdapter = new Adapter());
