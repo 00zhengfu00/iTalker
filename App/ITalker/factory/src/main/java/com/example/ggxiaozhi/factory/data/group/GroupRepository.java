@@ -68,7 +68,7 @@ public class GroupRepository extends BaseDbRepository<Group> implements GroupDat
     /**
      * 初始化界面显示成员信息
      *
-     * @param group 当期群
+     * @param group 当前群
      * @return 返回组装的字符串
      */
     private String buildGroupHolder(Group group) {

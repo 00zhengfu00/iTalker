@@ -2,6 +2,7 @@ package com.example.ggxiaozhi.factory.data.helper;
 
 import android.os.SystemClock;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
@@ -22,6 +23,8 @@ import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import retrofit2.Call;
@@ -135,7 +138,6 @@ public class MessageHelper {
         });
     }
 
-
     /**
      * 构建发送消息之 上传图片
      *
@@ -223,5 +225,29 @@ public class MessageHelper {
                 .or(Message_Table.receiver_id.eq(userId))
                 .orderBy(Message_Table.createAt, false)//倒叙查询
                 .querySingle();
+    }
+
+    /**
+     * 查询所有消息
+     *
+     * @return 消息集合
+     */
+    public static void findMessages() {
+        RemoteService service = Network.remote();
+        Call<RspModel<List<MessageCard>>> rspModelCall = service.pullMsg();
+        rspModelCall.enqueue(new Callback<RspModel<List<MessageCard>>>() {
+            @Override
+            public void onResponse(Call<RspModel<List<MessageCard>>> call, Response<RspModel<List<MessageCard>>> response) {
+                RspModel<List<MessageCard>> rspModel = response.body();
+                if (rspModel.success()) {
+                    Log.d("TAG", "onResponse: " + rspModel.getResult().size());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RspModel<List<MessageCard>>> call, Throwable t) {
+
+            }
+        });
     }
 }

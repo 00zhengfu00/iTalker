@@ -67,7 +67,7 @@ public class MsgCreateModel {
     }
 
 
-    //TODO 当我们需要发送一个文件的时候 content刷新的问题
+    // 当我们需要发送一个文件的时候 content刷新的问题
     //将这个卡片缓存起来
     private MessageCard mCard;
 

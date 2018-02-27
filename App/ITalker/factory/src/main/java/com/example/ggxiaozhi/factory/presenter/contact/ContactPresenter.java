@@ -39,6 +39,11 @@ public class ContactPresenter extends BaseSourcePresenter<User, User, ContactDat
         UserHelper.refreshContacts();
     }
 
+    public void refreshContacts() {
+        //服务器拉取联系人
+        UserHelper.refreshContacts();
+    }
+
     @Override
     public void onDataLoaded(List<User> users) {
         //无论是网络请求 还是数据库查询数据 最终都会走到这个方法中

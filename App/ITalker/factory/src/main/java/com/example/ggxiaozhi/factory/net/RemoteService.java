@@ -108,6 +108,14 @@ public interface RemoteService {
     Call<RspModel<MessageCard>> msgPush(@Body MsgCreateModel model);
 
     /**
+     * 查询为推送的消息
+     *
+     * @return 未推送的消息
+     */
+    @POST("msg/history")
+    Call<RspModel<List<MessageCard>>> pullMsg();
+
+    /**
      * 创建群的方法
      *
      * @param model 群创建信息

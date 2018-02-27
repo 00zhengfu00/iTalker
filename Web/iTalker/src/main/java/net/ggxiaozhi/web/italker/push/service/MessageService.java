@@ -1,19 +1,26 @@
 package net.ggxiaozhi.web.italker.push.service;
 
+import com.google.common.base.Strings;
+import com.google.gson.Gson;
 import net.ggxiaozhi.web.italker.push.bean.api.base.ResponseModel;
 import net.ggxiaozhi.web.italker.push.bean.api.message.MessageCreateModel;
 import net.ggxiaozhi.web.italker.push.bean.card.MessageCard;
 import net.ggxiaozhi.web.italker.push.bean.card.UserCard;
 import net.ggxiaozhi.web.italker.push.bean.db.Group;
 import net.ggxiaozhi.web.italker.push.bean.db.Message;
+import net.ggxiaozhi.web.italker.push.bean.db.PushHistory;
 import net.ggxiaozhi.web.italker.push.bean.db.User;
 import net.ggxiaozhi.web.italker.push.bean.factory.GroupFactory;
 import net.ggxiaozhi.web.italker.push.bean.factory.MessageFactory;
 import net.ggxiaozhi.web.italker.push.bean.factory.PushFactory;
 import net.ggxiaozhi.web.italker.push.bean.factory.UserFactory;
+import net.ggxiaozhi.web.italker.push.provider.GsonProvider;
+import net.ggxiaozhi.web.italker.push.utils.TextUtil;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,6 +63,32 @@ public class MessageService extends BaseService {
         }
     }
 
+    //获取历史消息
+    @POST
+    @Path("/history")
+    //指定请求与响应体为json
+    @Consumes(MediaType.APPLICATION_JSON)//指定传入的格式
+    @Produces(MediaType.APPLICATION_JSON)//指定返回的格式
+    public ResponseModel<List<MessageCard>> pushHistoryMessage() {
+        User self = getSelf();
+        String pushId = self.getPushId();
+        if (Strings.isNullOrEmpty(pushId))
+            return ResponseModel.buildNotFoundUserError("No found pushId");
+        List<PushHistory> pullMsg = MessageFactory.findHistory(self);
+        if (pullMsg == null)
+            return ResponseModel.buildNotFoundUserError("No found miss Messages");
+        //发起推送
+        PushFactory.pushHistoryMsg(pullMsg, self);
+        //返回全部数据
+        List<MessageCard> messageCards = new ArrayList<>();
+        for (PushHistory history : pullMsg) {
+            MessageCard messageCard = GsonProvider.getGson().fromJson(history.getEntity(), MessageCard.class);
+            messageCards.add(messageCard);
+        }
+        return ResponseModel.buildOk(messageCards);
+    }
+
+
     /**
      * 发送消息给人的业务逻辑处理
      *
@@ -94,7 +127,7 @@ public class MessageService extends BaseService {
         //将message存在数据库中
         Message message = MessageFactory.add(sender, group, model);
         //走通用的推送逻辑
-        return buildAndPushResponse(sender,message);
+        return buildAndPushResponse(sender, message);
     }
 
     /**

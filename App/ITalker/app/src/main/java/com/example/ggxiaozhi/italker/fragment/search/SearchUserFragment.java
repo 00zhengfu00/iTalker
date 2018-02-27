@@ -45,7 +45,6 @@ public class SearchUserFragment extends PresenterFragment<SearchContract.SearchP
     RecyclerView mRecycler;
     @BindView(R.id.empty)
     EmptyView mEmptyView;
-
     private RecyclerAdapter<UserCard> mAdapter;
     private SearchUserFragment.ViewHolder mHolder;
 
@@ -66,7 +65,7 @@ public class SearchUserFragment extends PresenterFragment<SearchContract.SearchP
 
             @Override
             protected ViewHolder<UserCard> onCreateViewHolder(View root, int viewType) {
-                mHolder=new SearchUserFragment.ViewHolder(root);
+                mHolder = new SearchUserFragment.ViewHolder(root);
                 return mHolder;
             }
         };
@@ -76,17 +75,18 @@ public class SearchUserFragment extends PresenterFragment<SearchContract.SearchP
             @Override
             public void onItemClick(RecyclerAdapter.ViewHolder holder, UserCard userCard) {
                 super.onItemClick(holder, userCard);
-                ((SearchUserFragment.ViewHolder)holder).onFollowClick();
+                ((SearchUserFragment.ViewHolder) holder).onFollowClick();
             }
         });
+
         //初始化占位布局
         mEmptyView.bind(mRecycler);
         setPlaceHolderView(mEmptyView);
     }
 
     @Override
-    protected void initData() {
-        super.initData();
+    protected void initFirstData() {
+        super.initFirstData();
         //发起首次搜索的触发
         search("");
     }

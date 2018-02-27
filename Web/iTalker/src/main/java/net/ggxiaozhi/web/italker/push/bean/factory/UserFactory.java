@@ -209,16 +209,11 @@ public class UserFactory {
         String accountStr = account.trim();
         String passwordStr = encodePassword(password);
 
-        User user = Hib.query(new Hib.Query<User>() {
-            @Override
-            public User query(Session session) {
-                return (User) session.createQuery
-                        ("from User where phone=:phone and password=:password")
-                        .setParameter("phone", accountStr)
-                        .setParameter("password", passwordStr)
-                        .uniqueResult();
-            }
-        });
+        User user = Hib.query(session -> (User) session.createQuery
+                ("from User where phone=:phone and password=:password")
+                .setParameter("phone", accountStr)
+                .setParameter("password", passwordStr)
+                .uniqueResult());
         //说明登录成功用户存在
         if (user != null) {
             login(user);

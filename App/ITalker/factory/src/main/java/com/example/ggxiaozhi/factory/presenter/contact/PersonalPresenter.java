@@ -1,7 +1,11 @@
 package com.example.ggxiaozhi.factory.presenter.contact;
 
+import android.support.annotation.StringRes;
+
 import com.example.ggxiaozhi.factory.Factory;
+import com.example.ggxiaozhi.factory.data.DataSource;
 import com.example.ggxiaozhi.factory.data.helper.UserHelper;
+import com.example.ggxiaozhi.factory.model.card.UserCard;
 import com.example.ggxiaozhi.factory.model.db.User;
 import com.example.ggxiaozhi.factory.presenter.BasePresenter;
 import com.example.ggxiaozhi.factory.presistance.Account;
@@ -17,7 +21,8 @@ import net.qiujuer.genius.kit.handler.runable.Action;
  * 功能   ：个人信息页面的Presenter
  */
 
-public class PersonalPresenter extends BasePresenter<PersonalContract.View> implements PersonalContract.Presenter {
+public class PersonalPresenter extends BasePresenter<PersonalContract.View>
+        implements PersonalContract.Presenter, DataSource.Callback<UserCard> {
     private User mUser;
 
     public PersonalPresenter(PersonalContract.View view) {
@@ -40,6 +45,10 @@ public class PersonalPresenter extends BasePresenter<PersonalContract.View> impl
                 }
             }
         });
+    }
+
+    public void follow(String userId) {
+        UserHelper.follow(userId, this);
     }
 
     private void onLoaded(final User user) {
@@ -67,5 +76,31 @@ public class PersonalPresenter extends BasePresenter<PersonalContract.View> impl
     @Override
     public User getUserPersonal() {
         return mUser;
+    }
+
+    @Override
+    public void onDataLoaded(final UserCard userCard) {
+        final PersonalContract.View view = getView();
+        if (view != null) {
+            Run.onUiAsync(new Action() {
+                @Override
+                public void call() {
+                    view.isFollowState(true);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onDataNotAvailable(@StringRes final int str) {
+        final PersonalContract.View view = getView();
+        if (view != null) {
+            Run.onUiAsync(new Action() {
+                @Override
+                public void call() {
+                    view.showError(str);
+                }
+            });
+        }
     }
 }

@@ -38,7 +38,7 @@ public class Session extends BaseDbModel<Session> {
     @Column
     private int receiverType = Message.RECEIVER_TYPE_NONE; // 类型，对应人，或者群消息
     @Column
-    private int unReadCount; // 未读数量，当没有在当前界面时，应当增加未读数量
+    private int unReadCount = 0; // 未读数量，当没有在当前界面时，应当增加未读数量
     @Column
     private Date modifyAt; // 最后更改时间
 
@@ -198,6 +198,7 @@ public class Session extends BaseDbModel<Session> {
     public void refreshToNow() {
         Message message;
 
+
         if (receiverType == Message.RECEIVER_TYPE_GROUP) {//如果是群
             //1.刷新当前对应群的相关信息
             message = MessageHelper.findLastWithGroup(id);
@@ -207,20 +208,23 @@ public class Session extends BaseDbModel<Session> {
                     //那么我们就查找当前Session的该群是不是存在
                     Group group = GroupHelper.findFromLocal(id);
                     if (group != null) {
+                        this.unReadCount = this.unReadCount + 1;
                         //3.如果找到了群的信息 那么我们就加载群的基本信息赋值给当前的session
                         this.picture = group.getPicture();
                         this.title = group.getName();
+
                     }
                 }
                 //4.如果没有找到 就赋值基本默认信息
                 this.message = null;
                 this.content = "";
                 this.modifyAt = new Date(System.currentTimeMillis());//赋值当前时间
-            } else {//如果当前message找到了 以为着本地有有最后一条记录
+            } else {//如果当前message找到了 意味着本地有有最后一条记录
                 if (TextUtils.isEmpty(this.picture) || TextUtils.isEmpty(this.title)) {
                     //如果没有基本信息 我们就用Message去load群的信息
                     Group group = message.getGroup();
                     group.load();//懒加载的原因
+                    this.unReadCount = this.unReadCount + 1;
                     this.picture = group.getPicture();
                     this.title = group.getName();
                 }
@@ -239,6 +243,7 @@ public class Session extends BaseDbModel<Session> {
                     User user = UserHelper.findFromLocal(id);
                     if (user != null) {
                         //如果找到了人的信息 那么我们就加载人的基本信息赋值给当前的session
+                        this.unReadCount = this.unReadCount + 1;
                         this.picture = user.getPortrait();
                         this.title = user.getName();
                     }
@@ -247,11 +252,12 @@ public class Session extends BaseDbModel<Session> {
                 this.message = null;
                 this.content = "";
                 this.modifyAt = new Date(System.currentTimeMillis());//赋值当前时间
-            }else {//我和他之间有消息来往
+            } else {//我和他之间有消息来往
                 if (TextUtils.isEmpty(this.picture) || TextUtils.isEmpty(this.title)) {
                     //如果没有基本信息 我们就用Message去load群的信息
                     User other = message.getOther();
                     other.load();//懒加载的原因
+                    this.unReadCount = this.unReadCount + 1;
                     this.picture = other.getPortrait();
                     this.title = other.getName();
                 }
@@ -261,37 +267,37 @@ public class Session extends BaseDbModel<Session> {
                 this.modifyAt = message.getCreateAt();
             }
         }
+    }
+
+
+    /**
+     * 对于会话信息，最重要的部分进行提取
+     * 其中我们主要关注两个点：
+     * 一个会话最重要的是标示是和人聊天还是在群聊天；
+     * 所以对于这点：Id存储的是人或者群的Id
+     * 紧跟着Type：存储的是具体的类型（人、群）
+     * equals 和 hashCode 也是对两个字段进行判断
+     */
+    public static class Identify {
+        public String id;
+        public int type;
+
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Identify identify = (Identify) o;
+            return type == identify.type
+                    && (id != null ? id.equals(identify.id) : identify.id == null);
         }
 
-
-        /**
-         * 对于会话信息，最重要的部分进行提取
-         * 其中我们主要关注两个点：
-         * 一个会话最重要的是标示是和人聊天还是在群聊天；
-         * 所以对于这点：Id存储的是人或者群的Id
-         * 紧跟着Type：存储的是具体的类型（人、群）
-         * equals 和 hashCode 也是对两个字段进行判断
-         */
-        public static class Identify {
-            public String id;
-            public int type;
-
-
-            @Override
-            public boolean equals(Object o) {
-                if (this == o) return true;
-                if (o == null || getClass() != o.getClass()) return false;
-
-                Identify identify = (Identify) o;
-                return type == identify.type
-                        && (id != null ? id.equals(identify.id) : identify.id == null);
-            }
-
-            @Override
-            public int hashCode() {
-                int result = id != null ? id.hashCode() : 0;
-                result = 31 * result + type;
-                return result;
-            }
+        @Override
+        public int hashCode() {
+            int result = id != null ? id.hashCode() : 0;
+            result = 31 * result + type;
+            return result;
         }
     }
+}

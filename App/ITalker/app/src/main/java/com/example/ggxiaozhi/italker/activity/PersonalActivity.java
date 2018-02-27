@@ -19,10 +19,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.ggxiaozhi.common.app.PresenterToolBarActivity;
 import com.example.ggxiaozhi.common.widget.PortraitView;
+import com.example.ggxiaozhi.factory.data.helper.UserHelper;
 import com.example.ggxiaozhi.factory.model.db.User;
 import com.example.ggxiaozhi.factory.presenter.contact.PersonalContract;
 import com.example.ggxiaozhi.factory.presenter.contact.PersonalPresenter;
-import com.example.ggxiaozhi.factory.presistance.Account;
 import com.example.ggxiaozhi.italker.R;
 
 import net.qiujuer.genius.res.Resource;
@@ -111,7 +111,8 @@ public class PersonalActivity extends PresenterToolBarActivity<PersonalContract.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_follow) {
-            // TODO 进行关注操作
+            if (!isFollowUser)
+                ((PersonalPresenter) mPresenter).follow(userId);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -125,6 +126,9 @@ public class PersonalActivity extends PresenterToolBarActivity<PersonalContract.
         MessageActivity.show(this, user);
     }
 
+    /**
+     * 改变关注图标
+     */
     private void changedItemMenuState() {
         if (mFollowItem == null) {
             return;
@@ -143,6 +147,7 @@ public class PersonalActivity extends PresenterToolBarActivity<PersonalContract.
         return userId;
     }
 
+    @SuppressLint("StringFormatMatches")
     @Override
     public void onLoadDone(User user) {
         if (user == null)

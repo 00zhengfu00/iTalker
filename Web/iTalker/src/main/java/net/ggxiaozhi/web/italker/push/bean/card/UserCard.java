@@ -61,8 +61,6 @@ public class UserCard {
 
     public UserCard(User user, boolean isFollow) {
         this.isFollow = isFollow;
-
-
         this.id = user.getId();
         this.name = user.getName();
         this.phone = user.getPhone();

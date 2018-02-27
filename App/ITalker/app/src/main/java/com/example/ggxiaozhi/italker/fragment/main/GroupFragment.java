@@ -1,6 +1,7 @@
 package com.example.ggxiaozhi.italker.fragment.main;
 
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.example.ggxiaozhi.italker.R;
 import com.example.ggxiaozhi.italker.activity.MainActivity;
 import com.example.ggxiaozhi.italker.activity.MessageActivity;
 
+import net.qiujuer.genius.res.Resource;
 import net.qiujuer.genius.ui.Ui;
 
 import butterknife.BindView;
@@ -33,7 +35,9 @@ public class GroupFragment extends PresenterFragment<GroupContract.Presenter>
     @BindView(R.id.recycler)
     RecyclerView mRecycler;
     @BindView(R.id.empty)
-    EmptyView mEmptyView;
+    EmptyView mEmptyView;  @BindView(R.id.swipe_refresh)
+    SwipeRefreshLayout mRefreshLayout;
+
     /**
      * Data
      */
@@ -60,7 +64,22 @@ public class GroupFragment extends PresenterFragment<GroupContract.Presenter>
             }
         };
         mRecycler.setAdapter(mAdapter);
-
+        //设置刷新颜色
+        mRefreshLayout.setColorSchemeColors(Resource.Color.BLUE, Resource.Color.PINK, Resource.Color.PURPLE);
+        //下拉刷新时不可用
+        mRefreshLayout.setEnabled(true);
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //下拉刷新
+                if (mAdapter.getItemCount()<=0){
+                    mRefreshLayout.setRefreshing(false);
+                    return;
+                }
+                //依据传入最后一条的加入时间为基准 返回以基准时间的7天前为日期返回最近3天加入的群 进行增量更新
+                ((GroupPresenter)mPresenter).refreshGroups(mAdapter.getItems().get(mAdapter.getItemCount()-1).getJoinAt());
+            }
+        });
         //滑动隐藏浮动按钮
         mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -92,6 +111,7 @@ public class GroupFragment extends PresenterFragment<GroupContract.Presenter>
     @Override
     protected void initFirstData() {
         super.initFirstData();
+        mRefreshLayout.setRefreshing(true);
         //查询数据
         mPresenter.start();
     }
@@ -108,6 +128,7 @@ public class GroupFragment extends PresenterFragment<GroupContract.Presenter>
 
     @Override
     public void onAdapterDataChanged() {
+        mRefreshLayout.setRefreshing(false);
         //检查是否有数据 决定如何显示页面
         mEmptyView.triggerOkOrEmpty(mAdapter.getItemCount() > 0);
     }

@@ -1,7 +1,6 @@
 package com.example.ggxiaozhi.italker.fragment.search;
 
 
-import android.support.annotation.StringRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -9,25 +8,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.ggxiaozhi.common.app.Fragment;
 import com.example.ggxiaozhi.common.app.PresenterFragment;
 import com.example.ggxiaozhi.common.widget.EmptyView;
 import com.example.ggxiaozhi.common.widget.PortraitView;
 import com.example.ggxiaozhi.common.widget.recycler.RecyclerAdapter;
 import com.example.ggxiaozhi.factory.model.card.GroupCard;
-import com.example.ggxiaozhi.factory.model.card.UserCard;
-import com.example.ggxiaozhi.factory.presenter.contact.FollowContract;
-import com.example.ggxiaozhi.factory.presenter.contact.FollowPresenter;
 import com.example.ggxiaozhi.factory.presenter.search.SearchContract;
 import com.example.ggxiaozhi.factory.presenter.search.SearchGroupPresenter;
 import com.example.ggxiaozhi.italker.R;
 import com.example.ggxiaozhi.italker.activity.PersonalActivity;
 import com.example.ggxiaozhi.italker.activity.SearchActivity;
 
-import net.qiujuer.genius.ui.Ui;
-import net.qiujuer.genius.ui.compat.UiCompat;
-import net.qiujuer.genius.ui.drawable.LoadingCircleDrawable;
-import net.qiujuer.genius.ui.drawable.LoadingDrawable;
 
 import java.util.List;
 
@@ -47,6 +38,7 @@ public class SearchGroupFragment extends PresenterFragment<SearchContract.Search
     RecyclerView mRecycler;
     @BindView(R.id.empty)
     EmptyView mEmptyView;
+
 
     private RecyclerAdapter<GroupCard> mAdapter;
 
@@ -71,15 +63,14 @@ public class SearchGroupFragment extends PresenterFragment<SearchContract.Search
             }
         };
         mRecycler.setAdapter(mAdapter);
-
         //初始化占位布局
         mEmptyView.bind(mRecycler);
         setPlaceHolderView(mEmptyView);
     }
 
     @Override
-    protected void initData() {
-        super.initData();
+    protected void initFirstData() {
+        super.initFirstData();
         //发起首次搜索的触发
         search("");
     }

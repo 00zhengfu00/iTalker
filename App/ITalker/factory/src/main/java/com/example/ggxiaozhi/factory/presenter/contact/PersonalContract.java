@@ -30,5 +30,6 @@ public interface PersonalContract {
 
         //设置关注人状态
         void isFollowState(boolean isFollow);
+
     }
 }

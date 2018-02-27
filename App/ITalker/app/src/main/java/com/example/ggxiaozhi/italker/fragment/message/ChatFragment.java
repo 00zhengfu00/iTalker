@@ -549,7 +549,7 @@ public abstract class ChatFragment<InitModel>
         public void onBind(Message message, int postion) {
             super.onBind(message, postion);
             //30000
-            String attach = TextUtils.isEmpty(message.getAttach()) ? "已选0张" : message.getAttach();
+            String attach = TextUtils.isEmpty(message.getAttach()) ? "0" : message.getAttach();
             mContent.setText(formatTime(attach));
 
         }

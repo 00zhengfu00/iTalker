@@ -1,6 +1,7 @@
 package com.example.ggxiaozhi.factory.presenter.group;
 
 import android.support.v7.util.DiffUtil;
+import android.util.Log;
 
 import com.example.ggxiaozhi.common.widget.recycler.RecyclerAdapter;
 import com.example.ggxiaozhi.factory.data.DataSource;
@@ -16,6 +17,8 @@ import com.example.ggxiaozhi.factory.presenter.BaseSourcePresenter;
 import com.example.ggxiaozhi.factory.presenter.contact.ContactContract;
 import com.example.ggxiaozhi.factory.utils.DiffUiDataCallback;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,16 +41,26 @@ public class GroupPresenter extends BaseSourcePresenter<Group, Group, GroupDataS
     @Override
     public void start() {
         super.start();
+
+    }
+
+    public void refreshGroups(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DATE, -3);
+        Date calendarTime = calendar.getTime();
+        String string = calendarTime.toString();
+        Log.d("TAG", "refreshGroups: " + string);
         //服务器拉取群
         //这里可以进行优化 只有用户下拉时刷新
-        GroupHelper.refreshGroups("");
+        GroupHelper.refreshGroups(string);
     }
 
     @Override
     public void onDataLoaded(List<Group> groups) {
         //无论是网络请求 还是数据库查询数据 最终都会走到这个方法中
         GroupContract.View view = getView();
-        if (view==null)
+        if (view == null)
             return;
         RecyclerAdapter<Group> adapter = view.getAdapter();
         //得到旧的数据

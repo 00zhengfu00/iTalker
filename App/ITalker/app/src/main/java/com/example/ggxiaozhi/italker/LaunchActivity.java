@@ -14,6 +14,8 @@ import android.view.View;
 
 import com.example.ggxiaozhi.common.app.Activity;
 import com.example.ggxiaozhi.common.app.BaseActivity;
+import com.example.ggxiaozhi.factory.Factory;
+import com.example.ggxiaozhi.factory.data.helper.MessageHelper;
 import com.example.ggxiaozhi.factory.presistance.Account;
 import com.example.ggxiaozhi.italker.activity.AccountActivity;
 import com.example.ggxiaozhi.italker.activity.MainActivity;
@@ -51,7 +53,7 @@ public class LaunchActivity extends BaseActivity {
     @Override
     protected void initData() {
         super.initData();
-        //当动画进行到50%的时候获取PushId
+        //当动画进行到50%的时候获取PushI0d
         startAnimator(0.5f, new Runnable() {
             @Override
             public void run() {
@@ -68,7 +70,6 @@ public class LaunchActivity extends BaseActivity {
     private void waitPushIdRecevierId() {
 
         if (Account.isLogin()) {//已经登录
-
             //已经登录的情况下 判断是否绑定
             //如果没有绑定则等待广播接收器进行绑定
             if (Account.isBind()) {
@@ -111,7 +112,7 @@ public class LaunchActivity extends BaseActivity {
      */
     public void realSkip() {
         //检测权限
-        if (PermissionsFragment.haveAllPerms(this,  getSupportFragmentManager())) {
+        if (PermissionsFragment.haveAllPerms(this, getSupportFragmentManager())) {
             if (Account.isLogin()) {
                 MainActivity.show(this);
             } else {

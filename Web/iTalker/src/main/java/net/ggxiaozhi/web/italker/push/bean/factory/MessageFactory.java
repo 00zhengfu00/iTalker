@@ -1,10 +1,16 @@
 package net.ggxiaozhi.web.italker.push.bean.factory;
 
+import com.google.gson.Gson;
+import net.ggxiaozhi.web.italker.push.bean.api.base.PushModel;
 import net.ggxiaozhi.web.italker.push.bean.api.message.MessageCreateModel;
-import net.ggxiaozhi.web.italker.push.bean.db.Group;
-import net.ggxiaozhi.web.italker.push.bean.db.Message;
-import net.ggxiaozhi.web.italker.push.bean.db.User;
+import net.ggxiaozhi.web.italker.push.bean.card.MessageCard;
+import net.ggxiaozhi.web.italker.push.bean.db.*;
+import net.ggxiaozhi.web.italker.push.provider.GsonProvider;
 import net.ggxiaozhi.web.italker.push.utils.Hib;
+import net.ggxiaozhi.web.italker.push.utils.TextUtil;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 工程名 ： iTalker
@@ -67,5 +73,18 @@ public class MessageFactory {
             //返回最新存储的消息
             return message;
         });
+    }
+
+    public static List<PushHistory> findHistory(User self) {
+        @SuppressWarnings("unchecked")
+        List<PushHistory> histories = Hib.query(session -> session.createQuery("from PushHistory where receiverId=:receiverId and entityType=:entityType")
+                .setParameter("receiverId", self.getId())
+                .setParameter("entityType", PushModel.ENTITY_TYPE_MESSAGE)
+                .list());
+
+        if (histories.size() == 0)
+            return null;
+        else
+            return histories;
     }
 }

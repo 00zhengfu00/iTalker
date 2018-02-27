@@ -17,6 +17,7 @@ import com.example.ggxiaozhi.common.widget.EmptyView;
 import com.example.ggxiaozhi.common.widget.PortraitView;
 import com.example.ggxiaozhi.common.widget.recycler.RecyclerAdapter;
 import com.example.ggxiaozhi.face.FaceUtil;
+import com.example.ggxiaozhi.factory.data.helper.MessageHelper;
 import com.example.ggxiaozhi.factory.model.db.Session;
 import com.example.ggxiaozhi.factory.presenter.message.SessionContract;
 import com.example.ggxiaozhi.factory.presenter.message.SessionPresenter;
@@ -88,6 +89,7 @@ public class ActiveFragment extends PresenterFragment<SessionContract.Presenter>
     @Override
     protected void initFirstData() {
         super.initFirstData();
+        //MessageHelper.findMessages();
         //查询数据
         mPresenter.start();
         isFrist = true;

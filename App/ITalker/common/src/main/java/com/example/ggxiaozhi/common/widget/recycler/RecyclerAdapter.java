@@ -1,6 +1,7 @@
 package com.example.ggxiaozhi.common.widget.recycler;
 
 import android.support.annotation.LayoutRes;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,7 @@ public abstract class RecyclerAdapter<Data> extends
     public RecyclerAdapter() {
         this(null);
     }
+
 
     public RecyclerAdapter(AdapterListener<Data> adapterListener) {
         this(new ArrayList<Data>(), adapterListener);
@@ -250,6 +252,7 @@ public abstract class RecyclerAdapter<Data> extends
     public void setAdapterListener(AdapterListener<Data> adapterListener) {
         this.mListener = adapterListener;
     }
+
 
     /**
      * 点击时间的回调

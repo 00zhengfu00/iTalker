@@ -8,6 +8,8 @@ import net.ggxiaozhi.web.italker.push.utils.Hib;
 import net.ggxiaozhi.web.italker.push.utils.PushDispatcher;
 import net.ggxiaozhi.web.italker.push.utils.TextUtil;
 
+import java.io.UnsupportedEncodingException;
+import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,6 +34,7 @@ public class PushFactory {
         MessageCard messageCard = new MessageCard(message);
         //转化成字符串
         String entity = TextUtil.toJson(messageCard);
+        byte[] bytes = entity.getBytes();
         //个推推送工具类-->发送者
         PushDispatcher dispatcher = new PushDispatcher();
 
@@ -43,7 +46,11 @@ public class PushFactory {
             //构建推送历史消息Model
             PushHistory pushHistory = new PushHistory();
             pushHistory.setEntityType(PushModel.ENTITY_TYPE_MESSAGE);
-            pushHistory.setEntity(entity);
+            try {
+                pushHistory.setEntity(new String(bytes,"UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             pushHistory.setReceiverPushId(receiver.getPushId());
             pushHistory.setReceiver(receiver);
 
@@ -119,7 +126,12 @@ public class PushFactory {
             //构建推送历史消息Model
             PushHistory pushHistory = new PushHistory();
             pushHistory.setEntityType(entityTypeMessage);
-            pushHistory.setEntity(entity);
+            byte[] bytes = entity.getBytes();
+            try {
+                pushHistory.setEntity(new String(bytes,"UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             pushHistory.setReceiverPushId(receiver.getPushId());
             pushHistory.setReceiver(receiver);
             //添加进集合
@@ -150,10 +162,15 @@ public class PushFactory {
             if (receiver == null)
                 return;
             String entity = TextUtil.toJson(new GroupCard(group, member));
+            byte[] bytes = entity.getBytes();
             //构建推送历史消息Model
             PushHistory pushHistory = new PushHistory();
             pushHistory.setEntityType(PushModel.ENTITY_TYPE_ADD_GROUP);
-            pushHistory.setEntity(entity);
+            try {
+                pushHistory.setEntity(new String(bytes,"UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             pushHistory.setReceiverPushId(receiver.getPushId());
             pushHistory.setReceiver(receiver);
             //添加进集合
@@ -215,12 +232,17 @@ public class PushFactory {
         User receiver = UserFactory.findById(ownerId);
 
         String entity = TextUtil.toJson(applyCard);
+        byte[] bytes = entity.getBytes();
         //个推推送工具类
         PushDispatcher dispatcher = new PushDispatcher();
         //构建推送历史消息Model
         PushHistory pushHistory = new PushHistory();
         pushHistory.setEntityType(PushModel.ENTITY_TYPE_ADD_GROUP_MEMBERS);
-        pushHistory.setEntity(entity);
+        try {
+            pushHistory.setEntity(new String(bytes,"UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         pushHistory.setReceiverPushId(receiver.getPushId());
         pushHistory.setReceiver(receiver);
         //保存推送历史
@@ -268,11 +290,15 @@ public class PushFactory {
         //一定是已经关注了
         userCard.setIsFollow(true);
         String entity = TextUtil.toJson(userCard);
-
+        byte[] bytes = entity.getBytes();
         //构建推送历史消息Model
         PushHistory pushHistory = new PushHistory();
         pushHistory.setEntityType(PushModel.ENTITY_TYPE_ADD_FRIEND);
-        pushHistory.setEntity(entity);
+        try {
+            pushHistory.setEntity(new String(bytes,"UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         pushHistory.setReceiverPushId(receiver.getPushId());
         pushHistory.setReceiver(receiver);
 
@@ -283,6 +309,20 @@ public class PushFactory {
         PushDispatcher dispatcher = new PushDispatcher();
         //添加到发送者的数据集合中
         dispatcher.add(receiver, pushModel);
+        dispatcher.submit();
+    }
+
+    public static void pushHistoryMsg(List<PushHistory>  histories, User user) {
+        //个推推送工具类
+        PushDispatcher dispatcher = new PushDispatcher();
+
+        for (PushHistory history : histories) {
+            //构建一个推送的model
+            PushModel pushModel = new PushModel();
+            pushModel.add(history.getEntityType(), history.getEntity());
+            //添加到发送者的数据集合中
+            dispatcher.add(user, pushModel);
+        }
         dispatcher.submit();
     }
 }

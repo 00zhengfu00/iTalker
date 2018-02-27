@@ -1,6 +1,7 @@
 package com.example.ggxiaozhi.italker.fragment.main;
 
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -14,11 +15,13 @@ import com.example.ggxiaozhi.common.widget.recycler.RecyclerAdapter;
 import com.example.ggxiaozhi.factory.model.db.User;
 import com.example.ggxiaozhi.factory.presenter.contact.ContactContract;
 import com.example.ggxiaozhi.factory.presenter.contact.ContactPresenter;
+import com.example.ggxiaozhi.factory.presenter.group.GroupPresenter;
 import com.example.ggxiaozhi.italker.R;
 import com.example.ggxiaozhi.italker.activity.MainActivity;
 import com.example.ggxiaozhi.italker.activity.MessageActivity;
 import com.example.ggxiaozhi.italker.activity.PersonalActivity;
 
+import net.qiujuer.genius.res.Resource;
 import net.qiujuer.genius.ui.Ui;
 
 import butterknife.BindView;
@@ -37,6 +40,8 @@ public class ContactFragment extends PresenterFragment<ContactContract.Presenter
     @BindView(R.id.empty)
     EmptyView mEmptyView;
 
+    @BindView(R.id.swipe_refresh)
+    SwipeRefreshLayout mRefreshLayout;
     private RecyclerAdapter<User> mAdapter;
 
     public ContactFragment() {
@@ -76,6 +81,22 @@ public class ContactFragment extends PresenterFragment<ContactContract.Presenter
                 }
             }
         });
+        //设置刷新颜色
+        mRefreshLayout.setColorSchemeColors(Resource.Color.BLUE, Resource.Color.PINK, Resource.Color.PURPLE);
+        //下拉刷新时不可用
+        mRefreshLayout.setEnabled(true);
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //下拉刷新
+                if (mAdapter.getItemCount() <= 0) {
+                    mRefreshLayout.setRefreshing(false);
+                    return;
+                }
+                //依据传入最后一条的加入时间为基准 返回以基准时间的7天前为日期返回最近3天加入的群 进行增量更新
+                ((ContactPresenter) mPresenter).refreshContacts();
+            }
+        });
         //初始化占位布局
         mEmptyView.bind(mRecycler);
         setPlaceHolderView(mEmptyView);
@@ -110,6 +131,7 @@ public class ContactFragment extends PresenterFragment<ContactContract.Presenter
 
     @Override
     public void onAdapterDataChanged() {
+        mRefreshLayout.setRefreshing(false);
         //检查是否有数据 决定如何显示页面
         mEmptyView.triggerOkOrEmpty(mAdapter.getItemCount() > 0);
     }

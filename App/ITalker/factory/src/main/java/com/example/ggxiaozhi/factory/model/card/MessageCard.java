@@ -122,4 +122,18 @@ public class MessageCard {
         message.setStatus(status);
         return message;
     }
+
+    public MessageCard build(Message message) {
+        this.id = message.getId();
+        this.content = message.getContent();
+        this.attach = message.getAttach();
+        this.createAt = message.getCreateAt();
+        if (message.getGroup() != null)
+            this.groupId = message.getGroup().getId();
+        if (message.getReceiver() != null)
+            this.receiverId = message.getReceiver().getId();
+        this.type = message.getType();
+        this.senderId = message.getSender().getId();
+        return this;
+    }
 }

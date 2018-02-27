@@ -87,7 +87,7 @@ public class MessageDispatcher implements MessageCenter {
                         continue;
                     //消息发送后就不可能在修改了 如果收到的消息
                     //本地数据库已经存在了 同时本地显示状态为已经完成了 则不必处理
-                    //因为此时服务器返回的消息与本地是一样的
+                    // 因为此时服务器返回的消息与本地是一样的
                     // 新状态为完成才更新服务器时间，不然不做更新
                     if (card.getStatus() == Message.STATUS_DONE) {
                         //代表消息发送成功 此时需要修改时间为服务器时间

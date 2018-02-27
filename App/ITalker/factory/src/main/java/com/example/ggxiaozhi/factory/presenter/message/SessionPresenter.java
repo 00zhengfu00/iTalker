@@ -25,6 +25,8 @@ public class SessionPresenter extends
         super(new SessionRepository(), view);
     }
 
+
+
     @Override
     public void onDataLoaded(List<Session> sessions) {
         SessionContract.View view = getView();
