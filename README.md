@@ -26,7 +26,7 @@
 ---
 
 ##### 服务器数据库关系图
-![图片.png](http://upload-images.jianshu.io/upload_images/3983615-7e96bf74f11d9ca6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)   
+![图片.png](http://upload-images.jianshu.io/upload_images/3983615-7e96bf74f11d9ca6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)  
 
 ##### 客户端消息处理关系图
 ![clipboard.png](http://upload-images.jianshu.io/upload_images/3983615-c828b8e17f651920.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
