@@ -1,3 +1,6 @@
+## 由于github存在上传图片限制，具体详细介绍请点[此处](http://note.youdao.com/noteshare?id=4afcfb4658920a281de486838d9a3a49)
+
+
 #### 项目概览   
 
 **项目整体以Material Desigh和ViewPager与Fragment结合。使用第三方推送平台为通讯基础。采用MVP架构。结构分类为主APP(Activity,Fragment)，表情library，语言library，网络library。主要功能涉及登录注册，搜索群与人，，群聊单聊(语音，图片，文件，表情)，好友添加，群组创建，个人信息等IM应用核心功能。并在后台使用Jersey RESTful + Hibernate + MySQL + Tomcat结构实现服务端架构。是一款包含主流IM功能的一款应用，同时结构封装性好。结构层次清晰。注释详细。便于扩展与移植到自己项目作为已有应用的新模块**。
