@@ -35,6 +35,12 @@
 ![微聊.png](http://upload-images.jianshu.io/upload_images/3983615-d1cb2e18311cd442.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)   
 
 ##### 核心技术   
+##### 第三方SDK选取
+推送服务 选择个推作为通讯基础
+
+对象存储 阿里OSS
+实现对发送图片、语音、头像等文件的存储。方便以后读取。
+
 ###### 客户端   
 网络框架-Retrofit
 
