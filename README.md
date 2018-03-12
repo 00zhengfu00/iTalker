@@ -43,6 +43,46 @@
 对象存储 阿里OSS
 实现对发送图片、语音、头像等文件的存储。方便以后读取。
 
+```java
+ext {//依赖库的版本
+    //版本相关
+    versionCode = 1
+    versionName = '1.0.0'
+
+    //相关依赖库
+    supportVersion = '25.3.1'
+    butterknifeVersion = '8.8.1'
+
+    //一些MD封装布局与Handle封装工具
+    geniusVersion = '2.0.0'
+    //Glide图片工具
+    glideVersion = '3.7.0'
+
+    //圆形图片
+    circleimageviewVersion = '2.1.0'
+    //图片剪切
+    ucropVersion = '2.2.0-native'
+
+    //动态权限辅助工具
+    easyPMVersion = "0.3.0"
+    //操作云数据库
+    ossVersion = '2.3.0'
+
+    //Gson转换工具
+    gsonVersion = '2.8.0'
+    //retrofit2
+    retrofitVersion = '2.1.0'
+    //个推的SDK
+    getuiVersion = '2.9.3.0'
+    //dbflow数据库辅助工具
+    dbflowVersion = "4.0.0-beta7"
+    //空气面板(处理布局变换与软键盘的收缩)
+    airpanelVersion = "1.1.0"
+    //Lame 录音 MP3 转码器
+    lameVersion = "1.0.0"
+}
+```
+
 ###### 客户端   
 网络框架-Retrofit
 
