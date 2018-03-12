@@ -15,6 +15,8 @@
 ##### 群组聊天(文字，图片，动态表情，语音)
 ![群聊.gif](http://upload-images.jianshu.io/upload_images/3983615-c84f2d4ebea89667.gif?imageMogr2/auto-orient/strip)
 
+##### 语音相关技能点：录音采用AudioRecord，转码使用Lame进行转码。使用MediaPlayer播放录音。并过滤录音数据过短的垃圾数据，并在缓存在本地后提交OSS
+
 ##### 单人聊天(文字，图片，动态表情，语音)
 ![聊天.gif](http://upload-images.jianshu.io/upload_images/3983615-097cea4d8e8f5e97.gif?imageMogr2/auto-orient/strip)   
 
