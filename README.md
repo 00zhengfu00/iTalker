@@ -32,7 +32,7 @@
 ![clipboard.png](http://upload-images.jianshu.io/upload_images/3983615-c828b8e17f651920.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ##### 功能细节图   
-![微聊.png](http://upload-images.jianshu.io/upload_images/3983615-d1cb2e18311cd442.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)   
+![微聊.png](https://upload-images.jianshu.io/upload_images/3983615-6d2af14629c4f382.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ##### 核心技术   
 ##### 第三方SDK选取
